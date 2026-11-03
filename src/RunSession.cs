@@ -28,8 +28,13 @@ public static class RunSession
     }
     public static List<SourceTotals> SourceBreakdowns()=>VisibleEncounters().SelectMany(e=>e.StructuredSources).ToList();
     public static List<SupportTransfer> SupportTransfers()=>VisibleEncounters().SelectMany(e=>e.Transfers).ToList();
+    public static CreditedDamage CreditedRun(){var result=new CreditedDamage();foreach(var e in VisibleEncounters())if(e.Attribution!=null)result.Merge(e.Attribution);return result;}
+    public static bool AttributionPartial=>VisibleEncounters().Any(e=>e.Attribution?.Version!=CreditedDamage.Version);
+    public static List<SupportTransfer> CreditedTransfers()=>VisibleEncounters().Where(e=>e.Attribution?.Version==CreditedDamage.Version).SelectMany(e=>e.Transfers).ToList();
+    public static bool StorageIncomplete=>storageError!=null;
+    public static bool HistoryPartial=>store?.Partial==true||identity==null;
     public static string Status => storageError != null ? "Run storage incomplete: " + storageError : store?.Partial == true ? "Partial run: " + store.Warning : identity == null ? "Run history not attached" : "Checkpoint history attached";
-    public static EncounterSnapshot Capture() => JsonSerializer.Deserialize<EncounterSnapshot>(JsonSerializer.Serialize(new EncounterSnapshot(Encounter, Probe.Meter.Rows, Probe.Meter.Sources){Transfers=Probe.Meter.Transfers,StructuredSources=Probe.Meter.StructuredSources}))!;
+    public static EncounterSnapshot Capture() => JsonSerializer.Deserialize<EncounterSnapshot>(JsonSerializer.Serialize(new EncounterSnapshot(Encounter, Probe.Meter.Rows, Probe.Meter.Sources){Transfers=Probe.Meter.Transfers,StructuredSources=Probe.Meter.StructuredSources,Attribution=Probe.Credited.Snapshot()}))!;
     public static void Commit() { if (store != null && Encounter != "") store.Completed[Encounter] = Capture(); }
     public static Dictionary<string, Dictionary<string, decimal>> RunSources()
     {

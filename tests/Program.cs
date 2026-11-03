@@ -6,6 +6,8 @@ using System.Text.Json;
 void Check(bool ok, string name) { if (!ok) throw new Exception(name); Console.WriteLine("PASS " + name); }
 OwnershipChecks.Run(Check);
 NormalizationChecks.Run(Check);
+CreditedDamageChecks.Run(Check);
+MeterTooltipChecks.Run(Check);
 OutParameterChecks.Run(Check);
 AdditiveChecks.Run(Check);
 AttackMultiplierChecks.Run(Check);

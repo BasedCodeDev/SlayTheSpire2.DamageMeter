@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 namespace Based.Spires2DamageMeter;
 
 public partial class MeterPanel : CanvasLayer
@@ -9,11 +9,11 @@ public partial class MeterPanel : CanvasLayer
     private VBoxContainer layout = null!;
     private Button collapse = null!;
     private bool heightRefreshPending;
-    private Label status = null!, details = null!;
+    private MeterHoverLabel status = null!, title = null!;
+    private ScrollContainer scroll=null!;
     private OptionButton metric = null!;
     private TabBar scope = null!;
-    private readonly Dictionary<string, (Button Button, Label Name, MeterBar Bar, Label Total)> controls = new();
-    private string selected = "";
+    private readonly Dictionary<string, (MeterHoverButton Button, Label Name, MeterBar Bar, Label Total)> controls = new();
     private bool dragging, resizing, collapsed;
     private double elapsed;
     private readonly ConfigFile settings = new();
@@ -30,27 +30,27 @@ public partial class MeterPanel : CanvasLayer
         panel.Size=new Vector2(settings.GetValue("layout","width",440f).AsSingle(),0);
         layout=new VBoxContainer(); panel.AddChild(layout);
         var header=new HBoxContainer(); layout.AddChild(header);
-        var title=new Label { Text=$"Based Damage Meter {Probe.Version}", SizeFlagsHorizontal=Control.SizeFlags.ExpandFill, MouseFilter=Control.MouseFilterEnum.Stop }; header.AddChild(title);
+        title=new MeterHoverLabel { TooltipText="Diagnostics", Text=$"Based Damage Meter {Probe.Version}", SizeFlagsHorizontal=Control.SizeFlags.ExpandFill, MouseFilter=Control.MouseFilterEnum.Stop }; header.AddChild(title);
         title.GuiInput+=e=> { if(e is InputEventMouseButton b && b.ButtonIndex==MouseButton.Left) dragging=b.Pressed; if(dragging && e is InputEventMouseMotion m) panel.Position+=m.Relative; };
-        collapse=new Button { Text="−" }; header.AddChild(collapse);
+        collapse=new Button { Text="-" }; header.AddChild(collapse);
         body=new VBoxContainer(); layout.AddChild(body); collapse.Pressed+=()=> { ApplyCollapsedState(!collapsed); Save(); };
         metric=new OptionButton(); body.AddChild(metric);
-        foreach(var name in new[]{"HP + Block","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Contribution"}) metric.AddItem(name);
-        for(var i=5;i<8;i++) metric.SetItemDisabled(i,!NativeDamageCapture.Enabled);
-        metric.Selected=Math.Clamp(settings.GetValue("layout","metric",0).AsInt32(),0,7); metric.ItemSelected+=_=>Save();
-        scope=new TabBar(); scope.AddTab("Current Fight"); scope.AddTab("This Run"); scope.CurrentTab=Math.Clamp(settings.GetValue("layout","scope",0).AsInt32(),0,1); body.AddChild(scope); scope.TabChanged+=_=>Save();
+        foreach(var name in new[]{"Damage (HP + Block)","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Actual Damage"}) metric.AddItem(name);
+        for(var i=5;i<7;i++) metric.SetItemDisabled(i,!NativeDamageCapture.Enabled);
+        metric.Selected=Math.Clamp(settings.GetValue("layout","metric",0).AsInt32(),0,7); if(metric.Selected==7&&settings.GetValue("layout","attributionVersion",0).AsInt32()<1)metric.Selected=0; metric.ItemSelected+=_=>Save();
+        metric.TooltipText="Damage includes provider-owned amplification. Support is a subset already counted. Actual Damage shows original observed ownership.";
+        scope=new TabBar(); scope.AddTab("Current Fight"); scope.AddTab("This Run"); scope.CurrentTab=Math.Clamp(settings.GetValue("layout","scope",0).AsInt32(),0,1); var tabs=new HBoxContainer(); body.AddChild(tabs); scope.SizeFlagsHorizontal=Control.SizeFlags.ExpandFill; tabs.AddChild(scope);
+        status=new MeterHoverLabel { TooltipText="Status details",MouseFilter=Control.MouseFilterEnum.Stop };tabs.AddChild(status); scope.TabChanged+=_=>Save();
         body.AddChild(new Label { Text="Blue: block | Red: HP | Orange: amplification" });
-        var scroll=new ScrollContainer { CustomMinimumSize=new Vector2(0,130) }; body.AddChild(scroll);
+        scroll=new ScrollContainer { HorizontalScrollMode=ScrollContainer.ScrollMode.Disabled }; body.AddChild(scroll);
         rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill }; scroll.AddChild(rows);
-        details=new Label { Text="Click a player for sources", AutowrapMode=TextServer.AutowrapMode.WordSmart }; body.AddChild(details);
-        status=new Label { AutowrapMode=TextServer.AutowrapMode.WordSmart }; body.AddChild(status);
-        var resize=new Label { Text="◢", HorizontalAlignment=HorizontalAlignment.Right, MouseFilter=Control.MouseFilterEnum.Stop }; body.AddChild(resize);
+        var resize=new Label { Text="?", HorizontalAlignment=HorizontalAlignment.Right, MouseFilter=Control.MouseFilterEnum.Stop }; body.AddChild(resize);
         resize.GuiInput+=e=> { if(e is InputEventMouseButton b && b.ButtonIndex==MouseButton.Left) resizing=b.Pressed; if(resizing && e is InputEventMouseMotion m) panel.Size=new Vector2(Math.Max(320,panel.Size.X+m.Relative.X),panel.Size.Y); };
         ApplyCollapsedState(settings.GetValue("layout","collapsed",false).AsBool());
     }
     private void ApplyCollapsedState(bool value)
     {
-        collapsed=value; body.Visible=!value; collapse.Text=value?"+":"−";
+        CloseTooltips();collapsed=value; body.Visible=!value; collapse.Text=value?"+":"-";
         dragging=resizing=false;
         QueueHeightRefresh();
     }
@@ -70,11 +70,11 @@ public partial class MeterPanel : CanvasLayer
     private void Save()
     {
         settings.SetValue("layout","position",panel.Position); settings.SetValue("layout","width",panel.Size.X); settings.SetValue("layout","collapsed",collapsed);
-        settings.SetValue("layout","metric",metric.Selected); settings.SetValue("layout","scope",scope.CurrentTab); settings.Save(SettingsPath);
+        settings.SetValue("layout","attributionVersion",1); settings.SetValue("layout","metric",metric.Selected); settings.SetValue("layout","scope",scope.CurrentTab); settings.Save(SettingsPath);
     }
     public override void _Input(InputEvent e)
     {
-        if(e is InputEventKey { Pressed:true,Echo:false,Keycode:Key.F8 }) panel.Visible=!panel.Visible;
+        if(e is InputEventKey { Pressed:true,Echo:false,Keycode:Key.F8 }) {CloseTooltips();panel.Visible=!panel.Visible;}
         if(e is InputEventMouseButton { Pressed:false }) { if(dragging||resizing) Save(); dragging=resizing=false; }
     }
     public override void _Process(double delta)
@@ -84,17 +84,26 @@ public partial class MeterPanel : CanvasLayer
         if(!Mathf.IsEqualApprox(width,panel.Size.X)) panel.Size=new Vector2(width,0);
         panel.Position=new Vector2(Math.Clamp(panel.Position.X,0,Math.Max(0,viewport.X-panel.Size.X)),Math.Clamp(panel.Position.Y,0,Math.Max(0,viewport.Y-40)));
         elapsed+=delta; if(elapsed<.1) return; elapsed=0;
-        var data=scope.CurrentTab==0?Probe.Meter.Rows:RunSession.RunRows();
-        decimal Value(Totals t)=>metric.Selected switch {1=>t.Hp,2=>t.Block,3=>t.Poison,4=>t.Doom,5=>t.AmplifiedHp+t.AmplifiedBlock,6=>t.SupportGiven,7=>t.Hp+t.Block-t.SupportReceived+t.SupportGiven,_=>t.Hp+t.Block};
+        var actual=scope.CurrentTab==0?Probe.Meter.Rows:RunSession.RunRows();
+        var ledger=scope.CurrentTab==0?Probe.Credited:RunSession.CreditedRun();
+        var transfers=scope.CurrentTab==0?Probe.Meter.Transfers:RunSession.CreditedTransfers();
+        var credited=ledger.Rows(transfers);foreach(var id in actual.Keys)credited.TryAdd(id,new());
+        var data=metric.Selected==7?actual:credited;
+        decimal Value(Totals t)=>metric.Selected switch {1=>t.Hp,2=>t.Block,3=>t.Poison,4=>t.Doom,5=>t.AmplifiedHp+t.AmplifiedBlock,6=>t.SupportGiven,7=>t.Hp+t.Block,_=>t.Hp+t.Block};
         var ordered=data.OrderByDescending(p=>Value(p.Value)).ThenBy(p=>p.Key,StringComparer.Ordinal).ToArray(); var max=ordered.Select(p=>Value(p.Value)).DefaultIfEmpty().Max(); var team=data.Values.Sum(Value);
         var hovered=panel.GetGlobalRect().HasPoint(GetViewport().GetMousePosition());
-        foreach(var id in controls.Keys.Except(data.Keys).ToArray()) { controls[id].Button.QueueFree(); controls.Remove(id); }
+        foreach(var id in controls.Keys.Except(data.Keys).ToArray()) { controls[id].Button.CloseTooltip();controls[id].Button.QueueFree(); controls.Remove(id); }
+        var breakdowns=metric.Selected==7?(scope.CurrentTab==0?Probe.Meter.StructuredSources:RunSession.SourceBreakdowns()):ledger.Sources();
+        var diagnostics=$"{Probe.Combat} | {Probe.Health}\n{RunSession.Status}\n{(scope.CurrentTab==1&&RunSession.AttributionPartial?"Partial credited history; earlier actuals available in Actual Damage":"")}\nAttribution: {ledger.Provisional} provisional/unknown events\nEnemy amplification: {NativeDamageCapture.Matched} matched, {NativeDamageCapture.Unmatched} unmeasured (audit pending)\n{Probe.OwnershipStatus}";
+        var badge=MeterTooltipModel.Status(Probe.Health.StartsWith("INCOMPLETE")||!NativeDamageCapture.Enabled||!Probe.OwnershipAvailable||RunSession.StorageIncomplete,ledger.Provisional>0||NativeDamageCapture.Unmatched>0||(scope.CurrentTab==1&&(RunSession.AttributionPartial||RunSession.HistoryPartial)));
+        status.Text=badge;status.Visible=badge.Length>0;
+        var globalTip=new MeterTooltipModel("Meter status",Array.Empty<string>(),diagnostics){ShowSources=false};status.UpdateTooltip(globalTip);title.UpdateTooltip(globalTip);
         var index=0;
         foreach(var (id,total) in ordered)
         {
             if(!controls.TryGetValue(id,out var row))
             {
-                var button=new Button { CustomMinimumSize=new Vector2(0,32) }; rows.AddChild(button); button.Pressed+=()=>selected=id;
+                var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,32) }; rows.AddChild(button);
                 var line=new HBoxContainer { MouseFilter=Control.MouseFilterEnum.Ignore }; button.AddChild(line); line.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
                 var name=new Label { CustomMinimumSize=new Vector2(105,0),ClipText=true,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(name);
                 var bar=new MeterBar { CustomMinimumSize=new Vector2(70,24),SizeFlagsHorizontal=Control.SizeFlags.ExpandFill,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(bar);
@@ -104,24 +113,18 @@ public partial class MeterPanel : CanvasLayer
             if(!hovered) rows.MoveChild(row.Button,index); index++;
             row.Name.Text=Probe.Names.GetValueOrDefault(id,id); var value=Value(total);
             row.Total.Text=$"{(team>0?100*value/team:0):0.#}%";
-                        var selfHp=Math.Max(0,total.AmplifiedHp-total.SupportReceivedHp);var selfBlock=Math.Max(0,total.AmplifiedBlock-total.SupportReceivedBlock);
-            row.Bar.Orange=metric.Selected switch{0=>total.AmplifiedHp+total.AmplifiedBlock,1=>total.AmplifiedHp,2=>total.AmplifiedBlock,5=>value,6=>value,7=>selfHp+selfBlock+total.SupportGiven,_=>0};
-            row.Bar.Block=metric.Selected switch{0=>Math.Max(0,total.Block-total.AmplifiedBlock),2=>Math.Max(0,total.Block-total.AmplifiedBlock),7=>Math.Max(0,total.Block-total.SupportReceivedBlock-selfBlock),_=>0};
+            row.Bar.Orange=metric.Selected switch{0=>total.AmplifiedHp+total.AmplifiedBlock,1=>total.AmplifiedHp,2=>total.AmplifiedBlock,5=>value,6=>value,7=>total.AmplifiedHp+total.AmplifiedBlock,3=>ledger.Credits.Where(c=>c.Player==id&&c.Kind=="Poison"&&c.Amplification).Sum(c=>c.Hp),_=>0};
+            row.Bar.Block=metric.Selected switch{0=>Math.Max(0,total.Block-total.AmplifiedBlock),2=>Math.Max(0,total.Block-total.AmplifiedBlock),7=>Math.Max(0,total.Block-total.AmplifiedBlock),_=>0};
             row.Bar.Hp=Math.Max(0,value-row.Bar.Block-row.Bar.Orange); row.Bar.Maximum=max; row.Bar.QueueRedraw();
-            row.Button.TooltipText=$"{row.Name.Text}\nHP: {total.Hp:0.##}; Block: {total.Block:0.##}\nPoison HP: {total.Poison:0.##}; Doom HP: {total.Doom:0.##}\nAmplification includes reconciled traces only";
+            var summary=$"{row.Name.Text} - {metric.GetItemText(metric.Selected)} ({(scope.CurrentTab==0?"Current Fight":"This Run")})\nValue: {value:0.##} ({(team>0?100*value/team:0):0.#}%)\nCredited HP: {credited.GetValueOrDefault(id)?.Hp??0:0.##}; block: {credited.GetValueOrDefault(id)?.Block??0:0.##}\nActual HP: {actual.GetValueOrDefault(id)?.Hp??0:0.##}; block: {actual.GetValueOrDefault(id)?.Block??0:0.##}\nPoison HP: {total.Poison:0.##}; Doom HP: {total.Doom:0.##}\nAmplification: {total.AmplifiedHp+total.AmplifiedBlock:0.##}; Support: {total.SupportGiven:0.##} (already included in credited Damage)";
+            row.Button.UpdateTooltip(new(summary,MeterTooltipModel.Sources(id,metric.Selected,breakdowns,transfers,p=>Probe.Names.GetValueOrDefault(p,p)),diagnostics));
         }
-                var breakdowns=scope.CurrentTab==0?Probe.Meter.StructuredSources:RunSession.SourceBreakdowns();
-        var transfers=scope.CurrentTab==0?Probe.Meter.Transfers:RunSession.SupportTransfers();
-        var sources=scope.CurrentTab==0?Probe.Meter.Sources:RunSession.RunSources();
-        details.Text=sources.TryGetValue(selected,out var leaves)?string.Join("\n",leaves.OrderByDescending(p=>p.Value).Take(12).Select(p=>$"{p.Key}: {p.Value:0.##}")):"Click a player for sources";
-        if(metric.Selected is 6 or 7)
-            details.Text=string.Join("\n",transfers.Where(t=>t.Provider==selected || (metric.Selected==7 && t.Recipient==selected)).Select(t=>$"{Probe.Names.GetValueOrDefault(t.Provider,t.Provider)} → {Probe.Names.GetValueOrDefault(t.Recipient,t.Recipient)} ({t.Source}): HP {t.Hp:0.##}, Block {t.Block:0.##}").Take(12));
-        else if(breakdowns.Any(s=>s.Player==selected))
-            details.Text=string.Join("\n",breakdowns.Where(s=>s.Player==selected).GroupBy(s=>s.Source).Select(g=>new {Name=g.Key.DisplayName,Value=g.Sum(t=>metric.Selected switch{1=>t.Hp,2=>t.Block,3=>t.Source.Kind=="Poison"?t.Hp:0,4=>t.Source.Kind=="Doom"?t.Hp:0,5=>t.AmplifiedHp+t.AmplifiedBlock,_=>t.Hp+t.Block})}).Where(s=>s.Value>0).OrderByDescending(s=>s.Value).Take(12).Select(s=>$"{s.Name}: {s.Value:0.##}"));
-        status.Text=$"{Probe.Combat} | {Probe.Health}\n{RunSession.Status}\nEnemy amplification: {NativeDamageCapture.Matched} matched, {NativeDamageCapture.Unmatched} unmeasured (coverage audit pending)\n{Probe.OwnershipStatus}";
+        var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-180),Math.Max(0,controls.Count*36));
+        scroll.CustomMinimumSize=new Vector2(0,desired);
         QueueHeightRefresh();
     }
-    public override void _ExitTree() { Save(); Probe.Flush(); instance=null; }
+    private void CloseTooltips(){if(title!=null)title.CloseTooltip();if(status!=null)status.CloseTooltip();foreach(var row in controls.Values)row.Button.CloseTooltip();}
+    public override void _ExitTree() { CloseTooltips();Save(); Probe.Flush(); instance=null; }
 }
 
 public partial class MeterBar : Control

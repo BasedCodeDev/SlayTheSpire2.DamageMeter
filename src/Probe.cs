@@ -17,6 +17,7 @@ public static class Probe
 {
     public const string Id = "Based.Spires2DamageMeter";
     public static readonly Accounting Meter = new();
+    public static readonly CreditedDamage Credited=new();
     public static string Health = "Starting";
     public static string Role = "unknown";
     public static string Combat = "No combat";
@@ -93,7 +94,7 @@ public static class Probe
         if (__originalMethod.Name != "BeforeCombatStart") return;
         Guard(() =>
         {
-            Meter.Reset(); NativeDamageCapture.Reset(); changes.Clear(); doom.Clear(); Names.Clear(); active = true;
+            Meter.Reset(); Credited.Clear(); NativeDamageCapture.Reset(); changes.Clear(); doom.Clear(); Names.Clear(); active = true;
             Combat = $"Fight {++combatIndex}";
             var state = Arg(__originalMethod, __args, "runState");
             RunSession.AttachState(state);
@@ -136,6 +137,7 @@ public static class Probe
                     else Meter.ApplySharedAmplification(kind,shares,amplification);
                 }
 
+                if(receiver.Side.ToString()=="Enemy")Emit("credited_damage",new{eventId,hp,block=normalized.Block,kind,credits=Credited.Add(eventId,kind,hp,normalized.Block,shares,kind=="Direct"?damageSource:null,amplification,amplification!=null)});
                 Emit("damage_allocation", new { eventId, target = Entity(target), kind, hp, shares, trigger = origin.Current });
                 Emit("damage", new { eventId, originalTarget = Entity(target), receiver = Entity(receiver), target = Entity(target), actor = Entity(dealer), owner, source = card?.GetType().Name ?? poison.Value?.GetType().Name, kind, confidence = shares.Any(s => s.Owner == StatusOwnershipLedger.Unknown) ? "partial_or_unknown" : "observed", reason = shares.Any(s => s.Owner == StatusOwnershipLedger.Unknown) ? "missing history or unresolved correlation" : null, hp = normalized.Hp, rawUnblocked = r.UnblockedDamage, blocked = r.BlockedDamage, overkill = r.OverkillDamage, enemy = receiver.Side.ToString() == "Enemy" });
             }
@@ -149,14 +151,16 @@ public static class Probe
                 {
                     var shares = StatusOwnershipLedger.Allocate(d.Shares, d.Hp);
                     if (c.Side.ToString() == "Enemy" && !Meter.AddResolved(new(d.Token, "Doom", d.Hp, 0, shares))) continue;
-                    Emit("doom_execution", new { eventId=Guid.NewGuid().ToString("N"), enemy=c.Side.ToString()=="Enemy", target = Entity(c), hp = d.Hp, shares });
+                    var eventId=Guid.NewGuid().ToString("N");
+                    if(c.Side.ToString()=="Enemy")Emit("credited_damage",new{eventId,hp=d.Hp,block=0,kind="Doom",credits=Credited.Add(eventId,"Doom",d.Hp,0,shares,null,null)});
+                    Emit("doom_execution", new { eventId, enemy=c.Side.ToString()=="Enemy", target = Entity(c), hp = d.Hp, shares });
                 }
         });
     }
     private static async Task EndCombat(Task task)
     {
         try { await task; }
-        finally { Guard(() => { RunSession.Commit(); RunSession.Active = false; Emit("combat_summary", new { totals = Meter.Rows, sources = Meter.Sources, confirmedChanges = changes.Confirmed, unknownChanges = changes.Unknown, unresolvedCorrelations = changes.Unresolved, health = Health, offensiveCoverage = NativeDamageCapture.Coverage.Outgoing, incomingDiagnostics = NativeDamageCapture.Coverage.Incoming }); active = false; Combat += " complete"; doom.Clear(); changes.Clear(); Flush(); }); }
+        finally { Guard(() => { RunSession.Commit(); RunSession.Active = false; Emit("combat_summary", new { totals = Meter.Rows, creditedTotals=Credited.Rows(), sources = Meter.Sources, confirmedChanges = changes.Confirmed, unknownChanges = changes.Unknown, unresolvedCorrelations = changes.Unresolved, health = Health, offensiveCoverage = NativeDamageCapture.Coverage.Outgoing, incomingDiagnostics = NativeDamageCapture.Coverage.Incoming }); active = false; Combat += " complete"; doom.Clear(); changes.Clear(); Flush(); }); }
     }
     private static void RegisterLedgerHooks()
     {
@@ -246,6 +250,6 @@ public static class Probe
     private static async Task ObservePoison(Task task, PowerModel? current, PowerModel? previous) { poison.Value = current; try { await task; } finally { poison.Value = previous; } }
     private static void Guard(Action action) { try { action(); } catch (Exception ex) { Fail(ex); } }
     private static void Fail(Exception ex) { Health = "INCOMPLETE: " + ex.Message; GD.PrintErr(Id + ": " + ex); Emit("capture_error", new { error = ex.ToString() }); }
-    public static void Emit(string kind, object data) { try { queue.Enqueue(JsonSerializer.Serialize(new { schemaVersion = 6, amplificationVersion=Amplification.Version, accountingVersion = EngineDamage.AccountingVersion, session, combat = combatIndex, sequence = Interlocked.Increment(ref sequence), utc = DateTime.UtcNow, role = Role, kind, data })); } catch { Health = "INCOMPLETE: serialization failure"; } }
+    public static void Emit(string kind, object data) { try { queue.Enqueue(JsonSerializer.Serialize(new { schemaVersion = 7, attributionVersion=CreditedDamage.Version, amplificationVersion=Amplification.Version, accountingVersion = EngineDamage.AccountingVersion, session, combat = combatIndex, sequence = Interlocked.Increment(ref sequence), utc = DateTime.UtcNow, role = Role, kind, data })); } catch { Health = "INCOMPLETE: serialization failure"; } }
     public static void Flush() { lock (logLock) { try { while (queue.TryDequeue(out var line)) writer?.WriteLine(line); writer?.Flush(); } catch (Exception ex) { Health = "INCOMPLETE: log write: " + ex.Message; } } }
 }

@@ -63,8 +63,8 @@ Label the combined total **HP + Block**. Tooltips expose full HP damage, block d
 
 ### Support and other metrics
 
-- Keep observed damage credited to its dealer/effect owners. Orange explains amplification without transferring ownership.
-- Show Support Damage separately, credited to modifier providers. Contribution equals actual damage minus support received plus support provided.
+- Main Damage credits unamplified damage to original owners and effective numeric amplification to its providers. Actual Damage preserves original observed ownership. Orange follows provider-owned amplification.
+- Show Support Damage separately, credited to modifier providers. Support Damage is already included in credited Damage and must never be added twice. Contribution is replaced by Actual Damage.
 - Calculate effective amplification from captured modifier inputs without replaying gameplay. Respect block, remaining HP, and rounding; allocate overlapping benefits proportionally without inflating totals.
 - Track actual energy granted, extra cards drawn, effective healing, and block granted in their own units. Include provider, recipient, source, and successful recipient-event counts.
 - Exclude normal turn draw from support totals. Exclude overhealing and failed gains.
@@ -315,3 +315,38 @@ restoration. They cover inherited additive/cap callbacks on both powers, malform
 roots, failed snapshots, wrong child family, preview exclusion and parent cleanup.
 An anonymised observed-failure fixture retains the 35-event evidence; no old
 amplification is reconstructed. Accounting versions and native gates are unchanged.
+
+## Preview.13 agreed change
+Provider-owned amplification applies to all numeric modifiers, HP and block, including poison views. Active stacks split shared provider credit proportionally. Only effective capped bonus is credited; old actual history is preserved and older credited history remains explicitly partial.
+
+### Preview.13 implementation checkpoint
+Added a distinct canonical-event credited ledger with HP/block, effect kind,
+provider source and triggering source records. Base credit remains with raw
+owners; effective amplification goes to all providers including self. Raw
+accounting remains available as Actual Damage. Shared poison uses its original
+owner weights for base and amplifier weights for bonus. Doom stays execution-only.
+Main/effect/Amplification views, orange segments, sorting, percentages and source
+details use credited records. Support is a covered-history subset, never added
+again. Legacy Contribution selection migrates to Damage. Attribution snapshot
+version 1 is checkpoint schema 5/log schema 7; legacy actuals remain accessible
+and credited history is visibly partial. Analyser checks event and per-player
+summary conservation, including missing credit records and Doom. Existing math,
+dispatch and out-parameter regressions remain in the package gate. Native UI and
+multiplayer scenario verification remains pending.
+
+## Preview.14 agreed UI increment
+Move player source/recipient details and global diagnostics from the footer into
+row hover tooltips. Retain a compact Partial/Incomplete badge beside Fight/Run
+with full explanations on hover; header also exposes diagnostics before rows.
+Preserve accounting versions, layout, row stability and centered bar values.
+
+### Preview.14 implementation checkpoint
+Implemented native custom row tooltips with live values and metric-specific
+source/recipient lists. Removed click selection and footer details; row list
+height follows player count with scrolling for excess rows. Warning badges use
+Incomplete precedence over Partial; header/badge hover retains full diagnostics.
+Tooltips wrap within the game viewport and trim source entries to twelve or fewer
+with an explicit remainder count. They close on collapse, F8 hide and row removal.
+509 checks pass, including formatting/filtering/status checks and existing
+accounting, dispatch, out-parameter and installed contract regressions. Native
+visual verification remains pending; see README preview.14 checklist.

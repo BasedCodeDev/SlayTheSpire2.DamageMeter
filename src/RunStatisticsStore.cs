@@ -5,9 +5,9 @@ namespace Based.Spires2DamageMeter;
 
 public sealed record RunIdentity(string Profile, string Mode, string Started, string Seed, string Party);
 public sealed record EncounterSnapshot(string Encounter, Dictionary<string, Totals> Players, Dictionary<string, Dictionary<string, decimal>> Sources)
-{ public List<SupportTransfer> Transfers { get; init; } = new(); public List<SourceTotals> StructuredSources { get; init; } = new(); }
+{ public AttributionSnapshot? Attribution {get;init;} public List<SupportTransfer> Transfers { get; init; } = new(); public List<SourceTotals> StructuredSources { get; init; } = new(); }
 public sealed record RunCheckpoint(int Schema, RunIdentity Run, string Fingerprint, List<EncounterSnapshot> Completed)
-{ public int AmplificationVersion {get;init;} public int AccountingVersion { get; init; } public bool Partial { get; init; } public string? Warning { get; init; } }
+{ public int AttributionVersion {get;init;} public int AmplificationVersion {get;init;} public int AccountingVersion { get; init; } public bool Partial { get; init; } public string? Warning { get; init; } }
 
 /// <summary>Exact-checkpoint storage; active attempts are intentionally never restored as completed encounters.</summary>
 public sealed class RunStatisticsStore
@@ -44,7 +44,7 @@ public sealed class RunStatisticsStore
         var path = PathFor(run, fingerprint); Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         var temp = path + ".tmp";
         using (var stream = new FileStream(temp, FileMode.Create, FileAccess.Write, FileShare.None))
-        { JsonSerializer.Serialize(stream, new RunCheckpoint(4, run, fingerprint, Completed.Values.ToList()){AccountingVersion=EngineDamage.AccountingVersion,AmplificationVersion=Amplification.Version,Partial=Partial,Warning=Warning}); stream.Flush(true); }
+        { JsonSerializer.Serialize(stream, new RunCheckpoint(5, run, fingerprint, Completed.Values.ToList()){AttributionVersion=CreditedDamage.Version,AccountingVersion=EngineDamage.AccountingVersion,AmplificationVersion=Amplification.Version,Partial=Partial,Warning=Warning}); stream.Flush(true); }
         if (File.Exists(path)) File.Replace(temp, path, path + ".bak"); else File.Move(temp, path);
     }
     public void Restore(RunIdentity run, string fingerprint)
@@ -58,7 +58,7 @@ public sealed class RunStatisticsStore
                 if (!File.Exists(candidate)) continue;
                 var data = JsonSerializer.Deserialize<RunCheckpoint>(File.ReadAllText(candidate));
                 if (data == null || data.Run != run || data.Fingerprint != fingerprint) continue;
-                if(data.Schema is not (3 or 4) || data.AccountingVersion!=EngineDamage.AccountingVersion){Warning="Earlier totals excluded: incompatible damage accounting version";continue;}
+                if(data.Schema is not (3 or 4 or 5) || data.AccountingVersion!=EngineDamage.AccountingVersion){Warning="Earlier totals excluded: incompatible damage accounting version";continue;}
                 bool legacyAmplification=data.Schema==3||data.AmplificationVersion!=Amplification.Version;
                 if(legacyAmplification)
                 {
@@ -69,7 +69,7 @@ public sealed class RunStatisticsStore
                         e.Transfers.Clear();
                     }
                 }
-                foreach (var encounter in data.Completed) Completed[encounter.Encounter] = encounter;
+                foreach (var encounter in data.Completed) Completed[encounter.Encounter] = data.Schema==5&&data.AttributionVersion==CreditedDamage.Version?encounter:encounter with{Attribution=null};
                 Partial=data.Partial||legacyAmplification;Warning=legacyAmplification?"Earlier amplification/support history excluded; actual damage retained":data.Warning;
                 if (candidate.EndsWith(".bak", StringComparison.Ordinal)) { Partial = true; Warning = (Warning==null?"":Warning+"; ")+"Restored backup; most recent statistics may be missing"; }
                 return;

@@ -11,6 +11,7 @@ public sealed class TraceReportGroup
     public int KnownShares { get; set; }
     public int UnknownShares { get; set; }
     public int CompatibleTraces { get; set; }
+    public int AttributionVersion {get;set;}
     public string CorrelationStatus {get;set;}="not_available_legacy";
     public string Conclusion=>Failures.Count>0?"observed_failures":CompatibleTraces>0?"observed_consistency_only":"not_exercised";
 }
@@ -37,17 +38,23 @@ public sealed class TraceReport
                 if(kind=="game_version")game=S(data,"version");
                 if(kind=="startup")mod=S(data,"modVersion");
                 if(kind is "game_version" or "startup" or "hook_registered" or "ownership_target_validated" or "ownership_target_installed" or "ownership_registration")continue;
-                var key=string.Join(" | ",game,mod,S(root,"accountingVersion"),S(root,"session"),S(root,"role"),S(root,"combat"),S(root,"schemaVersion"),S(root,"amplificationVersion"));
+                var key=string.Join(" | ",game,mod,S(root,"accountingVersion"),S(root,"session"),S(root,"role"),S(root,"combat"),S(root,"schemaVersion"),S(root,"amplificationVersion"),S(root,"attributionVersion"));
                 if(!groups.TryGetValue(key,out var group)){groups[key]=group=new(){Key=key};Groups.Add(group);}
+                if(root.TryGetProperty("attributionVersion",out var attribution))group.AttributionVersion=attribution.GetInt32();
                 group.Counts[kind]=group.Counts.GetValueOrDefault(kind)+1;
                 var eventId=S(data,"eventId");var evidence=$"{path}:{line} event={eventId} sequence={S(root,"sequence")}";
-                bool numerical=kind is "damage" or "damage_trace" or "damage_allocation" or "combat_summary";
-                if(numerical && (!root.TryGetProperty("accountingVersion",out var accounting)||accounting.ValueKind!=JsonValueKind.Number||accounting.GetInt32()!=EngineDamage.AccountingVersion || !root.TryGetProperty("schemaVersion",out var schema)||schema.ValueKind!=JsonValueKind.Number||schema.GetInt32() is not (3 or 4 or 5 or 6))){LegacyNumericalEventsExcluded++;continue;}
+                bool numerical=kind is "damage" or "damage_trace" or "damage_allocation" or "combat_summary" or "credited_damage";
+                if(numerical && (!root.TryGetProperty("accountingVersion",out var accounting)||accounting.ValueKind!=JsonValueKind.Number||accounting.GetInt32()!=EngineDamage.AccountingVersion || !root.TryGetProperty("schemaVersion",out var schema)||schema.ValueKind!=JsonValueKind.Number||schema.GetInt32() is not (3 or 4 or 5 or 6 or 7))){LegacyNumericalEventsExcluded++;continue;}
                 if(root.TryGetProperty("schemaVersion",out var logSchema)&&logSchema.GetInt32()>=4)
                 {if(!linked.TryGetValue(group,out var entries))linked[group]=entries=new();entries.Add((kind,data.Clone(),evidence));}
                 if(eventId!="unknown" && !ids.Add(S(root,"session")+":"+kind+":"+eventId))group.Failures.Add("duplicate event identity: "+evidence);
                 if(kind is "damage_trace_mismatch" or "damage_trace_error" or "capture_error" or "statistics_storage_error" or "damage_binding_error")group.Failures.Add(kind+": "+evidence);
                 if(kind is "damage_trace_missing" or "damage_trace_unsupported" or "statistics_checkpoint_loaded" or "statistics_checkpoint_saved" or "incoming_damage_diagnostic")group.Evidence.Add(kind+": "+evidence);
+                if(kind=="credited_damage")
+                {
+                    var credits=JsonSerializer.Deserialize<List<DamageCredit>>(data.GetProperty("credits").GetRawText())!;
+                    if(credits.Sum(c=>c.Hp)!=N(data,"hp")||credits.Sum(c=>c.Block)!=N(data,"block")||credits.Any(c=>c.Hp<0||c.Block<0))group.Failures.Add("credited allocation does not reconcile: "+evidence);
+                }
                 if(kind=="multiplicative_snapshot")
                 {
                     var snapshot=JsonSerializer.Deserialize<AttackMultiplierSnapshot>(data.GetProperty("snapshot").GetRawText())!;
@@ -112,6 +119,7 @@ public sealed class TraceReport
                 var id=S(hit.Data,"eventId");var records=entries.Where(e=>S(e.Data,"eventId")==id).ToArray();
                 foreach(var required in new[]{"damage_allocation","damage_binding"})
                     if(records.Count(e=>e.Kind==required)!=1 && complete)g.Failures.Add("missing or duplicate "+required+": "+hit.Ref);
+                if(hit.Data.TryGetProperty("enemy",out var isEnemy)&&isEnemy.GetBoolean()&&g.AttributionVersion==1&&complete&&records.Count(e=>e.Kind=="credited_damage")!=1)g.Failures.Add("missing credited event: "+hit.Ref);
                 var outcomes=records.Count(e=>e.Kind is "damage_trace" or "damage_trace_missing" or "damage_trace_unsupported" or "damage_trace_mismatch" or "incoming_damage_diagnostic");
                 if(outcomes!=1&&complete)g.Failures.Add("missing or duplicate trace outcome: "+hit.Ref);
                 foreach(var allocation in records.Where(e=>e.Kind=="damage_allocation"))if(N(allocation.Data,"hp")!=N(hit.Data,"hp"))g.Failures.Add("linked allocation differs from damage: "+hit.Ref);
@@ -119,6 +127,26 @@ public sealed class TraceReport
             }
             foreach(var binding in entries.Where(e=>e.Kind=="damage_binding"))
                 if(S(binding.Data,"status")=="conflict")g.Failures.Add("conflicting result binding: "+binding.Ref);
+            if(complete&&g.AttributionVersion==1)
+            {
+                foreach(var credit in entries.Where(e=>e.Kind=="credited_damage"))
+                {
+                    var canonical=entries.Where(e=>e.Kind is "damage" or "doom_execution").Where(e=>S(e.Data,"eventId")==S(credit.Data,"eventId")).ToArray();
+                    if(canonical.Length!=1||N(canonical[0].Data,"hp")!=N(credit.Data,"hp")||(canonical[0].Kind=="damage"&&N(canonical[0].Data,"blocked")!=N(credit.Data,"block")))g.Failures.Add("credited event differs from canonical damage: "+credit.Ref);
+                }
+                foreach(var doom in entries.Where(e=>e.Kind=="doom_execution"&&e.Data.GetProperty("enemy").GetBoolean()))
+                    if(entries.Count(e=>e.Kind=="credited_damage"&&S(e.Data,"eventId")==S(doom.Data,"eventId"))!=1)g.Failures.Add("missing Doom credit: "+doom.Ref);
+                var parts=entries.Where(e=>e.Kind=="credited_damage").SelectMany(e=>JsonSerializer.Deserialize<List<DamageCredit>>(e.Data.GetProperty("credits").GetRawText())!).ToArray();
+                foreach(var summary in entries.Where(e=>e.Kind=="combat_summary"))
+                {
+                    var credited=summary.Data.GetProperty("creditedTotals");
+                    foreach(var id in parts.Select(p=>p.Player).Concat(credited.EnumerateObject().Select(p=>p.Name)).Distinct())
+                    {
+                        var hp=parts.Where(p=>p.Player==id).Sum(p=>p.Hp);var block=parts.Where(p=>p.Player==id).Sum(p=>p.Block);
+                        if(!credited.TryGetProperty(id,out var row)||N(row,"Hp")!=hp||N(row,"Block")!=block)g.Failures.Add("credited player summary mismatch: "+id+" "+summary.Ref);
+                    }
+                }
+            }
             if(complete)
             {
                 foreach(var orphan in entries.Where(e=>e.Kind is "damage_binding" or "damage_allocation" or "damage_trace"))

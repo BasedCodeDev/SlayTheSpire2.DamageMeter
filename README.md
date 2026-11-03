@@ -271,3 +271,50 @@ attack completes, then apply Weak/Vulnerable and compare ordinary, blocked and
 lethal attacks. Check matched traces, orange/provider credit, and absence of the
 old Creature-to-ValueProp cast and false chain-mismatch reasons. Genuine mismatches
 must still remain unmeasured. Native scenarios not exercised stay pending.
+
+## 0.3.0-preview.13 ? provider-owned amplification
+
+Main Damage, HP Only, Block Only and effect views now credit effective numeric
+amplification to its providers. A 6-damage attack increased to 9 credits 6 to the
+attacker and 3 to the Vulnerable provider. Active owned stacks divide shared
+bonuses proportionally; self-provided bonuses remain with that player. Caps and
+remaining HP limit actual extra credit. An attack already lethal at 4 HP credits
+4 to the attacker and zero bonus to the provider. Enemy block uses the same rule.
+
+This applies to all numeric amplification, including supported poison increases.
+Poison base damage stays with stack owners; Doom execution ownership is unchanged.
+Orange follows credited amplification. Support Damage is a cross-player subset
+already included in Damage. Contribution is replaced by Actual Damage, which
+retains original observed ownership. Sources separate the triggering attack from
+the application that supplied the bonus. Unknown providers remain Unattributed;
+unmeasured amplification preserves provisional original ownership with a warning.
+
+Attribution 1 uses log schema 7/checkpoint schema 5; HP accounting 2 and
+amplification 3 are unchanged. Older actual history remains in Actual Damage;
+credited Damage/Amplification/Support share a new coverage boundary, visibly
+partial for legacy encounters. Original checkpoint files survive loading and
+normal saves retain backups. No historical attribution is invented.
+
+Host checklist: confirm preview.13 with an unmodded guest. Apply Vulnerable then
+hit for 6 against enough HP: expect attacker 6/provider 3, team 9. Repeat with
+shared active stacks, self application, fully blocked and mixed destinations, and
+an already lethal hit. Check credited sources, percentages, Actual Damage and
+Support subset. Repeat available poison/Doom and save/resume scenarios; keep
+canonical event IDs. Visual/native verification and release gates remain pending.
+
+## 0.3.0-preview.14 - hover details
+
+Hover any player's name, bar or percentage for values, credited/actual totals,
+Poison/Doom, amplification, support and sources for the selected metric and scope.
+The permanent details/diagnostics footer is removed and the panel shrinks to its
+rows. Partial/Incomplete appears beside the scope tabs when needed; hover that
+badge or the title for diagnostics. Source lists wrap and shorten with `+N more`
+when space is limited. Open details refresh as damage arrives.
+
+509 automated checks pass, including installed-game contracts and existing
+multiplayer observer regressions. In-game visual verification remains pending:
+after deployment confirm preview.14, hover name/bar/percentage, switch metrics
+and scopes, check support recipients and warnings, then collapse, use F8, resize
+and move near screen edges. Check that details disappear when hidden and that
+combat interaction and row order remain stable while hovering. Accounting,
+attribution, log and checkpoint versions are unchanged.
