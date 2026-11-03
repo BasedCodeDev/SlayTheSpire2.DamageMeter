@@ -97,3 +97,25 @@ templates; pass `-Godot` and `-GameDir` to override this machine's defaults.
 These fixtures do not certify live combat, host/guest networking, progress
 preservation or save/resume behavior. Existing native acceptance and save-safety
 gates remain pending; the historical save-loading incident warning still applies.
+
+## Automatic agent deployment
+
+Project agents implicitly follow the repository's `spires-live-deploy` skill
+before their final response after completing mod implementation and passing
+checks. No skill invocation or separate deployment request is needed. Planning,
+questions, documentation-only/test-only work, unfinished/failing implementations
+and explicit requests to skip deployment do not trigger it.
+
+The workflow builds the current checkout, including uncommitted edits, and uses
+`deploy.ps1 -Development -LiveOnly`. It requires an already running compatible
+development host. A closed game, missing setup or changed host/contracts stops
+automatic deployment; the agent never launches or restarts the game. Existing
+manual deployment behavior is unchanged.
+
+The helper checks new JSONL log events for ten seconds. It reports the build
+identifier and activation, reload error, or publication with activation
+unconfirmed. An unchanged build may produce no new event. Missing logs and
+unconfirmed activation do not trigger a retry. Custom installations can use the
+helper's `-GameDir` and `-LogDirectory` options. This is a project instruction
+workflow, not an enforced background completion hook; execution permissions
+still apply.

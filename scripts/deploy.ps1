@@ -1,10 +1,13 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [string]$GameDir = 'C:\Program Files (x86)\Steam\steamapps\common\Slay the Spire 2',
-    [switch]$Development
+    [switch]$Development,
+    [switch]$LiveOnly
 )
 
 $ErrorActionPreference = 'Stop'
+if ($LiveOnly -and -not $Development) { throw '-LiveOnly requires -Development.' }
+if ($LiveOnly -and -not (Get-Process -Name SlayTheSpire2 -ErrorAction SilentlyContinue)) { throw 'Live deployment skipped: game is not running.' }
 . (Join-Path $PSScriptRoot 'assert-safe-mod-version.ps1')
 $modName = 'Based.Spires2DamageMeter'
 $projectRoot = Split-Path $PSScriptRoot -Parent
@@ -37,11 +40,13 @@ if ($PSCmdlet.ShouldProcess($destination, 'Build, check, package, deploy and lau
     if (Get-Process -Name SlayTheSpire2 -ErrorAction SilentlyContinue) {
         if (-not $Development) { throw 'The game was opened during the build. Close it and rerun deployment.' }
         Assert-InstalledDevelopmentHost $source $destination
+        if ($LiveOnly -and -not (Get-Process -Name SlayTheSpire2 -ErrorAction SilentlyContinue)) { throw 'Live deployment skipped: game exited before publication.' }
         $build = Publish-RuntimeBuild $source $destination
         Write-Host "Published development runtime $version ($build). The running host will detect it immediately."
         Write-Host 'Check the meter diagnostics/game log for activation or rejection. No game launch was requested.'
         return
     }
+    if ($LiveOnly) { throw 'Live deployment skipped: game exited during packaging.' }
     New-Item -ItemType Directory -Path $destination -Force | Out-Null
     Get-ChildItem -LiteralPath $source | Copy-Item -Destination $destination -Recurse -Force
     if (-not $Development -and (Test-Path -LiteralPath (Join-Path $destination 'development-host.json'))) { Remove-Item -LiteralPath (Join-Path $destination 'development-host.json') }

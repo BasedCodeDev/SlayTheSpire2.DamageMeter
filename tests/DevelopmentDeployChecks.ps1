@@ -8,6 +8,8 @@ foreach ($name in @('deploy.ps1','runtime-package.ps1','assert-safe-mod-version.
 }
 @'
 param([string]$Sts2DataDir,[switch]$Development)
+if ($global:DamageMeterFixtureFail) { throw 'fixture build failed' }
+if ($global:DamageMeterFixtureExit) { $global:DamageMeterFixtureRunning = $false }
 Set-Content -LiteralPath (Join-Path $PSScriptRoot '../package-called.txt') -Value 'called'
 '@ | Set-Content -LiteralPath (Join-Path $fixture 'scripts/package.ps1')
 Copy-Item -LiteralPath (Join-Path $root 'Based.Spires2DamageMeter.csproj'),(Join-Path $root 'Based.Spires2DamageMeter.json') -Destination $fixture
@@ -49,6 +51,19 @@ try {
     $before = Get-Content -LiteralPath $pointer -Raw
     & $deploy -Development -GameDir $game
     Check ((Get-Content -LiteralPath $pointer -Raw) -eq $before) 'duplicate build publication preserves content'
+    & $deploy -Development -LiveOnly -GameDir $game
+    Check ($global:DamageMeterFixtureLaunches -eq 0) 'live-only publishes without launch'
+    Reject { & $deploy -LiveOnly -GameDir $game } 'requires -Development' 'live-only requires development mode'
+    $global:DamageMeterFixtureFail = $true
+    Reject { & $deploy -Development -LiveOnly -GameDir $game } 'fixture build failed' 'live-only stops on build failure'
+    $global:DamageMeterFixtureFail = $false
+    $global:DamageMeterFixtureExit = $true
+    Reject { & $deploy -Development -LiveOnly -GameDir $game } 'exited' 'live-only stops if game exits during build'
+    $global:DamageMeterFixtureExit = $false
+    Reject { & $deploy -Development -LiveOnly -GameDir $game } 'not running' 'live-only skips closed game'
+    Check ($global:DamageMeterFixtureLaunches -eq 0) 'live-only never launches'
+    Check ((Get-Content -LiteralPath $pointer -Raw) -eq $before) 'live-only failures preserve pointer'
+    $global:DamageMeterFixtureRunning = $true
     Add-Content -LiteralPath $fixtureHostDll -Value 'changed host'
     Reject { & $deploy -Development -GameDir $game } 'Host or shared state changed' 'running deployment rejects an incompatible host'
     Copy-Item -LiteralPath (Join-Path $Package 'Based.Spires2DamageMeter.dll') -Destination $fixtureHostDll -Force
@@ -74,5 +89,5 @@ try {
     & $deploy -GameDir $game
     Check ($global:DamageMeterFixtureLaunches -eq 2 -and -not (Test-Path -LiteralPath (Join-Path $destination 'development-host.json'))) 'closed-game normal deployment removes development marker and launches once'
 } finally {
-    Remove-Variable -Name DamageMeterFixtureRunning,DamageMeterFixtureLaunches -Scope Global -ErrorAction SilentlyContinue
+    Remove-Variable -Name DamageMeterFixtureFail,DamageMeterFixtureExit,DamageMeterFixtureRunning,DamageMeterFixtureLaunches -Scope Global -ErrorAction SilentlyContinue
 }
