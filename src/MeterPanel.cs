@@ -13,12 +13,12 @@ public partial class MeterPanel : CanvasLayer
     private bool heightRefreshPending;
     private MeterHoverLabel resize = null!;
     private ScrollContainer scroll=null!;
-    private HBoxContainer legend=null!; private Label empty=null!,partyHeading=null!;
+    private HBoxContainer legend=null!; private Label empty=null!;
     private bool solo;
     private int Metric => metric.GetSelectedId();
     private OptionButton metric = null!;
     private TabBar scope = null!;
-    private readonly Dictionary<string, (MeterHoverButton Button, TextureRect Icon, Label Name, MeterBar Bar, Label Total)> controls = new();
+    private readonly Dictionary<string, (MeterHoverButton Button, TextureRect Icon, MeterBar Bar)> controls = new();
     private bool dragging, resizing, collapsed;
     private double elapsed;
     private readonly ConfigFile settings = new();
@@ -58,7 +58,7 @@ public partial class MeterPanel : CanvasLayer
         scope.TabChanged+=_=>Save();
         var headings=new HBoxContainer();body.AddChild(headings);
         legend=new HBoxContainer {SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};headings.AddChild(legend);
-        partyHeading=new Label {Text="Party %",TooltipText="Share of party total for the selected metric."};headings.AddChild(partyHeading);
+        legend.AddChild(new Label {Text="HP / Amp / %"});
         empty=new Label {Text="No damage recorded yet"};body.AddChild(empty);
         scroll=new ScrollContainer { HorizontalScrollMode=ScrollContainer.ScrollMode.Disabled }; body.AddChild(scroll);
         rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill }; scroll.AddChild(rows);
@@ -108,7 +108,6 @@ public partial class MeterPanel : CanvasLayer
         var sessionType=RunManager.Instance?.NetService?.Type.ToString();
         var detectedSolo=MeterTooltipModel.SoloForSession(sessionType);
         if(detectedSolo.HasValue)solo=detectedSolo.Value;
-        partyHeading.Visible=!solo;
         var actual=scope.CurrentTab==0?Probe.Meter.Rows:RunSession.RunRows();
         var effective=scope.CurrentTab==0?Probe.Effective:RunSession.EffectiveRun();
         var ledger=Metric==8?effective.Ledger():scope.CurrentTab==0?Probe.Credited:RunSession.CreditedRun();
@@ -122,10 +121,10 @@ public partial class MeterPanel : CanvasLayer
         var breakdowns=Metric==7?(scope.CurrentTab==0?Probe.Meter.StructuredSources:RunSession.SourceBreakdowns()):ledger.Sources();
         var diagnostics=$"{Probe.Combat} | {Probe.Health}\n{RunSession.Status}\n{(scope.CurrentTab==1&&RunSession.AttributionPartial?"Partial credited history; earlier actuals available in Actual Damage":"")}\nAttribution: {ledger.Provisional} provisional/unknown events\nEnemy amplification: {NativeDamageCapture.Matched} matched, {NativeDamageCapture.Unmatched} unmeasured (audit pending)\n{Probe.OwnershipStatus}\nEffective: {(EffectiveCapture.Enabled?"enabled":"unavailable")}, {(effective.Incomplete?"partial coverage":"observed coverage")}";
         var badge=MeterTooltipModel.Status((Metric==8&&(!EffectiveCapture.Enabled||effective.Incomplete))||Probe.Health.StartsWith("INCOMPLETE")||!NativeDamageCapture.Enabled||!Probe.OwnershipAvailable||RunSession.StorageIncomplete,ledger.Provisional>0||NativeDamageCapture.Unmatched>0||(scope.CurrentTab==1&&(RunSession.AttributionPartial||RunSession.HistoryPartial)));
-        resize.UpdateTooltip(new MeterTooltipModel($"Meter {Probe.Version}\nDrag arrow: resize; drag grab handle: move.\nF8: show/hide. Bars scale to the largest player total.\n{(solo?"":"Party % is share of the selected party metric.\n")}{(badge.Length>0?badge+": some statistics may be missing or unavailable.":"Capture status")}\nSelected: "+MeterTooltipModel.Description(Metric),Array.Empty<string>(),diagnostics){ShowSources=false});
+        resize.UpdateTooltip(new MeterTooltipModel($"Meter {Probe.Version}\nDrag arrow: resize; drag grab handle: move.\nF8: show/hide. Bars scale to the largest player total.\nRows show rounded damage and, in multiplayer, share of the selected party metric.\n{(badge.Length>0?badge+": some statistics may be missing or unavailable.":"Capture status")}\nSelected: "+MeterTooltipModel.Description(Metric),Array.Empty<string>(),diagnostics){ShowSources=false});
         var metricTip=MeterTooltipModel.Description(Metric)+(badge.Length>0?$"\n{badge}: some statistics may be missing or unavailable. Hover the resize arrow for details.":"");
         if(metric.TooltipText!=metricTip)metric.TooltipText=metricTip;
-        UpdateLegend();empty.Visible=data.Count==0;
+        empty.Visible=data.Count==0;
         var index=0;
         foreach(var (id,total) in ordered)
         {
@@ -134,25 +133,25 @@ public partial class MeterPanel : CanvasLayer
                 var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,32) }; rows.AddChild(button);
                 var line=new HBoxContainer { MouseFilter=Control.MouseFilterEnum.Ignore }; button.AddChild(line); line.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
                 var icon=new TextureRect { CustomMinimumSize=new Vector2(20,20),ExpandMode=TextureRect.ExpandModeEnum.IgnoreSize,StretchMode=TextureRect.StretchModeEnum.KeepAspectCentered,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(icon);
-                var name=new Label { CustomMinimumSize=new Vector2(105,0),ClipText=true,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(name);
                 var bar=new MeterBar { CustomMinimumSize=new Vector2(70,24),SizeFlagsHorizontal=Control.SizeFlags.ExpandFill,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(bar);
-                var number=new Label { CustomMinimumSize=new Vector2(62,0),HorizontalAlignment=HorizontalAlignment.Right,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(number);
-                controls[id]=row=(button,icon,name,bar,number);
+                controls[id]=row=(button,icon,bar);
             }
             if(!hovered) rows.MoveChild(row.Button,index); index++;
-            row.Name.Text=Probe.Names.GetValueOrDefault(id,id);
             row.Icon.Texture=Probe.CharacterIcons.GetValueOrDefault(id);
             row.Icon.Visible=!solo&&row.Icon.Texture!=null;
-            row.Name.Visible=!solo||id==StatusOwnershipLedger.Unknown;row.Total.Visible=!solo;
             (Color Hp,Color Shield,Color Amp) colors=Probe.CharacterColors.GetValueOrDefault(id,(Colors.Gray,Colors.DarkGray,Colors.Gray));
             row.Bar.HpColour=colors.Hp;row.Bar.ShieldColour=colors.Shield;row.Bar.AmpColour=colors.Amp;
             var value=Value(total);
-            row.Total.Text=$"{(team>0?100*value/team:0):0.#}%";
+            row.Bar.PlayerName=Probe.Names.GetValueOrDefault(id,id);
+            row.Bar.ShowPlayerName=!solo||id==StatusOwnershipLedger.Unknown;
+            row.Bar.DamageText=Math.Round(value,MidpointRounding.AwayFromZero).ToString("0",System.Globalization.CultureInfo.CurrentCulture);
+            row.Bar.ShareText=team>0?$"{100*value/team:0.#}%":"0%";
+            row.Bar.ShowDetails=!solo;
             row.Bar.Orange=Metric switch{0 or 8=>total.AmplifiedHp+total.AmplifiedBlock,1=>total.AmplifiedHp,2=>total.AmplifiedBlock,5=>value,6=>value,7=>total.AmplifiedHp+total.AmplifiedBlock,3=>ledger.Credits.Where(c=>c.Player==id&&c.Kind=="Poison"&&c.Amplification).Sum(c=>c.Hp),_=>0};
             row.Bar.Block=Metric switch{0 or 8=>Math.Max(0,total.Block-total.AmplifiedBlock),2=>Math.Max(0,total.Block-total.AmplifiedBlock),7=>Math.Max(0,total.Block-total.AmplifiedBlock),_=>0};
             row.Bar.Hp=Math.Max(0,value-row.Bar.Block-row.Bar.Orange); row.Bar.Maximum=max; row.Bar.QueueRedraw();
             var affected=(Metric==8&&(!EffectiveCapture.Enabled||effective.Incomplete))||Probe.Health.StartsWith("INCOMPLETE")||!Probe.OwnershipAvailable||(Metric!=7&&(!NativeDamageCapture.Enabled||ledger.Provisional>0||NativeDamageCapture.Unmatched>0))||(scope.CurrentTab==1&&(RunSession.StorageIncomplete||RunSession.HistoryPartial||(Metric!=7&&RunSession.AttributionPartial)));
-            var card=MeterTooltipModel.BuildCard(id,row.Name.Text,Metric,scope.CurrentTab==1,solo,value,team,total,effective.PendingFor(id),row.Bar.Orange,breakdowns,transfers,p=>Probe.Names.GetValueOrDefault(p,p),affected?"Data may be incomplete. Hover the resize arrow for details.":"");
+            var card=MeterTooltipModel.BuildCard(id,row.Bar.PlayerName,Metric,scope.CurrentTab==1,solo,value,team,total,effective.PendingFor(id),row.Bar.Orange,breakdowns,transfers,p=>Probe.Names.GetValueOrDefault(p,p),affected?"Data may be incomplete. Hover the resize arrow for details.":"");
             row.Button.UpdateTooltip(new("",Array.Empty<string>(),""){Card=card});
 
         }
@@ -160,22 +159,6 @@ public partial class MeterPanel : CanvasLayer
         var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-overhead-8),Math.Max(0,controls.Count*36));
         scroll.CustomMinimumSize=new Vector2(0,desired);
         QueueHeightRefresh();
-    }
-    private int legendMetric=-1;
-    private void UpdateLegend()
-    {
-        if(legendMetric==Metric)return;legendMetric=Metric;
-        foreach(var child in legend.GetChildren()){legend.RemoveChild(child);child.QueueFree();}
-        var label=Metric switch
-        {
-            0 or 7 or 8 => "HP / shield / amp",
-            1 or 3 or 4 => "HP / amp",
-            2 => "Shield / amp",
-            5 => "Amplification",
-            6 => "Support",
-            _ => ""
-        };
-        if(label.Length>0)legend.AddChild(new Label{Text=label,TooltipText="Bar segments use each character's class colour."});
     }
     private void CloseTooltips(){if(resize!=null)resize.CloseTooltip();foreach(var row in controls.Values)row.Button.CloseTooltip();}
     public override void _ExitTree() { CloseTooltips();Save(); Probe.Flush(); instance=null; }
@@ -185,24 +168,37 @@ public partial class MeterBar : Control
 {
     public decimal Hp,Block,Orange,Maximum;
     public Color HpColour=Colors.Gray,ShieldColour=Colors.DarkGray,AmpColour=Colors.Gray;
+    public string PlayerName="",DamageText="",ShareText="";
+    public bool ShowPlayerName,ShowDetails;
     public override void _Draw()
     {
-        DrawRect(new Rect2(Vector2.Zero,Size),new Color(.12f,.12f,.15f)); if(Maximum<=0){DrawValue(0,0,Size.X);return;}
-        var b=Size.X*(float)(Block/Maximum); var h=Size.X*(float)(Hp/Maximum); var o=Size.X*(float)(Orange/Maximum);
-        DrawRect(new Rect2(0,3,b,Math.Max(0,Size.Y-6)),ShieldColour);
-        DrawRect(new Rect2(b,3,h,Math.Max(0,Size.Y-6)),HpColour);
-        DrawRect(new Rect2(b+h,3,o,Math.Max(0,Size.Y-6)),AmpColour);
-        DrawValue(Hp+Block+Orange,0,Size.X);
+        DrawRect(new Rect2(Vector2.Zero,Size),new Color(.12f,.12f,.15f));
+        if(Maximum>0)
+        {
+            var b=Size.X*(float)(Block/Maximum); var h=Size.X*(float)(Hp/Maximum); var o=Size.X*(float)(Orange/Maximum);
+            DrawRect(new Rect2(0,3,b,Math.Max(0,Size.Y-6)),ShieldColour);
+            DrawRect(new Rect2(b,3,h,Math.Max(0,Size.Y-6)),HpColour);
+            DrawRect(new Rect2(b+h,3,o,Math.Max(0,Size.Y-6)),AmpColour);
+        }
+        DrawRowText();
     }
-    private void DrawValue(decimal value,float left,float width)
+    private void DrawRowText()
     {
-        if(width<=0) return;
-        var font=GetThemeDefaultFont(); var fontSize=Math.Clamp(GetThemeDefaultFontSize(),12,18);
-        var text=value.ToString("0.##",System.Globalization.CultureInfo.CurrentCulture);
-        var measured=font.GetStringSize(text,HorizontalAlignment.Left,-1,fontSize);
-        while(measured.X+8>width&&fontSize>8){fontSize--;measured=font.GetStringSize(text,HorizontalAlignment.Left,-1,fontSize);}
-        if(measured.X+8>width || font.GetHeight(fontSize)>Size.Y) return;
-        var position=new Vector2(left+(width-measured.X)/2,(Size.Y-font.GetHeight(fontSize))/2+font.GetAscent(fontSize));
+        if(Size.X<=0)return;
+        var font=GetThemeDefaultFont();var fontSize=Math.Clamp(GetThemeDefaultFontSize(),10,16);
+        var summary=ShowDetails?$"{DamageText} | {ShareText}":DamageText;
+        var summarySize=font.GetStringSize(summary,HorizontalAlignment.Left,-1,fontSize);
+        var name=ShowPlayerName?PlayerName:"";
+        var nameWidth=Math.Max(0,Size.X-summarySize.X-20);
+        while(name.Length>0&&font.GetStringSize(name,HorizontalAlignment.Left,-1,fontSize).X>nameWidth)
+            name=name.Length>1?name[..^2]+"…":"";
+        var y=(Size.Y-font.GetHeight(fontSize))/2+font.GetAscent(fontSize);
+        if(name.Length>0)DrawOutlined(font,new Vector2(4,y),name,fontSize);
+        if(summary.Length>0&&summarySize.X+8<=Size.X)
+            DrawOutlined(font,new Vector2(Size.X-summarySize.X-4,y),summary,fontSize);
+    }
+    private void DrawOutlined(Font font,Vector2 position,string text,int fontSize)
+    {
         DrawStringOutline(font,position,text,HorizontalAlignment.Left,-1,fontSize,3,Colors.Black);
         DrawString(font,position,text,HorizontalAlignment.Left,-1,fontSize,Colors.White);
     }

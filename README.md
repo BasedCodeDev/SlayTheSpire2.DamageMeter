@@ -466,3 +466,12 @@ HP uses the supplied lighter shade, shield damage the darker shade, and
 amplification an in-between shade. Ironclad is red, Silent green, Regent orange,
 Necrobinder pink and Defect blue. There is no separate blue Block segment. Native
 visual verification remains pending.
+
+## 0.3.0-preview.26 - compact player rows
+
+The character icon remains at the left of each multiplayer row. The username is
+drawn at the start of the filled bar, with rounded damage and party share at the
+right (for example, `153 | 62.7%`). The Party % column heading is removed and the
+bar legend reads HP / Amp / %. Damage labels are rounded to whole numbers; hover
+details retain the underlying precise totals. Native visual verification remains
+pending.
