@@ -456,3 +456,13 @@ solo/multiplayer, long names, large/fractional values, zero/unknown data, warnin
 live updates, screen edges and 1280x720/1920x1080. Verify colour readability,
 column alignment, wrapping, trimming and closure on collapse/F8/row removal.
 Capture, accounting and save handling are unchanged.
+
+## 0.3.0-preview.25 - character icons, class colours and HP ordering
+
+Multiplayer rows show the game's small character icon before the player label.
+Rows are ordered by total HP damage, highest first, regardless of the selected
+metric; equal HP totals use a stable player-ID order. Bars use character colours:
+HP uses the supplied lighter shade, shield damage the darker shade, and
+amplification an in-between shade. Ironclad is red, Silent green, Regent orange,
+Necrobinder pink and Defect blue. There is no separate blue Block segment. Native
+visual verification remains pending.

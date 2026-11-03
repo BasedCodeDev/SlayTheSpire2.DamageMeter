@@ -23,6 +23,8 @@ public static class Probe
     public static string Role = "unknown";
     public static string Combat = "No combat";
     public static readonly Dictionary<string, string> Names = new();
+    public static readonly Dictionary<string, Texture2D?> CharacterIcons = new();
+    public static readonly Dictionary<string, (Color Hp, Color Shield, Color Amp)> CharacterColors = new();
     private static readonly PowerChangeTracker changes = new();
     private static readonly Dictionary<Creature, (int Hp, object Token, IReadOnlyList<Share> Shares)> doom = new();
     private sealed record Origin(string? Owner, string? Source, string OperationId);
@@ -46,6 +48,18 @@ public static class Probe
     private static object? Arg(MethodBase method, object[] args, string name) { var i = Array.FindIndex(method.GetParameters(), p => p.Name == name); return i < 0 ? null : args[i]; }
     private static string? Owner(object? obj) => obj switch { Player p => p.NetId.ToString(), Creature c => c.Player?.NetId.ToString(), CardModel c => c.Owner?.NetId.ToString(), _ => null };
     private static string Entity(object? obj) => obj == null ? "unknown" : $"{obj.GetType().Name}:{Get(obj, "CombatId") ?? Get(obj, "NetId") ?? System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj)}";
+    private static Color Rgb(int r, int g, int b) => new(r / 255f, g / 255f, b / 255f);
+    private static (Color Hp, Color Shield, Color Amp) CharacterBarColors(CharacterModel character)
+    {
+        var id = character.Id.ToString();
+        var colors = id.Contains("IRONCLAD", StringComparison.OrdinalIgnoreCase) ? (Rgb(216, 108, 69), Rgb(94, 10, 7))
+            : id.Contains("DEFECT", StringComparison.OrdinalIgnoreCase) ? (Rgb(89, 183, 203), Rgb(33, 99, 139))
+            : id.Contains("NECROBINDER", StringComparison.OrdinalIgnoreCase) ? (Rgb(147, 20, 83), Rgb(114, 16, 67))
+            : id.Contains("SILENT", StringComparison.OrdinalIgnoreCase) ? (Rgb(91, 135, 100), Rgb(44, 71, 16))
+            : id.Contains("REGENT", StringComparison.OrdinalIgnoreCase) ? (Rgb(160, 58, 17), Rgb(106, 47, 0))
+            : (character.NameColor, character.NameColor.Darkened(.35f));
+        return (colors.Item1, colors.Item2, colors.Item1.Lerp(colors.Item2, .5f));
+    }
 
     public static void Initialize()
     {
@@ -95,14 +109,21 @@ public static class Probe
         if (__originalMethod.Name != "BeforeCombatStart") return;
         Guard(() =>
         {
-            Meter.Reset(); Credited.Clear(); Effective.Clear(); NativeDamageCapture.Reset(); changes.Clear(); doom.Clear(); Names.Clear(); active = true;
+            Meter.Reset(); Credited.Clear(); Effective.Clear(); NativeDamageCapture.Reset(); changes.Clear(); doom.Clear(); Names.Clear(); CharacterIcons.Clear(); CharacterColors.Clear(); active = true;
             Combat = $"Fight {++combatIndex}";
             var state = Arg(__originalMethod, __args, "runState");
             RunSession.AttachState(state);
             RunSession.Encounter = $"{Get(state, "CurrentActIndex")}:{Get(state, "TotalFloor")}:{Get(state, "CurrentRoomCount")}";
             RunSession.Active = true;
             if (Get(state, "Players") is IEnumerable players)
-                foreach (var item in players) if (item is Player p) { Names[p.NetId.ToString()] = p.Creature.Name; Meter.Rows.TryAdd(p.NetId.ToString(), new()); }
+                foreach (var item in players) if (item is Player p)
+                {
+                    var id = p.NetId.ToString();
+                    Names[id] = p.Creature.Name;
+                    CharacterIcons[id] = p.Character.IconTexture;
+                    CharacterColors[id] = CharacterBarColors(p.Character);
+                    Meter.Rows.TryAdd(id, new());
+                }
             var manager = AccessTools.TypeByName("MegaCrit.Sts2.Core.Runs.RunManager");
             var instance = manager?.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public)?.GetValue(null);
             Role = Get(Get(instance, "NetService"), "Type")?.ToString() ?? "unknown";

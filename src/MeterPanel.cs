@@ -18,7 +18,7 @@ public partial class MeterPanel : CanvasLayer
     private int Metric => metric.GetSelectedId();
     private OptionButton metric = null!;
     private TabBar scope = null!;
-    private readonly Dictionary<string, (MeterHoverButton Button, Label Name, MeterBar Bar, Label Total)> controls = new();
+    private readonly Dictionary<string, (MeterHoverButton Button, TextureRect Icon, Label Name, MeterBar Bar, Label Total)> controls = new();
     private bool dragging, resizing, collapsed;
     private double elapsed;
     private readonly ConfigFile settings = new();
@@ -116,7 +116,7 @@ public partial class MeterPanel : CanvasLayer
         var credited=ledger.Rows(Metric==8?null:transfers);foreach(var id in actual.Keys)credited.TryAdd(id,new());
         var data=Metric==7?actual:credited;
         decimal Value(Totals t)=>Metric switch {1=>t.Hp,2=>t.Block,3=>t.Poison,4=>t.Doom,5=>t.AmplifiedHp+t.AmplifiedBlock,6=>t.SupportGiven,7=>t.Hp+t.Block,_=>t.Hp+t.Block};
-        var ordered=data.OrderByDescending(p=>Value(p.Value)).ThenBy(p=>p.Key,StringComparer.Ordinal).ToArray(); var max=ordered.Select(p=>Value(p.Value)).DefaultIfEmpty().Max(); var team=data.Values.Sum(Value);
+        var ordered=data.OrderByDescending(p=>actual.GetValueOrDefault(p.Key)?.Hp ?? 0).ThenBy(p=>p.Key,StringComparer.Ordinal).ToArray(); var max=ordered.Select(p=>Value(p.Value)).DefaultIfEmpty().Max(); var team=data.Values.Sum(Value);
         var hovered=panel.GetGlobalRect().HasPoint(GetViewport().GetMousePosition());
         foreach(var id in controls.Keys.Except(data.Keys).ToArray()) { controls[id].Button.CloseTooltip();controls[id].Button.QueueFree(); controls.Remove(id); }
         var breakdowns=Metric==7?(scope.CurrentTab==0?Probe.Meter.StructuredSources:RunSession.SourceBreakdowns()):ledger.Sources();
@@ -133,14 +133,19 @@ public partial class MeterPanel : CanvasLayer
             {
                 var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,32) }; rows.AddChild(button);
                 var line=new HBoxContainer { MouseFilter=Control.MouseFilterEnum.Ignore }; button.AddChild(line); line.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+                var icon=new TextureRect { CustomMinimumSize=new Vector2(20,20),ExpandMode=TextureRect.ExpandModeEnum.IgnoreSize,StretchMode=TextureRect.StretchModeEnum.KeepAspectCentered,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(icon);
                 var name=new Label { CustomMinimumSize=new Vector2(105,0),ClipText=true,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(name);
                 var bar=new MeterBar { CustomMinimumSize=new Vector2(70,24),SizeFlagsHorizontal=Control.SizeFlags.ExpandFill,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(bar);
                 var number=new Label { CustomMinimumSize=new Vector2(62,0),HorizontalAlignment=HorizontalAlignment.Right,MouseFilter=Control.MouseFilterEnum.Ignore }; line.AddChild(number);
-                controls[id]=row=(button,name,bar,number);
+                controls[id]=row=(button,icon,name,bar,number);
             }
             if(!hovered) rows.MoveChild(row.Button,index); index++;
             row.Name.Text=Probe.Names.GetValueOrDefault(id,id);
+            row.Icon.Texture=Probe.CharacterIcons.GetValueOrDefault(id);
+            row.Icon.Visible=!solo&&row.Icon.Texture!=null;
             row.Name.Visible=!solo||id==StatusOwnershipLedger.Unknown;row.Total.Visible=!solo;
+            (Color Hp,Color Shield,Color Amp) colors=Probe.CharacterColors.GetValueOrDefault(id,(Colors.Gray,Colors.DarkGray,Colors.Gray));
+            row.Bar.HpColour=colors.Hp;row.Bar.ShieldColour=colors.Shield;row.Bar.AmpColour=colors.Amp;
             var value=Value(total);
             row.Total.Text=$"{(team>0?100*value/team:0):0.#}%";
             row.Bar.Orange=Metric switch{0 or 8=>total.AmplifiedHp+total.AmplifiedBlock,1=>total.AmplifiedHp,2=>total.AmplifiedBlock,5=>value,6=>value,7=>total.AmplifiedHp+total.AmplifiedBlock,3=>ledger.Credits.Where(c=>c.Player==id&&c.Kind=="Poison"&&c.Amplification).Sum(c=>c.Hp),_=>0};
@@ -161,10 +166,16 @@ public partial class MeterPanel : CanvasLayer
     {
         if(legendMetric==Metric)return;legendMetric=Metric;
         foreach(var child in legend.GetChildren()){legend.RemoveChild(child);child.QueueFree();}
-        void Swatch(string text,Color color){var item=new Label{Text=text};item.AddThemeColorOverride("font_color",color);legend.AddChild(item);}
-        if(Metric is 0 or 2 or 7 or 8)Swatch("■ Block",MeterPalette.Colour(TooltipTone.Block));
-        if(Metric is 0 or 1 or 3 or 4 or 7 or 8)Swatch("■ HP",MeterPalette.Colour(TooltipTone.Hp));
-        if(Metric!=4)Swatch("■ Bonus",MeterPalette.Colour(TooltipTone.Bonus));
+        var label=Metric switch
+        {
+            0 or 7 or 8 => "HP / shield / amp",
+            1 or 3 or 4 => "HP / amp",
+            2 => "Shield / amp",
+            5 => "Amplification",
+            6 => "Support",
+            _ => ""
+        };
+        if(label.Length>0)legend.AddChild(new Label{Text=label,TooltipText="Bar segments use each character's class colour."});
     }
     private void CloseTooltips(){if(resize!=null)resize.CloseTooltip();foreach(var row in controls.Values)row.Button.CloseTooltip();}
     public override void _ExitTree() { CloseTooltips();Save(); Probe.Flush(); instance=null; }
@@ -173,13 +184,14 @@ public partial class MeterPanel : CanvasLayer
 public partial class MeterBar : Control
 {
     public decimal Hp,Block,Orange,Maximum;
+    public Color HpColour=Colors.Gray,ShieldColour=Colors.DarkGray,AmpColour=Colors.Gray;
     public override void _Draw()
     {
         DrawRect(new Rect2(Vector2.Zero,Size),new Color(.12f,.12f,.15f)); if(Maximum<=0){DrawValue(0,0,Size.X);return;}
         var b=Size.X*(float)(Block/Maximum); var h=Size.X*(float)(Hp/Maximum); var o=Size.X*(float)(Orange/Maximum);
-        DrawRect(new Rect2(0,3,b,Math.Max(0,Size.Y-6)),new Color(.2f,.55f,.95f));
-        DrawRect(new Rect2(b,3,h,Math.Max(0,Size.Y-6)),new Color(.85f,.25f,.3f));
-        DrawRect(new Rect2(b+h,3,o,Math.Max(0,Size.Y-6)),new Color(1f,.55f,.12f));
+        DrawRect(new Rect2(0,3,b,Math.Max(0,Size.Y-6)),ShieldColour);
+        DrawRect(new Rect2(b,3,h,Math.Max(0,Size.Y-6)),HpColour);
+        DrawRect(new Rect2(b+h,3,o,Math.Max(0,Size.Y-6)),AmpColour);
         DrawValue(Hp+Block+Orange,0,Size.X);
     }
     private void DrawValue(decimal value,float left,float width)
