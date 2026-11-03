@@ -1,4 +1,4 @@
-ï»¿# Based Damage Meter: stack capture repair (0.2.2)
+# Based Damage Meter
 
 Diagnostic build for Slay the Spire 2 v0.107.1. Live gameplay and multiplayer verification are **pending**. This is not the final meter.
 
@@ -336,3 +336,107 @@ plus poison, Doom, self bonuses and teammate support. Check live hover stability
 scrolling, collapse, F8, dragging, resizing and saved selections. Accounting and
 storage/log schemas are unchanged. Automated checks do not establish native UI
 or multiplayer correctness.
+
+## 0.3.0-preview.16 - Effective Damage
+
+Effective Damage defaults on new installations; existing saved selections remain.
+HP always counts. Block waits until a block-respecting HP hit breaches the same
+enemy's shield. Retained block and exact breaks can wait across turns; top-ups
+above zero preserve pending ownership. New shields after zero, natural expiry,
+death and combat end discard unqualified credit. Poison/Doom cannot unlock it.
+Provider splits remain intact. Hover for qualified/pending amounts; pending block
+is excluded from totals and percentages. Older effective history is partial.
+Existing views remain available. Effective version 1/checkpoint 6/log 8 preserve
+existing accounting and attribution versions. Build and 530 checks pass.
+
+Native verification remains pending: select Effective Damage after deploying and
+check ordinary/retained shields, top-ups, exact breaks with later HP, new shields,
+bypass damage, multiple enemies, summons and multi-hits. Verify teammate/provider
+credit, sources, Fight/Run, save/resume and failed-attempt replacement. Repeat as
+host/guest with an unmodded teammate and preserve logs. Automated signature checks
+do not establish gameplay correctness.
+
+## 0.3.0-preview.17 - withdrawn (save-loading failure)
+
+Run statistics now bind to the actual JSON payload written/read by the game's
+save store. Fingerprint v2 preserves all saved values and sorts object keys.
+Statistics are frozen before saving and published only after success. Nested
+multiplayer loads restore once, using the accepted primary/backup payload before
+canonicalization. Stale save completions cannot replace newer state. Semantic
+run identity preserves history when only the runtime state object changes.
+
+Checkpoint schema 7 uses a separate fingerprint-v2 directory. Legacy files remain
+untouched; this fixes future restarts only and does not recover already-missing
+history. An unmatched payload remains visibly partial, never borrowing the latest
+checkpoint. HP accounting, attribution and effective-damage versions are unchanged.
+
+Build/package and 544 checks pass, including production registration, byte capture,
+exception preservation, stale completion rejection and payload checkpoint roundtrip.
+Those automated results did not establish startup safety. This version caused
+false corruption handling and reported progress loss. Do not package, deploy or
+run it. See the incident record below.
+
+## 0.3.0-preview.18 - startup save-loader repair
+
+Preview.17 patched LoadSaveFromPath<SerializableRun>, a shared generic body. In
+native startup this also changed profile/progress schema interpretation, falsely
+rejecting valid profile v2 and progress v21 against run schema v16. The game
+renamed originals to OLD/FUT.corrupt and created replacement data. Preview.18
+removes all generic loader patches. Scoped non-generic I/O captures only run-save
+filenames; successful outer run loads select the captured payload.
+
+549 checks pass, including production registration leaving generic run/profile/
+progress loaders unpatched and ignoring non-run payloads. Native startup/reload
+verification remains pending. The schema/accounting versions are unchanged.
+
+The attempted recovery failed to restore the user's visible progress. The
+one-off recovery script is retired and always exits without accessing saves.
+Do not rerun older copies. Save archives and recovery backups remain untouched.
+
+## Incident cleanup
+
+Preview.17 is blocked by packaging/deployment and its workspace ZIP is quarantined.
+Preview.18 native persistence verification remains pending; packaging success is
+not evidence of startup, progress preservation or restart correctness. Cleanup
+makes no changes to installed mods, saves or Steam Cloud and attempts no recovery.
+See [the incident record](validation/storage-incident-2026-11-03.md).
+
+## 0.3.0-preview.19 - compact top row
+
+Metric dropdown, resize arrow and collapse now share the top row; Damage Meter,
+Partial and Info labels and the bottom resize row are removed. Left-drag the
+arrow to resize; right-drag it to move. Hover the arrow for version, controls and
+diagnostics. Relevant data-quality notices remain on dropdown/player hover.
+Layout preferences, metrics and accounting are unchanged. Native visual checks
+remain pending: verify minimum width, dropdown selection, arrow resize/move,
+collapse, F8 and tooltips before/after changing scopes.
+
+## 0.3.0-preview.20 - grab handle
+
+Left-drag the new grab handle beside the resize arrow to move the meter. The arrow
+now resizes only. Both controls remain available while collapsed; position is saved
+on release. Native visual verification remains pending: check move/resize, release
+outside the panel, viewport edges, collapse/F8 and position after restarting.
+
+## 0.3.0-preview.21 - collapsed dropdown
+
+The collapse toggle is now on the left. Collapsing hides the dropdown and body;
+expanding restores both and preserves the selected metric. Grab/resize controls
+remain available. Native checks pending: toggle, saved collapsed state, movement,
+resizing, F8 and expansion without losing metric/scope selections.
+
+## 0.3.0-preview.22 - button-only collapse
+
+Press minus to shrink the meter to just its plus button. Resize and grab handles
+are hidden while collapsed. Expanding restores the previous width and controls.
+Native checks pending: repeated toggles, collapse after resizing, restart while
+collapsed, viewport resizing and F8. The saved expanded width must be preserved.
+
+## 0.3.0-preview.23 - solo meter
+
+Single-player hides the character-name and party-percentage columns and their
+hover text. Bars use the freed space; Unattributed retains its label. Multiplayer
+presentation stays unchanged, including one-player multiplayer sessions. Native
+checks pending: solo Fight/Run across metrics, Unattributed rows, solo/multiplayer
+transitions, new rows, minimum width, collapse/expand, F8 and dragging/resizing.
+No changes to saves, accounting or capture hooks.

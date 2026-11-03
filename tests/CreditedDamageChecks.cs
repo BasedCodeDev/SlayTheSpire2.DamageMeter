@@ -31,7 +31,7 @@ static class CreditedDamageChecks
    var store=new RunStatisticsStore(dir);var run=new RunIdentity("p","m","s","seed","A,B");
    store.Completed["fight"]=new("fight",new(){["B"]=new(){Hp=9}},new()){Attribution=basic.Snapshot()};store.Save(run,"hash");store.Restore(run,"hash");
    check(store.Completed["fight"].Attribution!.Credits.Sum(c=>c.Hp)==9,"schema-5 checkpoint restores credited history");
-   var file=Directory.GetFiles(dir,"*.json",SearchOption.AllDirectories).Single();var legacy=File.ReadAllText(file).Replace("\"Schema\":5","\"Schema\":4");
+   var file=Directory.GetFiles(dir,"*.json",SearchOption.AllDirectories).Single();var legacy=File.ReadAllText(file).Replace("\"Schema\":7","\"Schema\":4");
    using(var doc=JsonDocument.Parse(legacy))
    {var old=new RunCheckpoint(4,run,"hash",new(){new("fight",new(){["B"]=new(){Hp=9}},new())}){AccountingVersion=2,AmplificationVersion=3};File.WriteAllText(file,JsonSerializer.Serialize(old));}
    store.Restore(run,"hash");check(store.Completed["fight"].Players["B"].Hp==9&&store.Completed["fight"].Attribution==null,"legacy actual history retained without inventing credited history");

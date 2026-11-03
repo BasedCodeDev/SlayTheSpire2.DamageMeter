@@ -1,9 +1,17 @@
 namespace Based.Spires2DamageMeter;
 public sealed record MeterTooltipModel(string Summary,IReadOnlyList<string> Entries,string Diagnostics)
 {
+ public static bool? SoloForSession(string? session)=>session switch {"Singleplayer"=>true,"Host" or "Client" or "FakeMultiplayer"=>false,_=>null};
+ public static string RowSummary(string player,int metric,bool run,decimal value,decimal team,bool solo,bool unattributed=false)
+ {
+  var identity=!solo||unattributed?player+" - ":"";
+  var share=solo?"":$" | Party share: {(team>0?100*value/team:0):0.#}%";
+  return $"{identity}{Labels[metric]} ({(run?"This Run":"Current Fight")})\nTotal: {value:0.##}{share}\n";
+ }
  public bool ShowSources { get; init; }=true;
- public static readonly string[] Labels={"Damage (HP + Block)","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Actual Damage"};
+ public static readonly string[] Labels={"Damage (HP + Block)","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Actual Damage","Effective Damage"};
  public static string Description(int metric)=>metric switch{
+  8=>"HP plus block from shields breached by a later block-respecting HP hit. Pending block is excluded.",
   5=>"Bonuses provided to yourself and teammates; already included in Damage.",
   6=>"Bonuses provided to teammates only; already included in Damage.",
   7=>"Observed ownership before bonuses are reassigned to providers.",

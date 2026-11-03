@@ -1,6 +1,6 @@
-﻿# Multiplayer Damage Meter — Design and Implementation Plan
+# Multiplayer Damage Meter - Design and Implementation Plan
 
-Status: 0.3.0-preview.15 UX simplification in progress. Historical checkpoints describe earlier versions; native visual and multiplayer release gates remain pending.
+Status: preview.18 source; preview.17 withdrawn after save-loading failure and reported progress loss. Native startup and persistence verification remain pending.
 
 ### Slice 1 boundary
 
@@ -93,7 +93,7 @@ Keep capture lightweight and refresh visible bars at most ten times per second. 
 - Verify Doom application without execution, execution after prior damage, shared ownership, explicit triggers, and simultaneous deaths.
 - Confirm orange segments reconcile to totals and support credit never duplicates damage.
 - Cover multi-hit/multi-target attacks, summons, orbs, retaliation, overhealing, failed draws, player choices, and simultaneous actions.
-- Test host/guest operation with unmodded teammates in 2–4 player parties, reconnects, save/resume, replayed encounters, and consecutive runs.
+- Test host/guest operation with unmodded teammates in 2â€“4 player parties, reconnects, save/resume, replayed encounters, and consecutive runs.
 - Check small segments, long names, screen resizing, mouse/keyboard interaction, and partial-data states.
 - Recruit macOS/Linux testers and require real gameplay and multiplayer results before marking those platforms verified.
 - Prepare release assets after validation; public uploads are a separate release action.
@@ -370,3 +370,92 @@ storage schemas are unchanged. Package build and 515 checks pass, including
 selected-metric detail/subset checks and prior installed-contract and multiplayer
 observer regressions. Native visual checks and multiplayer release gates remain
 pending; README contains the preview.15 acceptance checklist.
+
+## Effective Damage agreed increment (preview.16)
+Default new installations to Effective Damage, retaining all saved selections.
+Count all HP and only block later breached by a block-respecting HP hit against
+the same enemy. Retained shields/top-ups preserve pending ownership across turns.
+Exact breaks wait for any later qualifying hit; a new shield at zero discards old
+pending credit. Natural expiration, death and combat end discard pending credit.
+Bypass damage never unlocks block. Preserve provider splits and existing views.
+Add effective version 1/checkpoint 6/log 8, with partial legacy effective history.
+
+### Preview.16 implementation checkpoint
+Independent effective ledger, target block gain/awaited clear observers and
+trace-based bypass qualification are connected to HP/death/Doom/combat cleanup,
+Fight/Run UI and persistence. Saved selections and other views remain unchanged.
+New installations default to Effective Damage. Missing observations retain HP
+and flag incomplete coverage. Build/package and 530 checks pass, including prior
+multiplayer regressions. Native UI/gameplay verification remains pending.
+
+## Preview.17 agreed persistence repair
+Bind statistics to actual written/read run-save payloads using fingerprint v2,
+checkpoint 7 and isolated storage. Freeze statistics at save entry, publish only
+after success, reject stale completions, restore once after outer successful load.
+Preserve native results/exceptions and existing archives. Fix future restarts only;
+no retrospective recovery. Native reload tests remain separate release gates.
+
+### Preview.17 implementation checkpoint
+Implemented scoped native save-store payload observation, frozen save snapshots,
+accepted primary/backup reads, outer-load restoration, generation/order guards
+and semantic run-state matching. Fingerprint v2/checkpoint 7 are isolated from
+legacy archives. No retrospective recovery or relaxed latest-checkpoint matching.
+Production observer registration, mutation capture, exception preservation, stale
+completion checks and credited/effective checkpoint roundtrip pass in the 544-check
+package gate. Real host/guest restart acceptance remains pending; see README.
+
+## Preview.18 native startup repair
+Native logs confirm preview.17's generic LoadSaveFromPath run specialization
+changed profile/progress schema interpretation and triggered false corruption
+handling. Remove that patch entirely; never patch shared generic save loaders.
+Observe non-generic I/O only within outer run-load scopes and restrict filenames
+to current_run/current_run_mp primary/backup. Production regression registration
+asserts generic run/profile/progress targets remain unpatched. 549 checks pass;
+native startup and restart verification remain pending. The attempted recovery failed to preserve visible progress; its script is retired.
+
+## Incident cleanup checkpoint
+Retire the recovery command without save access, block preview.17 packaging and
+deployment, quarantine its distribution and remove only disposable investigation
+tools/fixtures. Preserve logs, real-save copies, .corrupt originals and recovery
+backups. User requested cleanup only: no further restoration or installation
+changes. Automated checks are not native startup/persistence verification.
+
+Cleanup verification: preview.17 quarantined, recovery stub and package/deploy
+guards checked, disposable audit/fixtures removed with real-save sample preserved.
+Normal preview.18 package passes 550 checks. Hash comparison: 246 external files,
+zero changes. No deployment, launch or recovery performed.
+
+## Preview.19 compact top row
+Remove Damage Meter title and Partial/Info labels. Metric dropdown replaces the
+title; resize arrow and collapse share that row. Remove the bottom resize row.
+Left-drag arrow resizes, right-drag moves; arrow hover retains version, help and
+diagnostics while collapsed. Dropdown/player hover retains relevant data-quality
+notices. Keep saved layout/metric IDs, F8 and accounting unchanged. Native visual
+verification remains pending.
+
+## Preview.20 dedicated grab handle
+Add a left-drag grab handle next to the top-row resize arrow. The arrow resizes
+only; the grab handle moves only and shows a drag cursor/tooltip. Persist position
+on release, retain viewport clamping and collapsed access, cancel dragging on F8.
+No changes to saves, capture or accounting. Native visual checks remain pending.
+
+## Preview.21 compact collapsed controls
+Move the collapse/expand toggle to the left of the top row. Collapsing hides the
+metric dropdown together with the body; expanding restores the selected metric.
+Grab and resize handles remain available. Retain saved collapse/layout state and
+panel width. Native interaction verification remains pending.
+
+## Preview.22 button-only collapse
+Collapsed mode hides dropdown, body, resize and grab controls and removes the
+320px minimum width. Deferred layout shrinks both dimensions to the expand button.
+Retain expanded width separately; saving/restarting while collapsed must not
+replace that width with button width. Expansion restores controls and prior width,
+subject to viewport clamping. Native visual checks remain pending.
+
+## Preview.23 solo presentation
+Use native session type, never row/player count, to select presentation. In solo
+hide names (except Unattributed), Party % heading, row percentages and tooltip
+party-share text. Bars fill freed columns with centred total intact. Unknown
+session types retain the last known mode, initially multiplayer presentation.
+Preserve multiplayer, dimensions, collapse, drag/resize, F8 and all accounting.
+No save or capture-hook changes; native visual verification remains pending.

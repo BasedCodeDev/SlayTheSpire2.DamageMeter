@@ -20,7 +20,7 @@ static class AmplificationV2Checks
    var run=new RunIdentity("p","m","s","seed","A");var store=new RunStatisticsStore(dir);
    store.Completed["fight"]=new("fight",new(){["A"]=new(){Hp=12,Block=3,Poison=2,Doom=4,AmplifiedHp=5,SupportGiven=5}},new());store.Save(run,"hash");
    var file=Directory.GetFiles(dir,"*.json",SearchOption.AllDirectories).Single();
-   var old=File.ReadAllText(file).Replace("\"Schema\":5","\"Schema\":3");File.WriteAllText(file,old);
+   var old=File.ReadAllText(file).Replace("\"Schema\":7","\"Schema\":3");File.WriteAllText(file,old);
    store.Restore(run,"hash");var row=store.Completed["fight"].Players["A"];
    check(store.Partial&&row.Hp==12&&row.Block==3&&row.Poison==2&&row.Doom==4&&row.AmplifiedHp==0&&row.SupportGiven==0,"legacy derived history excluded while actual damage retained");
    check(File.ReadAllText(file)==old,"restoration does not rewrite original checkpoint");

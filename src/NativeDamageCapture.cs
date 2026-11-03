@@ -33,6 +33,7 @@ public static class NativeDamageCapture
     public static bool Enabled { get; private set; }
     private static readonly HashSet<object> observed=new(ReferenceEqualityComparer.Instance);
     public static bool Observe(object result,out string eventId){eventId=Guid.NewGuid().ToString("N");lock(observed)return observed.Add(result);}
+    public static bool? Bypasses(DamageResult result)=>scope.Value?.Results.Find(result)?.BypassBlock;
     public static void Reset() { Coverage.Clear(); lock(observed)observed.Clear(); }
     public static void Register()
     {

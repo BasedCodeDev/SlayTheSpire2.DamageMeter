@@ -1,4 +1,4 @@
-﻿using Based.Spires2DamageMeter;
+using Based.Spires2DamageMeter;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
@@ -8,6 +8,8 @@ OwnershipChecks.Run(Check);
 NormalizationChecks.Run(Check);
 CreditedDamageChecks.Run(Check);
 MeterTooltipChecks.Run(Check);
+EffectiveChecks.Run(Check);
+PersistenceChecks.Run(Check);
 OutParameterChecks.Run(Check);
 AdditiveChecks.Run(Check);
 AttackMultiplierChecks.Run(Check);
@@ -42,8 +44,12 @@ if (args.Length > 0)
     var dir = Path.GetFullPath(args[0]);
     AssemblyLoadContext.Default.Resolving += (_, name) => File.Exists(Path.Combine(dir, name.Name + ".dll")) ? AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(dir, name.Name + ".dll")) : null;
     var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.Combine(dir, "sts2.dll"));
+    Check(asm.GetType("MegaCrit.Sts2.Core.Entities.Creatures.Creature")!.GetMethod("ClearBlock",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)!.ReturnType==typeof(Task),"installed effective lifecycle clear returns Task");
+    Check(asm.GetType("MegaCrit.Sts2.Core.Entities.Creatures.Creature")!.GetMethod("GainBlockInternal",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic)!.ReturnType==typeof(void),"installed effective lifecycle gain returns void");
+    Check(Enum.GetNames(asm.GetType("MegaCrit.Sts2.Core.Multiplayer.Game.NetGameType")!).Contains("Singleplayer"),"installed session enum confirms solo presentation discriminator");
     HpLossChecks.Installed(asm,Check);
     OutParameterChecks.Production(asm,Check);
+    PersistenceChecks.Production(asm,Check);
     DispatchChecks.Installed(asm,Check);
     AdditiveChecks.Installed(asm,Check);
     AttackMultiplierChecks.Installed(asm,Check);

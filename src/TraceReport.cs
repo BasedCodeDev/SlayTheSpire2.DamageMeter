@@ -44,7 +44,7 @@ public sealed class TraceReport
                 group.Counts[kind]=group.Counts.GetValueOrDefault(kind)+1;
                 var eventId=S(data,"eventId");var evidence=$"{path}:{line} event={eventId} sequence={S(root,"sequence")}";
                 bool numerical=kind is "damage" or "damage_trace" or "damage_allocation" or "combat_summary" or "credited_damage";
-                if(numerical && (!root.TryGetProperty("accountingVersion",out var accounting)||accounting.ValueKind!=JsonValueKind.Number||accounting.GetInt32()!=EngineDamage.AccountingVersion || !root.TryGetProperty("schemaVersion",out var schema)||schema.ValueKind!=JsonValueKind.Number||schema.GetInt32() is not (3 or 4 or 5 or 6 or 7))){LegacyNumericalEventsExcluded++;continue;}
+                if(numerical && (!root.TryGetProperty("accountingVersion",out var accounting)||accounting.ValueKind!=JsonValueKind.Number||accounting.GetInt32()!=EngineDamage.AccountingVersion || !root.TryGetProperty("schemaVersion",out var schema)||schema.ValueKind!=JsonValueKind.Number||schema.GetInt32() is not (3 or 4 or 5 or 6 or 7 or 8))){LegacyNumericalEventsExcluded++;continue;}
                 if(root.TryGetProperty("schemaVersion",out var logSchema)&&logSchema.GetInt32()>=4)
                 {if(!linked.TryGetValue(group,out var entries))linked[group]=entries=new();entries.Add((kind,data.Clone(),evidence));}
                 if(eventId!="unknown" && !ids.Add(S(root,"session")+":"+kind+":"+eventId))group.Failures.Add("duplicate event identity: "+evidence);

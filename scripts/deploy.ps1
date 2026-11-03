@@ -4,10 +4,16 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'assert-safe-mod-version.ps1')
 $modName = 'Based.Spires2DamageMeter'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $source = Join-Path $projectRoot "artifacts\mods\$modName"
 $destination = Join-Path $GameDir "mods\$modName"
+
+$sourceVersion = (Get-Content -LiteralPath (Join-Path $projectRoot "$modName.json") -Raw | ConvertFrom-Json).version
+Assert-SafeModVersion $sourceVersion
+[xml]$sourceProject = Get-Content -LiteralPath (Join-Path $projectRoot "$modName.csproj") -Raw
+Assert-SafeModVersion ([string]$sourceProject.Project.PropertyGroup.Version | Where-Object { $_ })
 
 if (Get-Process -Name SlayTheSpire2 -ErrorAction SilentlyContinue) {
     throw 'Close Slay the Spire 2 before deploying the mod.'
@@ -20,6 +26,7 @@ if ($PSCmdlet.ShouldProcess($destination, 'Build, check, package, deploy and lau
     $version = (Get-Content -LiteralPath (Join-Path $projectRoot "$modName.json") -Raw | ConvertFrom-Json).version
     $packagedVersion = (Get-Content -LiteralPath (Join-Path $source "$modName.json") -Raw | ConvertFrom-Json).version
     $dllVersion = ([Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $source "$modName.dll"))).ProductVersion.Split('+')[0]
+    foreach ($checkedVersion in @($version,$packagedVersion,$dllVersion)) { Assert-SafeModVersion $checkedVersion }
     if ($version -ne $packagedVersion -or $version -ne $dllVersion) {
         throw "Version mismatch: source=$version, package=$packagedVersion, DLL=$dllVersion. Deployment stopped."
     }
