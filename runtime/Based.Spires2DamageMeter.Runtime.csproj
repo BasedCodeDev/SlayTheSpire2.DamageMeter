@@ -7,6 +7,7 @@
     <HostPath Condition="'$(HostPath)' == ''">../.godot/mono/temp/bin/Release/Based.Spires2DamageMeter.dll</HostPath>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="../assets/ui-icons/*.png" LogicalName="MeterIcon.%(Filename)%(Extension)" />
     <ProjectReference Include="../contracts/Based.Spires2DamageMeter.Contracts.csproj" />
     <Reference Include="Based.Spires2DamageMeter"><HintPath>$(HostPath)</HintPath><Private>false</Private></Reference>
     <Reference Include="sts2"><HintPath>$(Sts2DataDir)/sts2.dll</HintPath><Private>false</Private></Reference>

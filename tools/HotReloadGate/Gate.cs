@@ -212,7 +212,23 @@ public partial class Gate : Node
         }
         RuntimeCalls.Call("RunSession.Error", new InvalidOperationException("fixture anonymous log serialization"));
         if (Target(4) != (isAlternate ? 5 : 4)) throw new Exception("Changed runtime calculation was not activated");
-        if (MeterPanel.instance.grab.Text != (isAlternate ? "DEV 2" : "\u2630")) throw new Exception("Changed runtime UI was not activated");
+        if (MeterPanel.instance.grab.Icon.ResourceName != (isAlternate ? "expand" : "drag")) throw new Exception("Changed runtime UI was not activated");
+        if (meter.collapse.Icon.ResourceName != "expand" || meter.scopeToggle.Icon.ResourceName != "run" || meter.unattributedToggle.Icon.ResourceName != "shown") throw new Exception("Restored toggle icons disagree with state");
+        meter.scopeIndex = 0; meter.UpdateScopeToggle();
+        meter.showUnattributed = false; meter.UpdateUnattributedToggle();
+        meter.ApplyCollapsedState(false);
+        if (meter.collapse.Icon.ResourceName != "collapse" || meter.scopeToggle.Icon.ResourceName != "fight" || meter.unattributedToggle.Icon.ResourceName != "hidden") throw new Exception("Changed toggle state did not change icons");
+        if (notice.Icon.ResourceName != "reload" || meter.metric.GetThemeIcon("arrow").ResourceName != "dropdown") throw new Exception("Notification or dropdown icon missing");
+        meter.metric.GetPopup().EmitSignal(Window.SignalName.AboutToPopup);
+        if (meter.metric.GetThemeIcon("arrow").ResourceName != "dropdown-open") throw new Exception("Open dropdown icon missing");
+        meter.metric.GetPopup().EmitSignal(Popup.SignalName.PopupHide);
+        if (meter.metric.GetThemeIcon("arrow").ResourceName != "dropdown") throw new Exception("Closed dropdown icon missing");
+        foreach (var icon in new[] { meter.grab.Icon, meter.collapse.Icon, meter.scopeToggle.Icon, meter.unattributedToggle.Icon, notice.Icon })
+            if (icon.GetSize() != new Vector2(20,20)) throw new Exception("Icon did not retain compact display size");
+        meter.scopeIndex = beforeLayout.Scope; meter.UpdateScopeToggle();
+        meter.showUnattributed = beforeLayout.ShowUnattributed; meter.UpdateUnattributedToggle();
+        meter.ApplyCollapsedState(beforeLayout.Collapsed);
+        meter.expandedWidth = beforeLayout.Width;
         if (MeterPanel.instance.CapturePresentation() != beforeLayout) throw new Exception($"Layout, selected metric/scope, collapsed or F8 state changed during reload: {beforeLayout} -> {MeterPanel.instance.CapturePresentation()}");
         if (tooltipWindow.Visible) throw new Exception("Retired tooltip window was not closed");
         if (Probe.Meter.Rows["A"].Hp != 9 || Probe.Meter.Rows["A"].Block != 3 || Probe.Effective.PendingFor("A") != 3 || Probe.Credited.Credits.Sum(c => c.Hp) != 9)

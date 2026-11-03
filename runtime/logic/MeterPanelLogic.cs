@@ -40,13 +40,20 @@ internal static class MeterPanelLogic
         var header = new HBoxContainer(); header.AddThemeConstantOverride("separation", 2); self.layout.AddChild(header);
         self.collapse = new Button { Text = "-", TooltipText = "Collapse / expand", CustomMinimumSize = new Vector2(24, 26), FocusMode = Control.FocusModeEnum.None }; header.AddChild(self.collapse);
         self.metric = new OptionButton { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, FitToLongestItem = false, ClipText = true, CustomMinimumSize = new Vector2(0, 26) }; header.AddChild(self.metric);
-        self.resize = new MeterHoverLabel { Text = "\u2194", TooltipText = "Meter controls", HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Stop, CustomMinimumSize = new Vector2(20, 26) }; header.AddChild(self.resize);
+        self.metric.AddThemeIconOverride("arrow", IconAssets.Get("dropdown"));
+        self.metric.GetPopup().AboutToPopup += () => self.metric.AddThemeIconOverride("arrow", IconAssets.Get("dropdown-open"));
+        self.metric.GetPopup().PopupHide += () => self.metric.AddThemeIconOverride("arrow", IconAssets.Get("dropdown"));
+        self.resize = new MeterHoverLabel { Text = "", TooltipText = "Meter controls", HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Stop, CustomMinimumSize = new Vector2(24, 26) }; header.AddChild(self.resize);
+        var resizeIcon = new TextureRect { Texture = IconAssets.Get("resize"), MouseFilter = MouseFilterEnum.Ignore, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered };
+        self.resize.AddChild(resizeIcon);
+        resizeIcon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         self.resize.GuiInput += e =>
         {
             if (e is InputEventMouseButton b && b.ButtonIndex == MouseButton.Left) { self.resizing = b.Pressed; self.dragging = false; }
             if (e is InputEventMouseMotion m) { if (self.resizing) self.panel.Size = new Vector2(Math.Max(280, self.panel.Size.X + m.Relative.X), self.panel.Size.Y); }
         };
-        self.grab = new Button { Text = "\u2630", TooltipText = "Left-drag to move", FocusMode = Control.FocusModeEnum.None, MouseDefaultCursorShape = Control.CursorShape.Drag, CustomMinimumSize = new Vector2(24, 26) }; header.AddChild(self.grab);
+        self.grab = new Button { TooltipText = "Left-drag to move", FocusMode = Control.FocusModeEnum.None, MouseDefaultCursorShape = Control.CursorShape.Drag, CustomMinimumSize = new Vector2(24, 26) }; header.AddChild(self.grab);
+        IconAssets.Apply(self.grab, "drag");
         self.grab.GuiInput += e =>
         {
             if (e is InputEventMouseButton { ButtonIndex: MouseButton.Left } b) { self.dragging = b.Pressed; self.resizing = false; if (b.Pressed) self.CloseTooltips(); }
@@ -58,7 +65,7 @@ internal static class MeterPanelLogic
         self.UpdateScopeToggle();
         header.MoveChild(self.scopeToggle, 2);
         self.showUnattributed = self.settings.GetValue("layout", "showUnattributed", false).AsBool();
-        self.unattributedToggle = new Button { Text = "?", ToggleMode = true, ButtonPressed = self.showUnattributed, CustomMinimumSize = new Vector2(22, 26), FocusMode = Control.FocusModeEnum.None };
+        self.unattributedToggle = new Button { ToggleMode = true, ButtonPressed = self.showUnattributed, CustomMinimumSize = new Vector2(24, 26), FocusMode = Control.FocusModeEnum.None };
         self.unattributedToggle.Toggled += value => { self.showUnattributed = value; self.UpdateUnattributedToggle(); self.Save(); };
         header.AddChild(self.unattributedToggle);
         header.MoveChild(self.unattributedToggle, 3);
@@ -76,11 +83,12 @@ internal static class MeterPanelLogic
         // Runtime-owned sibling: it follows the panel without changing its layout.
         var notice = new Button
         {
-            Name = "ReloadNotice", Text = "!", Visible = false,
+            Name = "ReloadNotice", Visible = false,
             Theme = self.panel.Theme, MouseFilter = MouseFilterEnum.Stop,
             FocusMode = FocusModeEnum.None,
             CustomMinimumSize = new Vector2(30, 30), PivotOffset = new Vector2(15, 15)
         };
+        IconAssets.Apply(notice, "reload");
         notice.AddThemeColorOverride("font_color", new Color(.45f, 1f, .7f));
         notice.AddThemeColorOverride("font_hover_color", new Color(.65f, 1f, .8f));
         notice.AddThemeColorOverride("font_pressed_color", new Color(.45f, 1f, .7f));
@@ -97,11 +105,12 @@ internal static class MeterPanelLogic
     }
     public static void UpdateScopeToggle(MeterPanel self)
     {
-        self.scopeToggle.Text = self.scopeIndex == 0 ? "\u2694" : "\u21bb";
+        IconAssets.Apply(self.scopeToggle, self.scopeIndex == 0 ? "fight" : "run");
         self.scopeToggle.TooltipText = self.scopeIndex == 0 ? "Current Fight - click to show This Run" : "This Run - click to show Current Fight";
     }
     public static void UpdateUnattributedToggle(MeterPanel self)
     {
+        IconAssets.Apply(self.unattributedToggle, self.showUnattributed ? "shown" : "hidden");
         self.unattributedToggle.TooltipText = self.showUnattributed ? "Unattributed damage shown - click to hide" : "Unattributed damage hidden - click to show";
     }
     public static Color Saturate(Color color, float amount)
@@ -124,7 +133,8 @@ internal static class MeterPanelLogic
         self.CloseTooltips();
         if (value && !self.collapsed) self.expandedWidth = self.panel.Size.X;
         self.collapsed = value; self.body.Visible = !value; self.metric.Visible = !value; self.scopeToggle.Visible = !value; self.unattributedToggle.Visible = !value; self.resize.Visible = !value; self.grab.Visible = !value;
-        self.collapse.Text = value ? "+" : "-";
+        IconAssets.Apply(self.collapse, value ? "expand" : "collapse");
+        self.collapse.TooltipText = value ? "Expand meter" : "Collapse meter";
         self.panel.CustomMinimumSize = new Vector2(value ? 0 : 280, 0);
         self.panel.Size = new Vector2(value ? 0 : self.expandedWidth, 0);
         self.dragging = self.resizing = false;
