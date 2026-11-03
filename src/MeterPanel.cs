@@ -139,8 +139,8 @@ public partial class MeterPanel : CanvasLayer
             if(!hovered) rows.MoveChild(row.Button,index); index++;
             row.Icon.Texture=Probe.CharacterIcons.GetValueOrDefault(id);
             row.Icon.Visible=!solo&&row.Icon.Texture!=null;
-            (Color Hp,Color Shield,Color Amp) colors=Probe.CharacterColors.GetValueOrDefault(id,(Colors.Gray,Colors.DarkGray,Colors.Gray));
-            row.Bar.HpColour=colors.Hp;row.Bar.ShieldColour=colors.Shield;row.Bar.AmpColour=colors.Amp;
+            (Color Hp,Color Amp) colors=Probe.CharacterColors.GetValueOrDefault(id,(Colors.Gray,Colors.Gray));
+            row.Bar.HpColour=colors.Hp;row.Bar.AmpColour=colors.Amp;
             var value=Value(total);
             row.Bar.PlayerName=Probe.Names.GetValueOrDefault(id,id);
             row.Bar.ShowPlayerName=!solo||id==StatusOwnershipLedger.Unknown;
@@ -167,7 +167,7 @@ public partial class MeterPanel : CanvasLayer
 public partial class MeterBar : Control
 {
     public decimal Hp,Block,Orange,Maximum;
-    public Color HpColour=Colors.Gray,ShieldColour=Colors.DarkGray,AmpColour=Colors.Gray;
+    public Color HpColour=Colors.Gray,AmpColour=Colors.Gray;
     public string PlayerName="",DamageText="",ShareText="";
     public bool ShowPlayerName,ShowDetails;
     public override void _Draw()
@@ -175,10 +175,9 @@ public partial class MeterBar : Control
         DrawRect(new Rect2(Vector2.Zero,Size),new Color(.12f,.12f,.15f));
         if(Maximum>0)
         {
-            var b=Size.X*(float)(Block/Maximum); var h=Size.X*(float)(Hp/Maximum); var o=Size.X*(float)(Orange/Maximum);
-            DrawRect(new Rect2(0,3,b,Math.Max(0,Size.Y-6)),ShieldColour);
-            DrawRect(new Rect2(b,3,h,Math.Max(0,Size.Y-6)),HpColour);
-            DrawRect(new Rect2(b+h,3,o,Math.Max(0,Size.Y-6)),AmpColour);
+            var hp=Size.X*(float)((Hp+Block)/Maximum); var amp=Size.X*(float)(Orange/Maximum);
+            DrawRect(new Rect2(0,3,hp,Math.Max(0,Size.Y-6)),HpColour);
+            DrawRect(new Rect2(hp,3,amp,Math.Max(0,Size.Y-6)),AmpColour);
         }
         DrawRowText();
     }

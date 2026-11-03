@@ -462,9 +462,9 @@ Capture, accounting and save handling are unchanged.
 Multiplayer rows show the game's small character icon before the player label.
 Rows are ordered by total HP damage, highest first, regardless of the selected
 metric; equal HP totals use a stable player-ID order. Bars use character colours:
-HP uses the supplied lighter shade, shield damage the darker shade, and
-amplification an in-between shade. Ironclad is red, Silent green, Regent orange,
-Necrobinder pink and Defect blue. There is no separate blue Block segment. Native
+HP and shield damage share the supplied lighter shade, and amplification uses
+the supplied darker shade. Ironclad is red, Silent green, Regent orange, Necrobinder
+pink and Defect blue. There is no separate shield or blue Block segment. Native
 visual verification remains pending.
 
 ## 0.3.0-preview.26 - compact player rows
@@ -475,3 +475,11 @@ right (for example, `153 | 62.7%`). The Party % column heading is removed and th
 bar legend reads HP / Amp / %. Damage labels are rounded to whole numbers; hover
 details retain the underlying precise totals. Native visual verification remains
 pending.
+
+## 0.3.0-preview.27 - two-color damage bars
+
+Shield damage is included in the HP-colored portion of the bar instead of being
+drawn as its own segment. Bars show only HP (including shield damage) and
+amplification, matching the HP / Amp / % legend. Amplification uses each
+character's darker supplied color. Accounting and effective-damage qualification
+are unchanged.
