@@ -13,7 +13,7 @@ static class MeterTooltipChecks
   check(multiplayer.Contains("Player")&&multiplayer.Contains("Party share:")&&multiplayer.Contains("%")&&multiplayer.Contains("This Run"),"multiplayer summary keeps identity scope and share");
   check(MeterTooltipModel.RowSummary("Unattributed",0,false,0,0,true,true).Contains("Unattributed"),"solo unknown ownership remains identifiable");
   var detail=new Totals{Hp=9,Block=2,AmplifiedHp=3,AmplifiedBlock=1,SupportGiven=3,SupportGivenHp=2,SupportGivenBlock=1,Poison=8,Doom=4};
-  check(MeterTooltipModel.Labels.Length==9&&MeterTooltipModel.Labels[7]=="Actual Damage","grouped metrics retain legacy IDs");
+  check(MeterTooltipModel.Labels.Length==9&&MeterTooltipModel.Labels[0]=="Damage"&&MeterTooltipModel.Labels[7]=="Actual Damage","metric labels retain IDs and use concise damage title");
   check(MeterTooltipModel.Detail(5,detail).Contains("Self bonus: 1; teammate bonus: 3"),"amplification details distinguish self and team credit");
   check(MeterTooltipModel.Detail(6,detail).Contains("Bonus HP: 2; block: 1"),"support tooltip uses outgoing destinations");
   check(!MeterTooltipModel.Detail(1,detail).Contains("block")&&!MeterTooltipModel.Detail(4,detail).Contains("Poison"),"focused tooltip omits unrelated metrics");

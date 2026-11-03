@@ -168,7 +168,7 @@ internal static class MeterPanelLogic
         {
             if (!self.controls.TryGetValue(id, out var row))
             {
-                var button = new MeterHoverButton { TooltipText = "Player details", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 26) };
+                var button = new MeterHoverButton { TooltipText = "Player details", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 21) };
                 button.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
@@ -182,12 +182,12 @@ internal static class MeterPanelLogic
             }
             if (!hovered) self.rows.MoveChild(row.Button, index); index++;
             row.Icon.Texture = Probe.CharacterIcons.GetValueOrDefault(id);
-            row.Icon.Visible = !self.solo && row.Icon.Texture != null;
+            row.Icon.Visible = row.Icon.Texture != null;
             (Color Hp, Color Amp) colors = Probe.CharacterColors.GetValueOrDefault(id, (Colors.Gray, Colors.Gray));
             row.Bar.HpColour = Saturate(colors.Hp, 1.2f); row.Bar.AmpColour = Saturate(colors.Amp, 1.2f);
             var value = Value(total);
             row.Bar.PlayerName = Probe.Names.GetValueOrDefault(id, id);
-            row.Bar.ShowPlayerName = !self.solo || id == StatusOwnershipLedger.Unknown;
+            row.Bar.ShowPlayerName = !self.solo || id == StatusOwnershipLedger.Unknown || row.Icon.Visible;
             row.Bar.DamageText = Math.Round(value, MidpointRounding.AwayFromZero).ToString("0", System.Globalization.CultureInfo.CurrentCulture);
             row.Bar.ShareText = team > 0 ? $"{100 * value / team:0.#}%" : "0%";
             row.Bar.ShowDetails = !self.solo;
@@ -200,7 +200,7 @@ internal static class MeterPanelLogic
 
         }
         var overhead = self.panel.GetCombinedMinimumSize().Y - self.scroll.CustomMinimumSize.Y;
-        var desired = Math.Min(Math.Max(0, viewport.Y - self.panel.Position.Y - overhead - 8), Math.Max(0, self.controls.Count * 28));
+        var desired = Math.Min(Math.Max(0, viewport.Y - self.panel.Position.Y - overhead - 8), Math.Max(0, self.controls.Count * 21));
         self.scroll.CustomMinimumSize = new Vector2(0, desired);
         self.QueueHeightRefresh();
     }

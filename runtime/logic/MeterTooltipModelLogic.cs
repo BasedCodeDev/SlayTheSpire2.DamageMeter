@@ -4,7 +4,7 @@ using static global::Based.Spires2DamageMeter.MeterTooltipModel;
 namespace Based.Spires2DamageMeter.Runtime;
 internal static class MeterTooltipModelLogic
 {
-    private static readonly string[] metricLabels = ["Damage (HP + Block)", "HP Only", "Block Only", "Poison HP", "Doom HP", "Amplification", "Support Damage", "Actual Damage", "Effective Damage"];
+    private static readonly string[] metricLabels = ["Damage", "HP Only", "Block Only", "Poison HP", "Doom HP", "Amplification", "Support Damage", "Actual Damage", "Effective Damage"];
     public static string[] GetLabels() => metricLabels;
     public static TooltipCard BuildCard(string player, string name, int metric, bool run, bool solo, decimal value, decimal team, Totals t, decimal pending, decimal poisonBonus, IEnumerable<SourceTotals> sources, IEnumerable<SupportTransfer> transfers, Func<string, string> names, string warning)
     {

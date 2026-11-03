@@ -24,6 +24,12 @@ exceptions and cancellation. Regression tests execute the real block-damage meth
 using Godot's loader and the installed game dependency manifest before and after
 runtime replacement. Preview.37 dispatch repairs and coverage checks are retained.
 
+## 0.3.0-preview.40 - solo identity and compact player rows
+
+Single-player rows show the hero portrait and username beside the damage total,
+without multiplayer share text. Player bars use a one-pixel vertical gap and
+row heights sized to the bars. The combined metric is labelled "Damage".
+
 Close the game for a full installation because the permanent host changed.
 The corrected first attack and subsequent multiplayer turns were observed in a
 client session and confirmed by Seb. Broader multiplayer and save-safety acceptance
@@ -595,3 +601,17 @@ are more saturated and their bar fill is slightly more opaque.
 Player detail tooltips use a scrollable content box sized relative to the meter's
 current width and height, with a viewport cap. The full source breakdown remains
 available without expanding the tooltip over the game screen.
+
+## Name-sorting preview - contiguous player rows
+
+Removed vertical separation between player rows and reduced row height to match
+the bar height for a tightly stacked meter appearance.
+
+## Name-sorting preview - solo hero identity
+
+Single-player rows show the hero portrait and username beside the selected damage
+total, while keeping the multiplayer-only share format hidden.
+
+## Name-sorting preview - subtle player row spacing
+
+Added a one-pixel vertical gap between adjacent player bars.
