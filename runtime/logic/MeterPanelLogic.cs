@@ -73,6 +73,27 @@ internal static class MeterPanelLogic
         self.scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled }; self.body.AddChild(self.scroll);
         self.rows = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill }; self.rows.AddThemeConstantOverride("separation", 1); self.scroll.AddChild(self.rows);
         self.ApplyCollapsedState(self.settings.GetValue("layout", "collapsed", false).AsBool());
+        // Runtime-owned sibling: it follows the panel without changing its layout.
+        var notice = new Button
+        {
+            Name = "ReloadNotice", Text = "!", Visible = false,
+            Theme = self.panel.Theme, MouseFilter = MouseFilterEnum.Stop,
+            FocusMode = FocusModeEnum.None,
+            CustomMinimumSize = new Vector2(30, 30), PivotOffset = new Vector2(15, 15)
+        };
+        notice.AddThemeColorOverride("font_color", new Color(.45f, 1f, .7f));
+        notice.AddThemeColorOverride("font_hover_color", new Color(.65f, 1f, .8f));
+        notice.AddThemeColorOverride("font_pressed_color", new Color(.45f, 1f, .7f));
+        var noticeStyle = new StyleBoxFlat { BgColor = new Color(.03f, .17f, .1f, .95f), BorderColor = new Color(.45f, 1f, .7f, .7f) };
+        noticeStyle.SetCornerRadiusAll(6);
+        noticeStyle.SetBorderWidthAll(1);
+        foreach (var state in new[] { "normal", "hover", "pressed" }) notice.AddThemeStyleboxOverride(state, noticeStyle);
+        notice.AddThemeFontSizeOverride("font_size", 24);
+        notice.SetMeta("build", Hosting.RuntimeHost.BuildId);
+        notice.SetMeta("pending", false);
+        notice.SetMeta("age", 0d);
+        notice.Pressed += () => { notice.SetMeta("pending", false); notice.Hide(); };
+        self.AddChild(notice);
     }
     public static void UpdateScopeToggle(MeterPanel self)
     {
@@ -134,6 +155,29 @@ internal static class MeterPanelLogic
     }
     public static void _Process(MeterPanel self, double delta)
     {
+        var notice = self.GetNode<Button>("ReloadNotice");
+        var build = Hosting.RuntimeHost.BuildId;
+        if (notice.GetMeta("build").AsString() != build)
+        {
+            notice.SetMeta("build", build);
+            notice.SetMeta("pending", true);
+            notice.SetMeta("age", 0d);
+            notice.TooltipText = $"Hot reload complete\nVersion {Probe.Version}\nBuild {build}\nClick to dismiss";
+        }
+        notice.Visible = self.panel.Visible && notice.GetMeta("pending").AsBool();
+        if (notice.Visible)
+        {
+            var age = Math.Min(2, notice.GetMeta("age").AsDouble() + Math.Max(0, delta));
+            notice.SetMeta("age", age);
+            var pulse = age < 2 ? 1 + .18f * (float)Math.Sin(age * Math.PI * 4) : 1f;
+            notice.Scale = new Vector2(pulse, pulse);
+            // At the viewport's left edge, place it above rather than over controls.
+            notice.Position = self.panel.Position.X >= 38
+                ? self.panel.Position + new Vector2(-38, 0)
+                : self.panel.Position.Y >= 38
+                    ? self.panel.Position + new Vector2(0, -38)
+                    : self.panel.Position + new Vector2(self.panel.Size.X + 8, 0);
+        }
         var viewport = self.GetViewport().GetVisibleRect().Size;
         var width = Math.Clamp(self.panel.Size.X, self.collapsed ? 0 : Math.Min(280, viewport.X), viewport.X);
         if (!Mathf.IsEqualApprox(width, self.panel.Size.X)) self.panel.Size = new Vector2(width, 0);
