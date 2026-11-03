@@ -136,8 +136,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Developm
 After installing and enabling that host, repeat the command while the game is
 running to build, check and reload UI and runtime logic. To pull GitHub changes
 first, run `update.bat -Development` on a branch with a configured upstream.
-Compatible meter state is preserved. Host/contract changes require a restart;
-failed reloads retain the previous runtime. Hover the resize arrow for status.
+Compatible updates activate on the next available game frame, including during
+combat, and preserve meter state. If host/contract changes require a restart,
+close the game and rerun the development deployment command above, then let the
+script launch the game again.
+
+A **published** message confirms deployment, not activation. A candidate can
+still be rejected; failed reloads retain the previous runtime. Check the game
+log for activation/rejection status and the active build identifier. Hover the
+resize arrow for the loaded version and capture diagnostics.
 See [the hot-reload guide](docs/hot-reload.md) for architecture, options and checks.
 
 Development packaging uses `scripts/package.ps1 -Development` and produces

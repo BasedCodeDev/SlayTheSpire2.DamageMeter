@@ -29,8 +29,11 @@ already executing finishes before the implementation switches.
 
 Implementation changes behind existing interfaces reload immediately. Changing
 host/contract code, hook signatures, state layouts or the build toolchain can
-require a restart and full development installation. The deployment script checks
-the exact host and contract hashes before writing anything to a running install.
+require a restart and full development installation. Close the game and rerun
+`scripts/deploy.ps1 -Development` using the PowerShell command above; the script
+installs the updated host/contracts and requests a game launch. The deployment
+script checks the exact host and contract hashes before writing anything to a
+running install.
 Git revision metadata is excluded from those binaries so an ordinary pull does
 not itself force a host replacement. Runtime builds retain symbols and version
 information.
@@ -66,9 +69,15 @@ when adding serialized runtime data. Generation-local JSON options isolate the
 remaining metadata. Diagnostic collections check retired assembly contexts;
 more than two retained generations stops further reloads and requests a restart.
 
-Hover the resize arrow for the active runtime status. The game log also records
-activation/rejection and the build identifier. A deployment reporting **published**
-means the files are ready; the running host reports whether activation succeeded.
+Hover the resize arrow for the loaded version and capture diagnostics. It does
+not show hot-reload activation/rejection status or the build identifier; check
+the game log for those details. Mod JSONL logs record successful activation as
+`runtime_reloaded` (including the build identifier) and errors as
+`runtime_reload_error`.
+
+A deployment reporting **published** means the files are ready, not that the
+running host has activated them. The host can still reject the candidate; failed
+reloads retain the previous runtime and UI.
 
 ## Verification
 
