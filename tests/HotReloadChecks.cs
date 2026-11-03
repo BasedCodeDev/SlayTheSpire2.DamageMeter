@@ -98,6 +98,7 @@ static class HotReloadChecks
         var generation = new RuntimeGeneration(payload, shared);
         var module = (IRuntimeModule)typeof(RuntimeGeneration).GetField("module", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(generation)!;
         var types = module.GetType().Assembly.GetTypes();
+        RuntimeDispatchChecks.Run(module.GetType(), check);
         check(types.All(t => !typeof(Godot.GodotObject).IsAssignableFrom(t)), "reloadable payload declares no Godot script subclasses");
         check(types.SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
             .All(m => m.GetCustomAttribute<AsyncStateMachineAttribute>() == null), "reloadable payload owns no async state machines");

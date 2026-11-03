@@ -232,6 +232,12 @@ internal static class Operations
                     return null;
                 }
 
+            case "EffectiveCapture.AfterClearCompleted":
+                {
+                    EffectiveCaptureLogic.AfterClearCompleted((Creature)values[0]!, (int)values[1]!);
+                    return null;
+                }
+
             case "EffectiveDamageLedger.Clear":
                 {
                     EffectiveDamageLedgerLogic.Clear((EffectiveDamageLedger)values[0]!);
@@ -697,6 +703,12 @@ internal static class Operations
             case "Probe.HookPrefix":
                 {
                     ProbeLogic.HookPrefix((MethodBase)values[0]!, (object[])values[1]!);
+                    return null;
+                }
+
+            case "Probe.HandleHook":
+                {
+                    ProbeLogic.HandleHook((MethodBase)values[0]!, (object[])values[1]!);
                     return null;
                 }
 

@@ -6,7 +6,7 @@ An unofficial damage-meter mod for **Slay the Spire 2**, with solo and multiplay
 views, source breakdowns and credit for the players who provide damage bonuses.
 Collection is local; teammates do not need this mod installed.
 
-**Status:** experimental preview, currently `0.3.0-preview.36`, targeting game
+**Status:** experimental preview, currently `0.3.0-preview.38`, targeting game
 `v0.107.1`. Automated checks pass, but native startup, persistence, UI and
 host/guest verification remain incomplete. Windows is the current development
 and deployment target; Linux/macOS are not verified.

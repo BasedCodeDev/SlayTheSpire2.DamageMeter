@@ -35,11 +35,12 @@ public static class EffectiveCapture
             __instance,
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.Before", values);
-        __state = (int)values[1]!;
+        __state = __instance.Block;
+        if (Probe.GuardHook("EffectiveCapture.Before", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.Before", values)))
+            __state = (int)values[1]!;
     }
 
-    public static void Gained(Creature __instance, int __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.Gained", __instance, __state);
+    public static void Gained(Creature __instance, int __state) => Probe.GuardHook("EffectiveCapture.Gained", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.Gained", __instance, __state));
     public static void Cleared(Creature __instance, int __state, ref Task __result) => __result = AfterClear(__result, __instance, __state);
     internal static async Task AfterClear(Task task, Creature c, int before)
     {
@@ -47,5 +48,5 @@ public static class EffectiveCapture
         AfterClearCompleted(c, before);
     }
 
-    internal static void AfterClearCompleted(Creature c, int before) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.AfterClearCompleted", c, before);
+    internal static void AfterClearCompleted(Creature c, int before) => Probe.GuardHook("EffectiveCapture.AfterClearCompleted", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("EffectiveCapture.AfterClearCompleted", c, before));
 }

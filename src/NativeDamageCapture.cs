@@ -103,19 +103,22 @@ public static class NativeDamageCapture
 
     public static void DamagePrefix(out object? __state)
     {
+        var previous = scope.Value;
+        __state = previous;
         object? [] values = new object? []
         {
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.DamagePrefix", values);
-        __state = (object? )values[0]!;
+        if (Probe.GuardHook("NativeDamageCapture.DamagePrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.DamagePrefix", values)))
+            __state = values[0];
+        else scope.Value = previous;
     }
 
     public static void DamagePostfix(ref Task<IEnumerable<DamageResult>> __result, object? __state)
     {
         var captured = scope.Value;
         scope.Value = (Scope? )__state;
-        if (captured != null)
+        if (captured != null && !ReferenceEquals(captured, __state))
             __result = Completed(__result, captured);
     }
 
@@ -157,28 +160,46 @@ public static class NativeDamageCapture
             __instance,
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.BlockPrefix", values);
-        __state = (object? )values[1]!;
+        __state = null;
+        if (Probe.GuardHook("NativeDamageCapture.BlockPrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.BlockPrefix", values)))
+            __state = values[1];
     }
 
-    public static void BlockPostfix(decimal __result, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.BlockPostfix", __result, __state);
-    public static void ResultConstructed(DamageResult __instance) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ResultConstructed", __instance);
-    public static void HpReturned(DamageResult __result) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpReturned", __result);
+    public static void BlockPostfix(decimal __result, object? __state) => Probe.GuardHook("NativeDamageCapture.BlockPostfix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.BlockPostfix", __result, __state));
+    public static void ResultConstructed(DamageResult __instance) => Probe.GuardHook("NativeDamageCapture.ResultConstructed", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ResultConstructed", __instance));
+    public static void HpReturned(DamageResult __result) => Probe.GuardHook("NativeDamageCapture.HpReturned", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpReturned", __result));
     internal static void Bind(DamageResult result) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.Bind", result);
-    public static Exception? DamageFinalizer(Exception? __exception, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call<Exception?>("NativeDamageCapture.DamageFinalizer", __exception, __state);
+    public static Exception? DamageFinalizer(Exception? __exception, object? __state)
+    {
+        try { Probe.GuardHook("NativeDamageCapture.DamageFinalizer", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.DamageFinalizer", __exception, __state)); }
+        finally { scope.Value = __state as Scope; }
+        return __exception;
+    }
     public static void ModifyPrefix(object[] __args, out object? __state)
     {
+        var previous = trace.Value;
+        __state = previous;
         object? [] values = new object? []
         {
             __args,
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ModifyPrefix", values);
-        __state = (object? )values[1]!;
+        if (Probe.GuardHook("NativeDamageCapture.ModifyPrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ModifyPrefix", values)))
+            __state = values[1];
+        else trace.Value = previous;
     }
 
-    public static void ModifyPostfix(decimal __result, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ModifyPostfix", __result, __state);
-    public static Exception? ModifyFinalizer(Exception? __exception, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call<Exception?>("NativeDamageCapture.ModifyFinalizer", __exception, __state);
+    public static void ModifyPostfix(decimal __result, object? __state)
+    {
+        try { Probe.GuardHook("NativeDamageCapture.ModifyPostfix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ModifyPostfix", __result, __state)); }
+        finally { trace.Value = __state as Trace; }
+    }
+    public static Exception? ModifyFinalizer(Exception? __exception, object? __state)
+    {
+        try { Probe.GuardHook("NativeDamageCapture.ModifyFinalizer", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.ModifyFinalizer", __exception, __state)); }
+        finally { trace.Value = __state as Trace; }
+        return __exception;
+    }
     public static bool Capturing => trace.Value != null;
 
     public static void MarkUnsupported(string reason) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.MarkUnsupported", reason);
@@ -188,19 +209,31 @@ public static class NativeDamageCapture
     internal static Trace? Pending(Creature target) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call<Trace?>("NativeDamageCapture.Pending", target);
     public static void HpPhasePrefix(Creature __2, out object? __state)
     {
+        var previous = hpTrace.Value;
+        __state = previous;
         object? [] values = new object? []
         {
             __2,
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpPhasePrefix", values);
-        __state = (object? )values[1]!;
+        if (Probe.GuardHook("NativeDamageCapture.HpPhasePrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpPhasePrefix", values)))
+            __state = values[1];
+        else hpTrace.Value = previous;
     }
 
     // Harmony's __args writeback can overwrite the original's out-modifiers list.
     // Observe only the required input arguments; never request an argument array here.
-    public static void HpPhasePostfix(Creature __2, decimal __3, HpLossHookPhase __7, decimal __result, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpPhasePostfix", __2, __3, __7, __result, __state);
-    public static Exception? HpPhaseFinalizer(Exception? __exception, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call<Exception?>("NativeDamageCapture.HpPhaseFinalizer", __exception, __state);
+    public static void HpPhasePostfix(Creature __2, decimal __3, HpLossHookPhase __7, decimal __result, object? __state)
+    {
+        try { Probe.GuardHook("NativeDamageCapture.HpPhasePostfix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpPhasePostfix", __2, __3, __7, __result, __state)); }
+        finally { hpTrace.Value = __state as Trace; }
+    }
+    public static Exception? HpPhaseFinalizer(Exception? __exception, object? __state)
+    {
+        try { Probe.GuardHook("NativeDamageCapture.HpPhaseFinalizer", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpPhaseFinalizer", __exception, __state)); }
+        finally { hpTrace.Value = __state as Trace; }
+        return __exception;
+    }
     public static void HpModifierPrefix(AbstractModel __instance, MethodBase __originalMethod, object[] __args, out object? __state)
     {
         object? [] values = new object? []
@@ -210,11 +243,12 @@ public static class NativeDamageCapture
             __args,
             null
         };
-        global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpModifierPrefix", values);
-        __state = (object? )values[3]!;
+        __state = null;
+        if (Probe.GuardHook("NativeDamageCapture.HpModifierPrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpModifierPrefix", values)))
+            __state = values[3];
     }
 
-    public static void HpModifierPostfix(decimal __result, object? __state) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpModifierPostfix", __result, __state);
-    public static void RedirectPostfix(object[] __args, Creature __result) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.RedirectPostfix", __args, __result);
+    public static void HpModifierPostfix(decimal __result, object? __state) => Probe.GuardHook("NativeDamageCapture.HpModifierPostfix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.HpModifierPostfix", __result, __state));
+    public static void RedirectPostfix(object[] __args, Creature __result) => Probe.GuardHook("NativeDamageCapture.RedirectPostfix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("NativeDamageCapture.RedirectPostfix", __args, __result));
     public static AmplificationResult? Resolve(Creature target, DamageResult result, string eventId) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call<AmplificationResult?>("NativeDamageCapture.Resolve", target, result, eventId);
 }

@@ -28,6 +28,7 @@ Checks.MilestoneModelChecks.Run(Check);
 PowerChangeChecks.Run(Check);
 RegistrationChecks.Run(Check);
 HotReloadChecks.Run(Check);
+ProbeHookChecks.Run(Check);
 var a = new Accounting();
 var hit = new object();
 a.Add(hit, "A", 10, 0, 10, "Direct");

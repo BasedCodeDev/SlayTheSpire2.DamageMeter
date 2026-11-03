@@ -12,6 +12,17 @@ of that command build, check and publish a runtime while the game stays open.
 then performs the same deployment. `-GameDir` and `-WhatIf` are supported. The batch
 wrapper still pulls when given `-WhatIf`; deployment itself publishes nothing.
 
+Preview.37 fixes a missing combat-observation route in earlier hot-reload builds.
+Its host also contains dispatch failures before they can abort room loading.
+Preview.38 also fixes a JSON type-identity mismatch that faulted the first attack
+under the game's assembly loader. Native damage/HP-loss/modifier/block observers
+contain diagnostic faults while retaining native results, output arguments and
+task failures/cancellation. Runtime dependencies resolve through the permanent
+host's context rather than accidentally using separate framework assemblies.
+Close the game for the first preview.38 installation; publishing only a runtime
+cannot update the permanent host. The packaging gate checks all compiled
+host/contract operation keys against the runtime's executable dispatch routes.
+
 The watcher reacts to a completed deployment on the next available game frame,
 including during combat. It never waits for combat or a menu transition. The
 fallback poll runs once a second if a filesystem notification is lost. A callback

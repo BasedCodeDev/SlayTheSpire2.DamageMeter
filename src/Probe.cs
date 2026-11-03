@@ -110,7 +110,8 @@ public static class Probe
         }
     }
 
-    public static void HookPrefix(MethodBase __originalMethod, object[] __args) => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("Probe.HookPrefix", __originalMethod, __args);
+    public static void HookPrefix(MethodBase __originalMethod, object[] __args)
+        => GuardHook("Probe.HookPrefix", () => global::Based.Spires2DamageMeter.Reload.RuntimeCalls.Call("Probe.HookPrefix", __originalMethod, __args));
     public static void HookPostfix(MethodBase __originalMethod, object[] __args, ref Task __result)
     {
         if (__originalMethod.Name == "AfterCombatEnd")
@@ -119,7 +120,7 @@ public static class Probe
             return;
         }
 
-        HandleHook(__originalMethod, __args);
+        GuardHook("Probe.HandleHook", () => HandleHook(__originalMethod, __args));
     }
 
     internal static async Task EndCombat(Task task)
@@ -311,6 +312,18 @@ public static class Probe
         }
     }
 
+    // Dispatch can fail before the runtime handler reaches its own Guard. Keep
+    // observer failures out of the native hook and leave the original Task alone.
+    internal static bool GuardHook(string operation, Action action)
+    {
+        try { action(); return true; }
+        catch (Exception ex)
+        {
+            Fail(new InvalidOperationException($"Observer {operation} failed in runtime {Hosting.RuntimeHost.BuildId}: {ex.Message}", ex));
+            return false;
+        }
+    }
+
     internal static void Guard(Action action)
     {
         try
@@ -326,7 +339,9 @@ public static class Probe
     internal static void Fail(Exception ex)
     {
         Health = "INCOMPLETE: " + ex.Message;
-        GD.PrintErr(Id + ": " + ex);
+        // Error reporting is itself an observer. It must never replace a native
+        // result, exception or cancellation when the diagnostic sink is unavailable.
+        try { GD.PrintErr(Id + ": " + ex); } catch { }
         Emit("capture_error", new { error = ex.ToString() });
     }
 

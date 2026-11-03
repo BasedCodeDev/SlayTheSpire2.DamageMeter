@@ -6,6 +6,7 @@
     <Compile Include="*.cs" Exclude="SavePolicyFixture/**/*.cs" />
     <ProjectReference Include="../Based.Spires2DamageMeter.csproj" />
     <Reference Include="0Harmony"><HintPath>$(Sts2DataDir)/0Harmony.dll</HintPath></Reference>
+    <Reference Include="sts2"><HintPath>$(Sts2DataDir)/sts2.dll</HintPath></Reference>
     <None Update="fixtures/*.jsonl;fixtures/*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

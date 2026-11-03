@@ -24,6 +24,7 @@ public partial class Gate : Node
     private static bool actualRouting;
     private int actualCycles;
     private string install = "", baseline = "", alternate = "";
+    private string gameData = "", godotPlugins = "";
     private readonly object identity = new();
     private TaskCompletionSource<IEnumerable<DamageResult>>? pendingDamage;
     private Task<IEnumerable<DamageResult>>? observedDamage;
@@ -48,6 +49,7 @@ public partial class Gate : Node
             };
             payload = args[0]; report = args[1];
             if (args.Length >= 5) { install = args[2]; baseline = args[3]; alternate = args[4]; }
+            if (args.Length >= 7) { gameData = args[5]; godotPlugins = args[6]; }
             patches.Patch(typeof(Gate).GetMethod(nameof(Target))!, postfix: new HarmonyMethod(typeof(Gate), nameof(Postfix)));
             evidence.Add("native=" + Engine.GetVersionInfo()["string"]);
         }
@@ -67,6 +69,13 @@ public partial class Gate : Node
                 if (install.Length > 0 && actualCycles < 50) { RunActual(); return; }
                 if (actualStarted && !rejectionsChecked) { CheckRejections(); return; }
                 if (actualStarted && !watcherChecked) { CheckFilesystemWatcher(); return; }
+                if (gameData.Length > 0)
+                {
+                    var payloads = new[] { baseline, alternate }.Select(file => BuildManifest.Read(file).Validate(install)).ToArray();
+                    GameLoadingChecks.Run(Path.Combine(install, "Based.Spires2DamageMeter.dll"), gameData, godotPlugins, payloads,
+                        (ok, name) => { if (!ok) throw new Exception(name); evidence.Add("PASS " + name); });
+                    gameData = "";
+                }
                 RuntimeHost.CollectRetired();
                 if (RuntimeHost.RetainedGenerationCount != 0) throw new Exception("Real runtime contexts remain rooted");
                 patches.UnpatchAll(patches.Id);
@@ -126,6 +135,8 @@ public partial class Gate : Node
         if (!actualStarted)
         {
             RuntimeHost.StartNativeChecks(install);
+            ProbeHookChecks.RunNative((ok, name) => { if (!ok) throw new Exception(name); evidence.Add("PASS " + name); });
+            NativeObserverChecks.Run((ok, name) => { if (!ok) throw new Exception(name); evidence.Add("PASS " + name); });
             actualRouting = actualStarted = true;
             RunSession.Active = true; RunSession.Encounter = "gate-combat";
             Probe.Names["A"] = "Gate player";
@@ -171,6 +182,12 @@ public partial class Gate : Node
         File.Move(pointer + ".tmp", pointer, true);
         RuntimeHost.Pump(1);
         if (RuntimeHost.BuildId != expected.BuildId) throw new Exception("Actual runtime activation failed: " + RuntimeHost.Status);
+        ProbeHookChecks.Run((ok, name) => { if (!ok) throw new Exception(name); });
+        if (actualCycles == 0)
+        {
+            ProbeHookChecks.RunNative((ok, name) => { if (!ok) throw new Exception(name); evidence.Add("PASS after replacement: " + name); });
+            NativeObserverChecks.Run((ok, name) => { if (!ok) throw new Exception(name); evidence.Add("PASS after replacement: " + name); });
+        }
         RuntimeCalls.Call("RunSession.Error", new InvalidOperationException("fixture anonymous log serialization"));
         if (Target(4) != (isAlternate ? 5 : 4)) throw new Exception("Changed runtime calculation was not activated");
         if (MeterPanel.instance.grab.Text != (isAlternate ? "DEV 2" : "\u2630")) throw new Exception("Changed runtime UI was not activated");

@@ -11,6 +11,35 @@ false save-corruption handling and reported progress loss. The recovery attempt
 was unsuccessful; the recovery script is retired. Do not use old recovery steps.
 See the [incident record](validation/storage-incident-2026-11-03.md).
 
+## 0.3.0-preview.38 - game-context binding and native observer containment
+
+Fixes the first-attack `LogValue.Freeze(object)` binding failure in development
+multiplayer. Godot loaded the host's JSON assembly through the game's dependency
+manifest, while the collectible runtime fell back to a different default-context
+copy. Runtime dependencies now resolve through the host's assembly context.
+
+Native damage, modifier, HP-loss and block-clear callbacks contain observer faults,
+restore parent capture state, and retain native results, ref/out values, original
+exceptions and cancellation. Regression tests execute the real block-damage method
+using Godot's loader and the installed game dependency manifest before and after
+runtime replacement. Preview.37 dispatch repairs and coverage checks are retained.
+
+Close the game for a full installation because the permanent host changed.
+The corrected first attack and subsequent multiplayer turns were observed in a
+client session and confirmed by Seb. Broader multiplayer and save-safety acceptance
+remain incomplete; see the validation report for the limited evidence.
+
+## 0.3.0-preview.37 - combat hook dispatch repair
+
+Restores missing runtime routes for combat/power observations and block-clear
+completion. The missing `Probe.HandleHook` route could abort combat entry when
+Bronze Scales applied Thorns. Host-side guards now contain dispatch failures and
+mark coverage incomplete while preserving the game's original tasks and errors.
+Packaging checks compare compiled host/contract calls against executable runtime
+routes. Installing this fix requires one full deployment with the game closed
+because the permanent host changed. Live combat and multiplayer acceptance remain
+pending until exercised in-game.
+
 ## 0.3.0-preview.36 - development hot reload integration
 
 `-Development` installs a permanent host and a replaceable runtime. Subsequent

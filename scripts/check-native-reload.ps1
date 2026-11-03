@@ -8,6 +8,7 @@ $output = Join-Path $root 'artifacts/reload-gate'
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 Push-Location $root
 try {
+    $version = (Get-Content -LiteralPath 'Based.Spires2DamageMeter.json' -Raw | ConvertFrom-Json).version
     . (Join-Path $PSScriptRoot 'runtime-package.ps1')
     dotnet build tools/ReloadGatePayload/ReloadGatePayload.csproj -c Release -p:NuGetAudit=false --ignore-failed-sources
     if ($LASTEXITCODE) { throw 'Reload gate payload build failed' }
@@ -42,7 +43,7 @@ try {
     $xmlGame = [Security.SecurityElement]::Escape($gameData.Replace('\','/'))
     $project = @"
 <Project Sdk="Microsoft.NET.Sdk">
-<PropertyGroup><TargetFramework>net9.0</TargetFramework><AssemblyName>Based.Spires2DamageMeter.Runtime</AssemblyName><Version>0.3.0-preview.36</Version><EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+<PropertyGroup><TargetFramework>net9.0</TargetFramework><AssemblyName>Based.Spires2DamageMeter.Runtime</AssemblyName><Version>$version</Version><EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
 <ItemGroup>
 <Reference Include="Based.Spires2DamageMeter"><HintPath>$xmlHost/Based.Spires2DamageMeter.dll</HintPath><Private>false</Private></Reference>
 <Reference Include="Based.Spires2DamageMeter.Contracts"><HintPath>$xmlHost/Based.Spires2DamageMeter.Contracts.dll</HintPath><Private>false</Private></Reference>
@@ -58,7 +59,7 @@ try {
     if ($LASTEXITCODE) { throw 'Changed runtime fixture build failed' }
     $manifests = @()
     foreach ($directory in @((Join-Path $root 'runtime/bin/Release/net9.0'), (Join-Path $variant 'bin/Release/net9.0'))) {
-        $manifest = New-RuntimeManifest $hostDir $directory '0.3.0-preview.36'
+        $manifest = New-RuntimeManifest $hostDir $directory $version
         $build = Join-Path $hostDir ('runtime/builds/' + $manifest.BuildId)
         New-Item -ItemType Directory -Path $build -Force | Out-Null
         foreach ($name in $manifest.Files.Keys) { Copy-Item -LiteralPath (Join-Path $directory $name) -Destination $build -Force }
@@ -70,7 +71,7 @@ try {
     $rejected = Join-Path $output 'rejected'
     New-Item -ItemType Directory -Path $rejected -Force | Out-Null
     function Save-RejectedFixture([string]$Directory, [string]$Name) {
-        $manifest = New-RuntimeManifest $hostDir $Directory '0.3.0-preview.36'
+        $manifest = New-RuntimeManifest $hostDir $Directory $version
         $build = Join-Path $hostDir ('runtime/builds/' + $manifest.BuildId)
         New-Item -ItemType Directory -Path $build -Force | Out-Null
         foreach ($file in $manifest.Files.Keys) { Copy-Item -LiteralPath (Join-Path $Directory $file) -Destination $build -Force }
@@ -113,7 +114,8 @@ try {
     $info = New-Object Diagnostics.ProcessStartInfo
     $info.FileName = Join-Path $output 'HotReloadGate.exe'
     $payload = Join-Path $root 'tools/ReloadGatePayload/bin/Release/net9.0/ReloadGatePayload.dll'
-    $info.Arguments = '--headless --log-file "' + (Join-Path $output 'native.log') + '" -- "' + $payload + '" "' + $report + '" "' + $hostDir + '" "' + $manifests[0] + '" "' + $manifests[1] + '"'
+    $godotPlugins = Join-Path (Split-Path $Godot -Parent) 'GodotSharp/Api/Release/GodotPlugins.dll'
+    $info.Arguments = '--headless --log-file "' + (Join-Path $output 'native.log') + '" -- "' + $payload + '" "' + $report + '" "' + $hostDir + '" "' + $manifests[0] + '" "' + $manifests[1] + '" "' + $gameData + '" "' + $godotPlugins + '"'
     $info.UseShellExecute = $false
     $info.CreateNoWindow = $true
     $process = [Diagnostics.Process]::Start($info)

@@ -13,12 +13,17 @@ public sealed class RuntimeGeneration : IDisposable
     private sealed class PayloadContext(string path, Assembly[] shared) : AssemblyLoadContext(isCollectible: true)
     {
         private readonly string directory = Path.GetDirectoryName(path)!;
+        private readonly AssemblyLoadContext owner = GetLoadContext(typeof(RuntimeGeneration).Assembly)!;
         protected override Assembly? Load(AssemblyName name)
         {
             var existing = shared.FirstOrDefault(a => AssemblyName.ReferenceMatchesDefinition(a.GetName(), name));
             if (existing != null) return existing;
             var dependency = Path.Combine(directory, name.Name + ".dll");
-            return File.Exists(dependency) ? LoadFromAssemblyPath(dependency) : null;
+            if (File.Exists(dependency)) return LoadFromAssemblyPath(dependency);
+            // Godot's game context resolves dependencies from sts2.deps.json. Falling
+            // back to Default can create a second System.Text.Json identity: even a
+            // helper's return type then prevents its MemberRef from binding.
+            return owner.LoadFromAssemblyName(name);
         }
     }
 

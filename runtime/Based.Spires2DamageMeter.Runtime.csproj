@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.3.0-preview.36</Version>
+    <Version>0.3.0-preview.38</Version>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/data_sts2_windows_x86_64</Sts2DataDir>
     <HostPath Condition="'$(HostPath)' == ''">../.godot/mono/temp/bin/Release/Based.Spires2DamageMeter.dll</HostPath>
   </PropertyGroup>
