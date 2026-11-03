@@ -2,6 +2,7 @@
 rem Close the game, then run update.bat to pull, build, check, install and launch.
 rem Options are forwarded to deploy.ps1, e.g. update.bat -GameDir "D:\Games\Slay the Spire 2"
 rem update.bat -WhatIf still pulls changes, then previews deployment.
+rem Use update.bat -Development for live runtime updates after the first closed-game installation.
 setlocal
 pushd "%~dp0" || exit /b 1
 

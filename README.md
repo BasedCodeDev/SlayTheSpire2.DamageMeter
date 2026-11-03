@@ -115,7 +115,8 @@ For a non-default installation, pass `-Sts2DataDir` pointing to its
 `artifacts/Based.Spires2DamageMeter-<version>.zip`.
 
 For manual installation, close the game and extract the ZIP's `mods` folder into
-the game directory. The DLL and manifest must sit directly inside:
+the game directory. Keep the host/contract DLLs, manifest and `runtime` directory
+together inside:
 
 ```text
 <game directory>\mods\Based.Spires2DamageMeter
@@ -125,6 +126,24 @@ Start the game through Steam and enable the mod. To uninstall, close the game an
 remove only that mod folder. Leave game-save and user-data folders untouched.
 
 ## Development and diagnostics
+
+Development builds support runtime hot reload. **Close the game once** and run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Development
+```
+
+After installing and enabling that host, repeat the command while the game is
+running to build, check and reload UI and runtime logic. To pull GitHub changes
+first, run `update.bat -Development` on a branch with a configured upstream.
+Compatible meter state is preserved. Host/contract changes require a restart;
+failed reloads retain the previous runtime. Hover the resize arrow for status.
+See [the hot-reload guide](docs/hot-reload.md) for architecture, options and checks.
+
+Development packaging uses `scripts/package.ps1 -Development` and produces
+`artifacts/Based.Spires2DamageMeter-<version>-development.zip`. Keep every packaged
+DLL and the `runtime` directory together. Normal deployment still requires a
+closed game. Native gameplay and save-safety acceptance remain pending.
 
 [DESIGN.md](DESIGN.md) records accounting decisions and implementation checkpoints;
 [CHANGELOG.md](CHANGELOG.md) contains historical preview notes. Mod logs and

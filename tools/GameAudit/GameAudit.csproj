@@ -1,1 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net9.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Compile Include="../../src/ModifierAudit.cs" Link="ModifierAudit.cs"/><Compile Include="../../src/ModifierManifest.cs" Link="ModifierManifest.cs"/><Compile Include="../../src/HpLossReplay.cs" Link="HpLossReplay.cs"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net9.0</TargetFramework><OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><GodotProjectDir>$(MSBuildProjectDirectory)</GodotProjectDir></PropertyGroup>
+  <ItemGroup><CompilerVisibleProperty Include="GodotProjectDir" /><ProjectReference Include="../../Based.Spires2DamageMeter.csproj" /></ItemGroup>
+</Project>

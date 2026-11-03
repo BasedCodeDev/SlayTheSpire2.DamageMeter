@@ -2,6 +2,10 @@
 
 The current build is a preview. All stable release gates remain pending.
 
+Development hot-reload implementation checks are recorded in
+[the preview.25 check report](hot-reload-checks-2026-11-03.md). The isolated runtime
+reload checks do not certify live gameplay, multiplayer or persistence.
+
 ## Inspect recorded logs without changing them
 
 ```powershell
@@ -91,3 +95,32 @@ Example shape (illustrative only; do not copy as a passing result):
 Run `dotnet run --project tools/TraceReport -- --release validation/release-evidence.json . 0.3.0`
 to inspect the gate. Stable packaging runs the same check. Preview packages can
 be produced with pending native gates; public publishing remains separate.
+
+## Hot-reload save-safety work (not certified)
+
+Independent fixture checks:
+
+```powershell
+dotnet run --project tests/SavePolicyFixture/SavePolicyChecks.csproj
+dotnet run --project tests/SaveCallbackFixture/SaveCallbackChecks.csproj
+powershell -ExecutionPolicy Bypass -File scripts/check-native-save-fixtures.ps1
+```
+
+Path tests pass 15 checks. Production callback source, with dependency substitutes,
+passes 12 isolation checks for missing/throwing runtime, finalizers, native save
+errors and cancellation. These do not certify the complete candidate. The native
+fixture currently crashes before scene entry (exit -1073741819); its schema cases
+have not passed. Logs are under artifacts/save-safety-gate. The harness uses only
+a synthetic ISaveStore, never Steam or existing save directories. The main project
+build passes, but the refactor remains in progress.
+
+The new runner and callback fixtures are scaffolding, not a completed native
+integration suite. Remaining: fix harness initialization, use complete candidate
+runtime instead of dependency substitutes, populate progression fixtures, verify
+runtime reload deferral/rollback, then record isolated solo/host/guest gameplay
+restarts. No live account or existing saves may be used. No recovery is authorized.
+
+`save-safety-evidence.json` explicitly lists pending cases. `scripts/check-save-safety.ps1`
+requires host/contract/payload/game/engine paths and checks exact binary hashes plus
+reviewed hashed scenario evidence. Keep the README warning until that gate passes.
+No candidate version bump or deployment is justified by the current fixture results.

@@ -11,6 +11,19 @@ false save-corruption handling and reported progress loss. The recovery attempt
 was unsuccessful; the recovery script is retired. Do not use old recovery steps.
 See the [incident record](validation/storage-incident-2026-11-03.md).
 
+## 0.3.0-preview.36 - development hot reload integration
+
+`-Development` installs a permanent host and a replaceable runtime. Subsequent
+development deployments publish complete immutable builds and activate them on
+the next available frame, including during combat. Compatible accounting and
+capture state survives; host/contract changes require restarting. Failed reloads
+retain the previous runtime. Normal deployment still requires closing the game.
+
+Isolated native tests cover repeated UI/calculation changes, retained state,
+pending task wrappers, rejected builds and assembly collection. They do not
+certify live gameplay, multiplayer or save/progress preservation. See
+[the development guide](docs/hot-reload.md); existing safety warnings remain.
+
 ## Historical development notes
 
 Diagnostic build for Slay the Spire 2 v0.107.1. Live gameplay and multiplayer verification are **pending**. This is not the final meter.

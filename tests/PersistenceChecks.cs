@@ -32,7 +32,7 @@ static class PersistenceChecks
  var run=RuntimeHelpers.GetUninitializedObject(game.GetType("MegaCrit.Sts2.Core.Saves.SerializableRun")!);
  object?[] start={run,null};Call("SavePrefix",start);
  try{
- var bytes=System.Text.Encoding.UTF8.GetBytes(Json(20));Call("WritePayload","run.save",bytes);Array.Fill(bytes,(byte)32);
+ var bytes=System.Text.Encoding.UTF8.GetBytes(Json(20));Call("WritePayload","current_run.save",bytes);Array.Fill(bytes,(byte)32);
  var field=session.GetField("saving",BindingFlags.NonPublic|BindingFlags.Static)!;var local=field.GetValue(null)!;var op=local.GetType().GetProperty("Value")!.GetValue(local)!;
  var payload=op.GetType().GetField("Payload")!.GetValue(op)!;
  check((string)payload.GetType().GetProperty("Json")!.GetValue(payload)! == Json(20),"production observer freezes bytes before caller mutation");

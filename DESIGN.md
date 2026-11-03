@@ -486,3 +486,47 @@ CHANGELOG.md with reciprocal links and explicit supersession/withdrawal context.
 Built-in imagegen generated the minimal meter wordmark; PNG and prompt provenance
 live in assets. Package includes linked documentation and logo. No mod-version,
 capture/accounting changes, installation or save mutations are part of this work.
+
+## Save-safety certification work
+Certify the final hot-reload candidate, including host callbacks, operation state,
+runtime replacement and native managers. Keep the README incident warning until
+isolated native tests and solo/host/guest gameplay restart evidence all pass for
+exact build hashes. No old-progress recovery, existing-save mutation or Steam
+Cloud access. Existing reload-only gate is not persistence certification.
+
+### Save-safety work checkpoint (incomplete)
+Added shared run-save classification to host and runtime read/write observation.
+Host callbacks now contain missing/throwing runtime failures; finalizers restore
+scope directly and preserve native exceptions. 15 path-policy checks and 12
+production callback-source isolation checks pass. Main project builds. Native
+fixture runner exports under the matching game runtime but crashes before scene
+entry (0xC0000005), so native schema, full candidate persistence and gameplay
+certification remain pending. Structured evidence gate is fail-closed; README
+incident warning retained. No live-save restoration/deployment/cloud access.
+
+## Preview.25 development hot reload
+
+The ordinary build and development build share permanent host/contract assemblies
+and a separate runtime. `-Development` maps to `DevelopmentMode=true`; only that
+host watches atomic runtime publications. Runtime-only changes activate between
+callbacks on the next available frame, including during combat. No combat/menu
+boundary is required. Host/contract changes require a restart.
+
+Shared data objects retain accounting, ownership, pending effective block,
+deduplication, coverage, run history and layout. Methods forward synchronously to
+the active runtime; pending task wrappers and typed Harmony entry points remain
+in the host. Custom Godot classes also remain permanent. UI roots and deferred
+callbacks belong to a generation; failed candidates release their resources and
+leave the existing runtime/UI active.
+
+Content-addressed build directories and an atomic `runtime/current.json` pointer
+prevent partial DLL loads. Host/contract hashes, runtime hashes and API/state
+versions are checked. Git metadata and checkout paths are excluded from permanent
+binary identity. More than two retained generations stops further reloads.
+
+Private runtime log/phase values are snapshotted into JSON without framework
+reflection serialization: .NET's global accessor cache otherwise retains their
+assemblies even with distinct serializer options. Native tests explicitly emit
+private anonymous log values through repeated reloads and check collection.
+The developer workflow and implementation boundaries are in `docs/hot-reload.md`.
+Isolated engine tests do not certify live multiplayer or save/progress safety.

@@ -1,0 +1,293 @@
+using System.Reflection;
+using Godot;
+using HarmonyLib;
+using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Hooks;
+using MegaCrit.Sts2.Core.Models;
+using global::Based.Spires2DamageMeter;
+using static global::Based.Spires2DamageMeter.NativeDamageCapture;
+
+namespace Based.Spires2DamageMeter.Runtime;
+internal static class NativeDamageCaptureLogic
+{
+    public static bool Observe(object result, out string eventId)
+    {
+        eventId = Guid.NewGuid().ToString("N");
+        lock (observed)
+            return observed.Add(result);
+    }
+
+    public static bool? Bypasses(DamageResult result) => scope.Value?.Results.Find(result)?.BypassBlock;
+    public static void Reset()
+    {
+        Coverage.Clear();
+        lock (observed)
+            observed.Clear();
+    }
+
+    public static void DamagePrefix(out object? __state)
+    {
+        __state = scope.Value;
+        scope.Value = new();
+    }
+
+    public static void BlockPrefix(Creature __instance, out object? __state)
+    {
+        __state = null;
+        var active = scope.Value?.Active;
+        if (active != null)
+        {
+            active.BlockOwner = __instance;
+            __state = new BlockSnapshot(active, __instance, __instance.Block);
+        }
+    }
+
+    public static void BlockPostfix(decimal __result, object? __state)
+    {
+        if (__state is BlockSnapshot s)
+            s.Trace.Phases.Add(Hosting.LogValue.Freeze(new { phase = "block", owner = Probe.Get(s.Owner, "CombatId"), before = s.Before, after = s.Owner.Block, absorbed = __result }));
+    }
+
+    public static void ResultConstructed(DamageResult __instance) => Bind(__instance);
+    public static void HpReturned(DamageResult __result) => Bind(__result);
+    public static void Bind(DamageResult result)
+    {
+        try
+        {
+            var current = scope.Value?.Active;
+            if (current == null)
+                return;
+            if (!ReferenceEquals(result.Receiver, current.Target) && !ReferenceEquals(result.Receiver, current.RedirectedReceiver))
+                return;
+            scope.Value!.Results.Bind(result, current);
+        }
+        catch (Exception e)
+        {
+            Probe.Emit("damage_binding_error", new { error = e.Message });
+        }
+    }
+
+    public static Exception? DamageFinalizer(Exception? __exception, object? __state)
+    {
+        scope.Value = (Scope? )__state;
+        return __exception;
+    }
+
+    public static void ModifyPrefix(object[] __args, out object? __state)
+    {
+        __state = trace.Value;
+        trace.Value = null;
+        if (scope.Value == null || __args[2] is not Creature target || Convert.ToInt32(__args[8]) != 0)
+            return;
+        trace.Value = new()
+        {
+            Target = target,
+            Dealer = __args[3] as Creature,
+            Raw = (decimal)__args[4],
+            Hp = target.CurrentHp,
+            Block = target.Block,
+            BypassBlock = (Convert.ToInt32(__args[5]) & 2) != 0
+        };
+    }
+
+    public static void ModifyPostfix(decimal __result, object? __state)
+    {
+        var current = trace.Value;
+        trace.Value = (Trace? )__state;
+        if (current == null)
+            return;
+        current.Output = __result;
+        scope.Value?.Pending.Add(current);
+        if (scope.Value != null)
+            scope.Value.Active = current;
+    }
+
+    public static Exception? ModifyFinalizer(Exception? __exception, object? __state)
+    {
+        trace.Value = (Trace? )__state;
+        return __exception;
+    }
+
+    public static void MarkUnsupported(string reason)
+    {
+        if (trace.Value is Trace t)
+        {
+            t.Unsupported = true;
+            t.UnsupportedReasons.Add(reason);
+        }
+    }
+
+    public static void RecordMultiplier(AttackMultiplierSnapshot snapshot, decimal observed)
+    {
+        if (trace.Value is Trace t)
+            Probe.Emit("multiplicative_snapshot", new { resolutionId = t.Id, snapshot, expected = snapshot.Expected, observed });
+    }
+
+    public static void RecordAdditive(AdditiveSnapshot snapshot, decimal observed)
+    {
+        if (trace.Value is Trace t)
+            Probe.Emit("additive_snapshot", new { resolutionId = t.Id, snapshot, expected = snapshot.Expected, observed });
+    }
+
+    public static void ModifierPostfix(AbstractModel __instance, MethodBase __originalMethod, decimal __result, object? __state, AdditiveSnapshot? additive, AttackMultiplierSnapshot? multiplier)
+    {
+        try
+        {
+            var chain = NativeMultiplierCapture.Finish(__state, __result);
+            var current = trace.Value;
+            if (current == null)
+                return;
+            if (__originalMethod is not MethodInfo method || (!ModifierContracts.Supported(method) || !ModifierAudit.InputIndependent(method)))
+            {
+                current.Unsupported = true;
+                current.UnsupportedReasons.Add("input-dependent callback: " + __originalMethod);
+            }
+
+            var kind = __originalMethod.Name switch
+            {
+                "ModifyDamageAdditive" or "EnchantDamageAdditive" => ModifierKind.Add,
+                "ModifyDamageMultiplicative" or "EnchantDamageMultiplicative" => ModifierKind.Multiply,
+                _ => ModifierKind.Cap
+            };
+            if (__originalMethod.DeclaringType != typeof(AbstractModel) && __originalMethod.DeclaringType != typeof(EnchantmentModel))
+                Probe.Emit("modifier_snapshot", new { resolutionId = current.Id, model = __instance.GetType().FullName, method = __originalMethod.Name, audit = __originalMethod is MethodInfo audited && ModifierContracts.Supported(audited) ? "hash_matched_structural_contract" : "unsupported", output = __result });
+            if ((kind == ModifierKind.Add && __result == 0) || (kind == ModifierKind.Multiply && __result == 1 && chain == null))
+                return;
+            if (kind == ModifierKind.Cap && __result == decimal.MaxValue)
+                return;
+            var owners = multiplier?.Providers ?? additive?.Providers ?? (__instance is PowerModel p ? Probe.PowerOwnership(p) : Array.Empty<Share>());
+            current.Modifiers.Add(new(chain?.Root ?? $"{__instance.GetType().Name}:{current.Modifiers.Count}", kind, __result, __instance is PowerModel, owners) { Chain = chain });
+        }
+        catch (Exception e)
+        {
+            if (trace.Value != null)
+                trace.Value.Unsupported = true;
+            Probe.Emit("damage_trace_error", new { error = e.ToString() });
+        }
+    }
+
+    public static Trace? Pending(Creature target) => scope.Value?.Active is Trace t && (ReferenceEquals(t.Target, target) || ReferenceEquals(t.RedirectedReceiver, target)) ? t : null;
+    public static void HpPhasePrefix(Creature __2, out object? __state)
+    {
+        __state = hpTrace.Value;
+        hpTrace.Value = Pending(__2);
+    }
+
+    public static void HpPhasePostfix(Creature __2, decimal __3, HpLossHookPhase __7, decimal __result, object? __state)
+    {
+        var current = hpTrace.Value;
+        hpTrace.Value = (Trace? )__state;
+        if (current != null)
+            current.Phases.Add(Hosting.LogValue.Freeze(new { phase = __7.ToString(), input = __3, output = __result, target = Probe.Get(__2, "CombatId") }));
+    }
+
+    public static Exception? HpPhaseFinalizer(Exception? __exception, object? __state)
+    {
+        hpTrace.Value = (Trace? )__state;
+        return __exception;
+    }
+
+    public static void HpModifierPrefix(AbstractModel __instance, MethodBase __originalMethod, object[] __args, out object? __state)
+    {
+        __state = null;
+        var current = hpTrace.Value;
+        if (current == null)
+            return;
+        try
+        {
+            var rule = NativeHpLossAdapters.Snapshot(__instance, (MethodInfo)__originalMethod, __args);
+            __state = new HpSnapshot(current, (decimal)__args[1], rule, __originalMethod.ToString()!);
+        }
+        catch (Exception e)
+        {
+            current.Unsupported = true;
+            current.UnsupportedReasons.Add(e.Message);
+        }
+    }
+
+    public static void HpModifierPostfix(decimal __result, object? __state)
+    {
+        if (__state is not HpSnapshot observed)
+            return;
+        var expected = observed.Rule?.Apply(observed.Input) ?? observed.Input;
+        if (expected != __result)
+        {
+            observed.Trace.Unsupported = true;
+            observed.Trace.UnsupportedReasons.Add("HP-loss adapter mismatch: " + observed.Method);
+        }
+
+        if (observed.Rule != null)
+            observed.Trace.HpLoss.Add(observed.Rule);
+    }
+
+    public static void RedirectPostfix(object[] __args, Creature __result)
+    {
+        if (__args[1] is not Creature target)
+            return;
+        var current = Pending(target);
+        if (current == null)
+            return;
+        current.RedirectedReceiver = __result;
+        if (!ReferenceEquals(target, __result))
+        {
+            current.Unsupported = true;
+            current.UnsupportedReasons.Add("multi-receiver redirection requires allocation adapter");
+        }
+
+        current.Phases.Add(Hosting.LogValue.Freeze(new { phase = "redirect", input = __args[2], original = Probe.Get(target, "CombatId"), receiver = Probe.Get(__result, "CombatId") }));
+    }
+
+    public static AmplificationResult? Resolve(Creature target, DamageResult result, string eventId)
+    {
+        var receiver = result.Receiver;
+        var outgoing = receiver.Side.ToString() == "Enemy";
+        var normalized = EngineDamage.Normalize(result.UnblockedDamage, result.BlockedDamage, result.OverkillDamage);
+        try
+        {
+            var bound = scope.Value?.Results.Find(result);
+            Probe.Emit("damage_binding", new { eventId, resultId = eventId, invocationId = scope.Value?.Id, resolutionId = bound?.Id, originalTarget = Probe.Get(bound?.Target, "CombatId"), receiver = Probe.Get(receiver, "CombatId"), blockOwner = Probe.Get(bound?.BlockOwner, "CombatId"), status = scope.Value?.Results.Conflicted(result) == true ? "conflict" : bound == null ? "unmatched" : "bound" });
+            if (!outgoing)
+            {
+                var observed = bound;
+                var outcome = TraceCoverage.IncomingOutcome(normalized, observed != null && !ReferenceEquals(observed.Target, receiver));
+                Coverage.Record(false, outcome);
+                Probe.Emit("incoming_damage_diagnostic", new { eventId, invocationId = scope.Value?.Id, traceId = observed?.Id, dealer = Probe.Get(observed?.Dealer, "CombatId"), originalTarget = Probe.Get(observed?.Target, "CombatId"), receiver = Probe.Get(receiver, "CombatId"), observed?.Raw, observed?.Output, observed?.Phases, observed?.HpLoss, observed?.UnsupportedReasons, hpBefore = observed?.Hp, blockBefore = observed?.Block, outcome, normalized });
+                return null;
+            }
+
+            if (bound == null)
+            {
+                Coverage.Record(true, "missing_trace");
+                Probe.Emit("damage_trace_missing", new { eventId, invocationId = scope.Value?.Id, normalized });
+                return null;
+            }
+
+            var current = bound;
+            if (current.Unsupported)
+            {
+                Coverage.Record(true, "unsupported");
+                Probe.Emit("damage_trace_unsupported", new { eventId, invocationId = scope.Value?.Id, traceId = current.Id, reasons = current.UnsupportedReasons, current.Phases, current.HpLoss, normalized });
+                return null;
+            }
+
+            var calculated = Amplification.Calculate(current.Raw, current.Hp, current.Block, current.Modifiers, current.HpLoss, current.BypassBlock);
+            if (calculated.Actual.Hp != normalized.Hp || calculated.Actual.Block != normalized.Block)
+            {
+                Coverage.Record(true, "reconciliation_failure");
+                Probe.Emit("damage_trace_mismatch", new { eventId, invocationId = scope.Value?.Id, traceId = current.Id, originalTarget = Probe.Get(target, "CombatId"), receiver = Probe.Get(receiver, "CombatId"), current.Raw, current.Output, calculated.Actual, normalized });
+                return null;
+            }
+
+            Coverage.Record(true, "matched");
+            Probe.Emit("damage_trace", new { eventId, invocationId = scope.Value?.Id, traceId = current.Id, current.Raw, current.Output, current.Modifiers, current.HpLoss, current.Phases, current.BypassBlock, hpBefore = current.Hp, blockBefore = current.Block, calculated, normalized });
+            return calculated;
+        }
+        catch (Exception e)
+        {
+            Coverage.Record(outgoing, "capture_error");
+            Probe.Emit("damage_trace_error", new { error = e.ToString() });
+            return null;
+        }
+    }
+}

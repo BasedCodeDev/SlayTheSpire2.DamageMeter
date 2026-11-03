@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <EnableSourceLink>false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)/..'))=/_/meter</PathMap>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../src/Accounting.cs;../src/CreditedDamage.cs;../src/EffectiveDamage.cs;../src/StatusOwnershipLedger.cs;../src/PowerChangeTracker.cs;../src/RunStatisticsStore.cs;../src/Amplification.cs;../src/EngineDamage.cs;../src/MeterTooltipModel.cs;../src/MultiplierChain.cs;../src/HpLossReplay.cs;../src/AdditiveSnapshot.cs;../src/AttackMultiplierSnapshot.cs;../src/PersistencePayload.cs;../src/SourceTotals.cs;../src/ResultRegistry.cs" />
+  </ItemGroup>
+</Project>
