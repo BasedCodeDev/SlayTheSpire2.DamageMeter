@@ -553,3 +553,8 @@ are more saturated and their bar fill is slightly more opaque.
 Player detail tooltips use a scrollable content box sized relative to the meter's
 current width and height, with a viewport cap. The full source breakdown remains
 available without expanding the tooltip over the game screen.
+
+## 0.3.0-preview.37 - contiguous player rows
+
+Removed vertical separation between player rows and reduced row height to match
+the bar height for a tightly stacked meter appearance.

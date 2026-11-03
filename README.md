@@ -6,7 +6,7 @@ An unofficial damage-meter mod for **Slay the Spire 2**, with solo and multiplay
 views, source breakdowns and credit for the players who provide damage bonuses.
 Collection is local; teammates do not need this mod installed.
 
-**Status:** experimental preview, currently `0.3.0-preview.36`, targeting game
+**Status:** experimental preview, currently `0.3.0-preview.37`, targeting game
 `v0.107.1`. Automated checks pass, but native startup, persistence, UI and
 host/guest verification remain incomplete. Windows is the current development
 and deployment target; Linux/macOS are not verified.
@@ -25,7 +25,7 @@ preview builds with valued progress.
 | View | Meaning |
 | --- | --- |
 | Effective Damage | HP damage plus block damage from shields later breached by a block-respecting HP hit. Pending block is excluded. |
-| Damage (HP + Block) | All observed HP and block damage, with effective bonuses credited to their providers. |
+| Damage | All observed HP and block damage, with effective bonuses credited to their providers. |
 | HP Only / Block Only | Separate destination totals. |
 | Poison HP / Doom HP | Actual poison HP loss or confirmed Doom execution damage. Applying Doom earns no HP credit. |
 | Amplification | Effective bonuses provided to yourself and teammates; already included in Damage. |

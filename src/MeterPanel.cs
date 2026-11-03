@@ -89,7 +89,7 @@ public partial class MeterPanel : CanvasLayer
         metric.Select(metric.GetItemIndex(savedMetric));metric.ItemSelected+=_=>Save();
         empty=new Label {Text="No damage recorded yet"};body.AddChild(empty);
         scroll=new ScrollContainer { HorizontalScrollMode=ScrollContainer.ScrollMode.Disabled }; body.AddChild(scroll);
-        rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill };rows.AddThemeConstantOverride("separation",1); scroll.AddChild(rows);
+        rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill };rows.AddThemeConstantOverride("separation",0); scroll.AddChild(rows);
         ApplyCollapsedState(settings.GetValue("layout","collapsed",false).AsBool());
     }
     private void UpdateScopeToggle()
@@ -186,7 +186,7 @@ public partial class MeterPanel : CanvasLayer
         {
             if(!controls.TryGetValue(id,out var row))
             {
-                var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,26) };
+                var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,20) };
                 button.AddThemeStyleboxOverride("normal",new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("focus",new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("pressed",new StyleBoxEmpty());
@@ -218,7 +218,7 @@ public partial class MeterPanel : CanvasLayer
 
         }
         var overhead=panel.GetCombinedMinimumSize().Y-scroll.CustomMinimumSize.Y;
-        var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-overhead-8),Math.Max(0,controls.Count*28));
+        var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-overhead-8),Math.Max(0,controls.Count*20));
         scroll.CustomMinimumSize=new Vector2(0,desired);
         QueueHeightRefresh();
     }
@@ -239,16 +239,16 @@ public partial class MeterBar : Control
         if(hpStyle==null||hpStyle.BgColor!=WithAlpha(HpColour,.94f))hpStyle=CreateStyle(WithAlpha(HpColour,.94f),6,5);
         if(ampStyle==null||ampStyle.BgColor!=WithAlpha(AmpColour,.94f))ampStyle=CreateStyle(WithAlpha(AmpColour,.94f),6,5);
         glossStyle??=CreateStyle(new(1,1,1,.11f),5,0);
-        var barRect=new Rect2(0,3,Size.X,Math.Max(0,Size.Y-6));
+        var barRect=new Rect2(0,0,Size.X,Size.Y);
         DrawStyleBox(trackStyle,barRect);
         if(Maximum>0)
         {
             var hp=Math.Clamp(Size.X*(float)((Hp+Block)/Maximum),0,Size.X);
             var amp=Math.Clamp(Size.X*(float)(Orange/Maximum),0,Math.Max(0,Size.X-hp));
-            if(hp>0)DrawStyleBox(hpStyle,new Rect2(0,3,hp,barRect.Size.Y));
-            if(amp>0)DrawStyleBox(ampStyle,new Rect2(hp,3,amp,barRect.Size.Y));
+            if(hp>0)DrawStyleBox(hpStyle,new Rect2(0,0,hp,barRect.Size.Y));
+            if(amp>0)DrawStyleBox(ampStyle,new Rect2(hp,0,amp,barRect.Size.Y));
             var filledWidth=hp+amp;
-            if(filledWidth>12)DrawStyleBox(glossStyle,new Rect2(2,4,filledWidth-4,Math.Max(0,barRect.Size.Y*.32f)));
+            if(filledWidth>12)DrawStyleBox(glossStyle,new Rect2(2,1,filledWidth-4,Math.Max(0,barRect.Size.Y*.32f)));
         }
         DrawRowText();
     }
