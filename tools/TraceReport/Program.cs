@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Based.Spires2DamageMeter;
+Based.Spires2DamageMeter.Hosting.RuntimeHost.LoadBuiltRuntimeForChecks();
 if(args.Length==4 && args[0]=="--release")
 {
     var failures=ReleaseEvidence.Validate(File.ReadAllText(args[1]),args[2],args[3]);

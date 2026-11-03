@@ -1,0 +1,15 @@
+config_version=5
+custom_features="dotnet"
+
+[application]
+config/name="Damage Meter Save Fixture"
+config/features=PackedStringArray("4.5", "C#", "GL Compatibility")
+run/main_scene="res://Gate.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="DamageMeterSaveFixture"
+
+[dotnet]
+project/assembly_name="SaveSafetyGate"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"

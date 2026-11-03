@@ -6,7 +6,7 @@ An unofficial damage-meter mod for **Slay the Spire 2**, with solo and multiplay
 views, source breakdowns and credit for the players who provide damage bonuses.
 Collection is local; teammates do not need this mod installed.
 
-**Status:** experimental preview, currently `0.3.0-preview.36`, targeting game
+**Status:** experimental preview, currently `0.3.0-preview.38`, targeting game
 `v0.107.1`. Automated checks pass, but native startup, persistence, UI and
 host/guest verification remain incomplete. Windows is the current development
 and deployment target; Linux/macOS are not verified.
@@ -115,7 +115,8 @@ For a non-default installation, pass `-Sts2DataDir` pointing to its
 `artifacts/Based.Spires2DamageMeter-<version>.zip`.
 
 For manual installation, close the game and extract the ZIP's `mods` folder into
-the game directory. The DLL and manifest must sit directly inside:
+the game directory. Keep the host/contract DLLs, manifest and `runtime` directory
+together inside:
 
 ```text
 <game directory>\mods\Based.Spires2DamageMeter
@@ -125,6 +126,31 @@ Start the game through Steam and enable the mod. To uninstall, close the game an
 remove only that mod folder. Leave game-save and user-data folders untouched.
 
 ## Development and diagnostics
+
+Development builds support runtime hot reload. **Close the game once** and run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Development
+```
+
+After installing and enabling that host, repeat the command while the game is
+running to build, check and reload UI and runtime logic. To pull GitHub changes
+first, run `update.bat -Development` on a branch with a configured upstream.
+Compatible updates activate on the next available game frame, including during
+combat, and preserve meter state. If host/contract changes require a restart,
+close the game and rerun the development deployment command above, then let the
+script launch the game again.
+
+A **published** message confirms deployment, not activation. A candidate can
+still be rejected; failed reloads retain the previous runtime. Check the game
+log for activation/rejection status and the active build identifier. Hover the
+resize arrow for the loaded version and capture diagnostics.
+See [the hot-reload guide](docs/hot-reload.md) for architecture, options and checks.
+
+Development packaging uses `scripts/package.ps1 -Development` and produces
+`artifacts/Based.Spires2DamageMeter-<version>-development.zip`. Keep every packaged
+DLL and the `runtime` directory together. Normal deployment still requires a
+closed game. Native gameplay and save-safety acceptance remain pending.
 
 [DESIGN.md](DESIGN.md) records accounting decisions and implementation checkpoints;
 [CHANGELOG.md](CHANGELOG.md) contains historical preview notes. Mod logs and

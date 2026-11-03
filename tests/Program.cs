@@ -3,6 +3,9 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
 
+try {
+Based.Spires2DamageMeter.Hosting.RuntimeHost.LoadBuiltRuntimeForChecks(args.Length > 0 ? args[0] : null);
+
 void Check(bool ok, string name) { if (!ok) throw new Exception(name); Console.WriteLine("PASS " + name); }
 OwnershipChecks.Run(Check);
 NormalizationChecks.Run(Check);
@@ -24,6 +27,8 @@ HpLossChecks.Run(Check);
 Checks.MilestoneModelChecks.Run(Check);
 PowerChangeChecks.Run(Check);
 RegistrationChecks.Run(Check);
+HotReloadChecks.Run(Check);
+ProbeHookChecks.Run(Check);
 var a = new Accounting();
 var hit = new object();
 a.Add(hit, "A", 10, 0, 10, "Direct");
@@ -63,3 +68,6 @@ if (args.Length > 0)
     Check(targets.Select(t => t.Name).SequenceEqual(new[] { "BeforePowerAmountChanged", "AfterPowerAmountChanged", "Apply", "ModifyAmount", "Remove" }), "installed-game ownership targets validated");
     foreach (var target in targets) Console.WriteLine("VALIDATED " + target);
 }
+
+return 0;
+} catch(Exception error) { Console.Error.WriteLine(error); return 1; }

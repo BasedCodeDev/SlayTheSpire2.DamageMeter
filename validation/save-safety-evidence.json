@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "status": "pending",
+  "target": "final-hot-reload-build",
+  "candidate": null,
+  "cases": [
+    {
+      "scenario": "startup-profile-prefs-progress",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "generic-loaders-unpatched",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "unrelated-io-excluded",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "solo-two-restarts",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "host-two-restarts",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "guest-two-restarts",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "failed-cancelled-save",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "primary-backup-fallback",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "mod-checkpoint-errors",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "nested-loads",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "overlapping-stale-saves",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "profile-run-switch",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "replayed-encounter",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "reload-during-save-load",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "failed-reload-retains-runtime",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    },
+    {
+      "scenario": "repeated-reload-no-hooks-leaks",
+      "status": "pending",
+      "expected": "",
+      "observed": "",
+      "references": []
+    }
+  ],
+  "notes": "Readme incident warning must stay until all cases pass with exact candidate hashes. Current native fixture exits before scene startup; fixture-only checks are not gameplay certification."
+}

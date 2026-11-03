@@ -1,0 +1,1 @@
+int passed=0;RunSavePolicyChecks.Run((ok,name)=>{if(!ok)throw new Exception(name);passed++;});Console.WriteLine($"PASS {passed} isolated save-path checks");

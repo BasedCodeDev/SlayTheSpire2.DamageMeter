@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotReloadGate", "HotReloadGate.csproj", "{C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Based.Spires2DamageMeter.Contracts", "..\..\contracts\Based.Spires2DamageMeter.Contracts.csproj", "{A92DE833-4BD6-4C98-BD85-4AB4967E183E}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        ExportDebug|Any CPU = ExportDebug|Any CPU
+        ExportRelease|Any CPU = ExportRelease|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+        {C1A0FCCA-68CC-4F64-8EFA-B9C65732FDE0}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+        {A92DE833-4BD6-4C98-BD85-4AB4967E183E}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+    EndGlobalSection
+EndGlobal

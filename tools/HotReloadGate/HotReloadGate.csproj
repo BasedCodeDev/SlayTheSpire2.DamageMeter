@@ -1,0 +1,18 @@
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RuntimeFrameworkVersion>9.0.9</RuntimeFrameworkVersion>
+    <NuGetAudit>false</NuGetAudit>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../tests/ProbeHookChecks.cs" Link="ProbeHookChecks.cs" />
+    <Compile Include="../../tests/NativeObserverChecks.cs" Link="NativeObserverChecks.cs" />
+    <Compile Include="../../tests/GameLoadingChecks.cs" Link="GameLoadingChecks.cs" />
+    <ProjectReference Include="../../contracts/Based.Spires2DamageMeter.Contracts.csproj" />
+    <ProjectReference Include="../../Based.Spires2DamageMeter.csproj" />
+    <Reference Include="0Harmony"><HintPath>C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/data_sts2_windows_x86_64/0Harmony.dll</HintPath></Reference>
+    <Reference Include="sts2"><HintPath>C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/data_sts2_windows_x86_64/sts2.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

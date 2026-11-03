@@ -1,14 +1,24 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.5.1">
+<Project Sdk="Godot.NET.Sdk/4.5.1">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Version>0.3.0-preview.36</Version>
+    <Version>0.3.0-preview.38</Version>
     <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <EnableSourceLink>false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <PathMap>$(MSBuildProjectDirectory)=/_/meter</PathMap>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion><FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>DamageMeter.Host/1</InformationalVersion>
+    <DefineConstants Condition="'$(DevelopmentMode)' == 'true'">$(DefineConstants);DEVELOPMENT_HOT_RELOAD</DefineConstants>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/data_sts2_windows_x86_64</Sts2DataDir>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="tests/**/*.cs" />
     <Compile Remove="tools/**/*.cs" />
     <Compile Remove="artifacts/**/*.cs" />
+    <Compile Remove="contracts/**/*.cs;runtime/**/*.cs" />
+    <Compile Remove="src/Accounting.cs;src/CreditedDamage.cs;src/EffectiveDamage.cs;src/StatusOwnershipLedger.cs;src/PowerChangeTracker.cs;src/RunStatisticsStore.cs;src/Amplification.cs;src/EngineDamage.cs;src/MeterTooltipModel.cs;src/MultiplierChain.cs;src/HpLossReplay.cs;src/AdditiveSnapshot.cs;src/AttackMultiplierSnapshot.cs;src/PersistencePayload.cs;src/SourceTotals.cs;src/ResultRegistry.cs" />
+    <ProjectReference Include="contracts/Based.Spires2DamageMeter.Contracts.csproj" />
     <Reference Include="sts2"><HintPath>$(Sts2DataDir)/sts2.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(Sts2DataDir)/0Harmony.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
