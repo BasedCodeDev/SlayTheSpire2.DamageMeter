@@ -478,3 +478,11 @@ changes. Wrapped source rows are height-budgeted within the game viewport with
 explicit remainder count. Package gate passes 571 checks, including semantic
 colour/aggregation, solo, zero and warning presentation checks. Native visual
 acceptance remains pending; no save/capture/accounting changes were made.
+
+## Project documentation and logo
+README is the current project overview with deployment, controls, limitations and
+Kaztelle's concept/design credit. Historical preview notes move to root
+CHANGELOG.md with reciprocal links and explicit supersession/withdrawal context.
+Built-in imagegen generated the minimal meter wordmark; PNG and prompt provenance
+live in assets. Package includes linked documentation and logo. No mod-version,
+capture/accounting changes, installation or save mutations are part of this work.

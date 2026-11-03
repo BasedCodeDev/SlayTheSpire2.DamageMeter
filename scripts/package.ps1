@@ -20,9 +20,15 @@ try {
     if ($LASTEXITCODE) { throw 'Checks or installed-game compatibility validation failed' }
     $packageDir = Join-Path $projectRoot 'artifacts/mods/Based.Spires2DamageMeter'
     New-Item -ItemType Directory -Force $packageDir | Out-Null
-    Copy-Item -LiteralPath '.godot/mono/temp/bin/Release/Based.Spires2DamageMeter.dll','Based.Spires2DamageMeter.json','THIRD_PARTY_NOTICES.md','README.md' -Destination $packageDir
+    Copy-Item -LiteralPath '.godot/mono/temp/bin/Release/Based.Spires2DamageMeter.dll','Based.Spires2DamageMeter.json','THIRD_PARTY_NOTICES.md','README.md','CHANGELOG.md','DESIGN.md' -Destination $packageDir
     $licenseDir = Join-Path $packageDir 'licenses'
     New-Item -ItemType Directory -Force $licenseDir | Out-Null
     Copy-Item -LiteralPath 'licenses/DamageTracker-MIT.txt' -Destination $licenseDir -Force
+    $assetDir = Join-Path $packageDir 'assets'
+    New-Item -ItemType Directory -Force $assetDir | Out-Null
+    Copy-Item -LiteralPath 'assets/logo.png','assets/logo-generation.md' -Destination $assetDir -Force
+    $validationDir = Join-Path $packageDir 'validation'
+    New-Item -ItemType Directory -Force $validationDir | Out-Null
+    Copy-Item -LiteralPath 'validation/storage-incident-2026-11-03.md','validation/README.md' -Destination $validationDir -Force
     Compress-Archive -Path 'artifacts/mods' -DestinationPath "artifacts/Based.Spires2DamageMeter-$version.zip" -Force
 } finally { Pop-Location }
