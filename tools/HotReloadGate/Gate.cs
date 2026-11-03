@@ -182,6 +182,28 @@ public partial class Gate : Node
         File.Move(pointer + ".tmp", pointer, true);
         RuntimeHost.Pump(1);
         if (RuntimeHost.BuildId != expected.BuildId) throw new Exception("Actual runtime activation failed: " + RuntimeHost.Status);
+        var meter = MeterPanel.instance!;
+        void NoticeFrame(double delta) { meter.elapsed = -100; meter._Process(delta); }
+        NoticeFrame(0);
+        var notice = meter.GetNode<Button>("ReloadNotice");
+        if (!notice.TooltipText.Contains(expected.BuildId)) throw new Exception("Reload notice does not identify activated build");
+        var wasVisible = meter.panel.Visible;
+        meter.panel.Visible = false;
+        NoticeFrame(1);
+        if (notice.Visible || notice.GetMeta("age").AsDouble() != 0 || !notice.GetMeta("pending").AsBool()) throw new Exception("Hidden meter consumed reload notice");
+        meter.panel.Visible = true;
+        meter.panel.Position = beforeLayout.Position;
+        NoticeFrame(.125);
+        if (!notice.Visible || notice.Scale.X <= 1 || notice.Position.X >= beforeLayout.Position.X) throw new Exception("Reload notice is not pulsing left of meter");
+        NoticeFrame(60);
+        if (!notice.Visible || notice.Modulate.A != 1 || notice.Scale != Vector2.One) throw new Exception("Reload notice did not remain visible after animation");
+        notice.EmitSignal(BaseButton.SignalName.Pressed);
+        NoticeFrame(0);
+        if (notice.Visible || notice.GetMeta("pending").AsBool()) throw new Exception("Click did not dismiss reload notice");
+        NoticeFrame(60);
+        if (notice.Visible) throw new Exception("Dismissed reload notice reappeared without another reload");
+        meter.panel.Visible = wasVisible;
+        meter.panel.Position = beforeLayout.Position; // _Process also clamps to the fixture viewport.
         ProbeHookChecks.Run((ok, name) => { if (!ok) throw new Exception(name); });
         if (actualCycles == 0)
         {
@@ -191,7 +213,7 @@ public partial class Gate : Node
         RuntimeCalls.Call("RunSession.Error", new InvalidOperationException("fixture anonymous log serialization"));
         if (Target(4) != (isAlternate ? 5 : 4)) throw new Exception("Changed runtime calculation was not activated");
         if (MeterPanel.instance.grab.Text != (isAlternate ? "DEV 2" : "\u2630")) throw new Exception("Changed runtime UI was not activated");
-        if (MeterPanel.instance.CapturePresentation() != beforeLayout) throw new Exception("Layout, selected metric/scope, collapsed or F8 state changed during reload");
+        if (MeterPanel.instance.CapturePresentation() != beforeLayout) throw new Exception($"Layout, selected metric/scope, collapsed or F8 state changed during reload: {beforeLayout} -> {MeterPanel.instance.CapturePresentation()}");
         if (tooltipWindow.Visible) throw new Exception("Retired tooltip window was not closed");
         if (Probe.Meter.Rows["A"].Hp != 9 || Probe.Meter.Rows["A"].Block != 3 || Probe.Effective.PendingFor("A") != 3 || Probe.Credited.Credits.Sum(c => c.Hp) != 9)
             throw new Exception("Compatible accounting state changed during reload");

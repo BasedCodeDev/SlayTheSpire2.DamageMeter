@@ -56,6 +56,13 @@ Use the packaging/deployment scripts to build both assemblies in order.
 
 ## Publication and activation
 
+After successful activation, a green exclamation-mark button pulses beside the meter for
+two seconds and stays visible until clicked to dismiss. Hover it for the loaded version
+and build identifier. It stays visible beside a collapsed meter; F8 hides it
+with the panel and pauses its animation. Near the left edge it appears above the
+meter (or to its right at the top-left corner) to avoid covering controls.
+Each successful reload shows it again. Startup and rejected updates do not trigger it.
+
 Each build lives in `runtime/builds/<content-hash>` beneath the installed mod.
 Deployment copies to a staging directory, verifies the contents, then atomically
 publishes `runtime/current.json`. The previous pointer is retained as
