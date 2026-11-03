@@ -4,6 +4,13 @@ static class MeterTooltipChecks
 {
  public static void Run(Action<bool,string> check)
  {
+  var detail=new Totals{Hp=9,Block=2,AmplifiedHp=3,AmplifiedBlock=1,SupportGiven=3,SupportGivenHp=2,SupportGivenBlock=1,Poison=8,Doom=4};
+  check(MeterTooltipModel.Labels.Length==8&&MeterTooltipModel.Labels[7]=="Actual Damage","grouped metrics retain legacy IDs");
+  check(MeterTooltipModel.Detail(5,detail).Contains("Self bonus: 1; teammate bonus: 3"),"amplification details distinguish self and team credit");
+  check(MeterTooltipModel.Detail(6,detail).Contains("Bonus HP: 2; block: 1"),"support tooltip uses outgoing destinations");
+  check(!MeterTooltipModel.Detail(1,detail).Contains("block")&&!MeterTooltipModel.Detail(4,detail).Contains("Poison"),"focused tooltip omits unrelated metrics");
+  check(MeterTooltipModel.Description(7).Contains("before bonuses")&&MeterTooltipModel.Description(6).Contains("already included"),"advanced metrics explain ownership and subset semantics");
+  check(new MeterTooltipModel("Focused",new[]{"Strike: 6"},"").Render()=="Focused\n\nStrike: 6","healthy player tooltip omits diagnostic footer");
   check(MeterTooltipModel.Status(true,true)=="Incomplete","tooltip status gives incomplete precedence");
   check(MeterTooltipModel.Status(false,true)=="Partial"&&MeterTooltipModel.Status(false,false)=="","tooltip status hides healthy badge");
   var model=new MeterTooltipModel("A: 0 (0%)",Enumerable.Range(1,15).Select(i=>$"Source {i}").ToArray(),"INCOMPLETE: capture failure");

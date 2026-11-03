@@ -1,4 +1,4 @@
-﻿# Based Damage Meter: stack capture repair (0.2.2)
+ï»¿# Based Damage Meter: stack capture repair (0.2.2)
 
 Diagnostic build for Slay the Spire 2 v0.107.1. Live gameplay and multiplayer verification are **pending**. This is not the final meter.
 
@@ -90,7 +90,7 @@ Block and HP values now appear centered in the blue/red segments; the right edge
 
 Deploy with the usual script to rebuild/check/package/install this version and launch through Steam. The header should read Based Damage Meter 0.3.0-preview.2. Orange amplification and support/contribution selectors remain disabled pending native adapter implementation.
 
-## 0.3.0-preview.3 — native amplification preview
+## 0.3.0-preview.3 â€” native amplification preview
 
 The current package connects damage scopes, modifier callbacks, target-specific reconciliation, orange bars, Amplification, Support Damage and Contribution. Only traces whose replay matches actual HP/block values are credited; input-dependent callbacks without adapters and unmatched/redirection/HP-loss cases remain unmeasured. The coverage line reports matched/unmeasured counts. A zero metric with unmeasured events is not proof that no amplification occurred. Earlier sections describing disabled selectors apply to earlier previews.
 
@@ -108,7 +108,7 @@ Checkpoint files from earlier accounting are preserved but excluded from current
 
 After deploying, verify the preview.4 header; compare a lethal hit's visible HP loss, raw engine fields, allocation and bar total. Then test a lethal amplified hit, poison and Doom, incoming prevention/redirection, host/guest operation, and reload replacement. Save event IDs with expected/observed values. Stable 0.3.0 remains unverified until its existing evidence gates pass.
 
-## 0.3.0-preview.5 — phase capture and validation tooling
+## 0.3.0-preview.5 â€” phase capture and validation tooling
 
 Added state snapshots for the seven base-game HP-loss callbacks, block-bypass
 replay, enchantment capture, explicit redirection diagnostics and quieter traces
@@ -318,3 +318,21 @@ and scopes, check support recipients and warnings, then collapse, use F8, resize
 and move near screen edges. Check that details disappear when hidden and that
 combat interaction and row order remain stable while hovering. Accounting,
 attribution, log and checkpoint versions are unchanged.
+
+## 0.3.0-preview.15 - simplified combat view
+
+All eight metrics are grouped by Damage and Attribution, preserving saved IDs.
+Each bar shows one centred selected-metric total, including zero, with Party %
+on the right. The labelled colour key follows the selected metric. Player hover
+shows relevant values and sources only; Info provides help, version and technical
+diagnostics. Partial/Incomplete remains in the header even while collapsed.
+
+Native visual verification remains pending. After deployment confirm preview.15
+in Info. Check two/four-player layouts at 1280x720 and 1920x1080, minimum/default
+width, long names, large totals, zero/narrow segments and screen edges. Exercise
+all eight metrics in Fight/Run, source trimming, unavailable attribution and
+legacy history warnings. Verify the 6-to-9 Vulnerable split still credits 6/3,
+plus poison, Doom, self bonuses and teammate support. Check live hover stability,
+scrolling, collapse, F8, dragging, resizing and saved selections. Accounting and
+storage/log schemas are unchanged. Automated checks do not establish native UI
+or multiplayer correctness.

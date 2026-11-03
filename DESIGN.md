@@ -1,6 +1,6 @@
 ﻿# Multiplayer Damage Meter — Design and Implementation Plan
 
-Status: 0.3.0-preview.3 implementation in progress. Native modifier tracing, destination-specific support records, source breakdowns and checkpoint schema 2 are connected. Full interaction coverage and native host/guest/reload/UI verification remain pending. Historical checkpoints below describe earlier versions.
+Status: 0.3.0-preview.15 UX simplification in progress. Historical checkpoints describe earlier versions; native visual and multiplayer release gates remain pending.
 
 ### Slice 1 boundary
 
@@ -32,8 +32,8 @@ Use **one movable, resizable, collapsible panel**:
 - **Current Fight / This Run** tabs; default to Current Fight.
 - Header metric selector: Damage, Support Damage, Contribution, Block Generated, Block Used, Healing, Damage Taken, Energy, and Card Draw.
 - Fixed-width player-name column, aligned bar origins, and a common scale against the largest displayed total.
-- Raw values centered within each coloured segment where space permits; only team percentage remains outside at the right.
-- Hover for explanations; click a player for source and recipient breakdowns.
+- One selected-metric total centred over each full bar track, including zero; party percentage remains at the right.
+- Hover for selected-metric source and recipient breakdowns. Info exposes help and diagnostics.
 - Retain completed-fight statistics until the next encounter. Size the panel to the party.
 - Persist layout and selections. Provide a configurable show/hide shortcut, defaulting to F8.
 - Use patterns or labels alongside colour.
@@ -350,3 +350,23 @@ with an explicit remainder count. They close on collapse, F8 hide and row remova
 509 checks pass, including formatting/filtering/status checks and existing
 accounting, dispatch, out-parameter and installed contract regressions. Native
 visual verification remains pending; see README preview.14 checklist.
+
+## Preview.15 agreed UX
+Keep all eight metrics grouped as Damage and Attribution with stable saved IDs.
+Shorten title, add always-available Info and header data-quality badge, including
+while collapsed. Show relevant labelled colour swatches and Party %. Centre one
+selected-metric total over each full track; show zero and retain full names on
+hover. Focus player tooltips on selected metric, relevant bonus destinations and
+sources; technical diagnostics live in Info/status. Preserve accounting, schemas,
+layout preferences, hover stability and input behaviour. Validate native layouts
+at 1280x720/1920x1080 with two/four players separately from automated checks.
+
+### Preview.15 implementation checkpoint
+Implemented grouped selection with unchanged saved metric IDs, focused player
+tooltips, centred full-track totals including zero, contextual labelled swatches,
+Party % heading and empty state. Header Info contains help/version/diagnostics;
+data-quality status remains accessible while collapsed. Existing capture and
+storage schemas are unchanged. Package build and 515 checks pass, including
+selected-metric detail/subset checks and prior installed-contract and multiplayer
+observer regressions. Native visual checks and multiplayer release gates remain
+pending; README contains the preview.15 acceptance checklist.
