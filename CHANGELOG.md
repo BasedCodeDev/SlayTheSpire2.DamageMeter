@@ -558,3 +558,8 @@ available without expanding the tooltip over the game screen.
 
 Removed vertical separation between player rows and reduced row height to match
 the bar height for a tightly stacked meter appearance.
+
+## 0.3.0-preview.38 - solo hero identity
+
+Single-player rows show the hero portrait and username beside the selected damage
+total, while keeping the multiplayer-only share format hidden.

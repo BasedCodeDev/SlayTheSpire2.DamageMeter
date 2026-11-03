@@ -200,12 +200,12 @@ public partial class MeterPanel : CanvasLayer
             }
             if(!hovered) rows.MoveChild(row.Button,index); index++;
             row.Icon.Texture=Probe.CharacterIcons.GetValueOrDefault(id);
-            row.Icon.Visible=!solo&&row.Icon.Texture!=null;
+            row.Icon.Visible=row.Icon.Texture!=null;
             (Color Hp,Color Amp) colors=Probe.CharacterColors.GetValueOrDefault(id,(Colors.Gray,Colors.Gray));
             row.Bar.HpColour=Saturate(colors.Hp,1.2f);row.Bar.AmpColour=Saturate(colors.Amp,1.2f);
             var value=Value(total);
             row.Bar.PlayerName=Probe.Names.GetValueOrDefault(id,id);
-            row.Bar.ShowPlayerName=!solo||id==StatusOwnershipLedger.Unknown;
+            row.Bar.ShowPlayerName=!solo||id==StatusOwnershipLedger.Unknown||row.Icon.Visible;
             row.Bar.DamageText=Math.Round(value,MidpointRounding.AwayFromZero).ToString("0",System.Globalization.CultureInfo.CurrentCulture);
             row.Bar.ShareText=team>0?$"{100*value/team:0.#}%":"0%";
             row.Bar.ShowDetails=!solo;
