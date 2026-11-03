@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "modVersion": "0.3.0",
+  "gameVersion": "v0.107.1",
+  "accountingVersion": 2,
+  "amplificationVersion": 3,
+  "modifierInteractionAudit": { "status": "pending", "cases": [] },
+  "hostAttribution": { "status": "pending", "cases": [] },
+  "guestAttribution": { "status": "pending", "cases": [] },
+  "checkpointReloads": { "status": "pending", "cases": [] },
+  "ui1080p": { "status": "pending", "cases": [] },
+  "ui1440p": { "status": "pending", "cases": [] },
+  "notes": "Require reviewedBy/reviewedAt, expected/observed scenario results and references with relative path, SHA256 and line/event/screenshot locator. Trace consistency alone does not establish native correctness."
+}

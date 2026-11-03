@@ -1,0 +1,1119 @@
+{
+  "gameVersion": "v0.107.1",
+  "amplificationVersion": 3,
+  "convention": "Remove positive numeric modifier outputs at the captured event state; retain other status presence and eligibility state.",
+  "entries": [
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "75CEF9C6DAB579F822993D013203B8FE1A3B2719F56A7F50511D6BE47CAEE57E",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyDamageCap(MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "DE90B1D072A06D3770965738AA877482E53A0557AEA74B6E6FECF9BE4E283962",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "0B5D7388002E757187C875C40275DBA5DF3A23E2805A2DADE830B669B318220D",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyHpLostAfterOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F027062EC4624F5B91851DD4C9641248E4094C2EE638D64D77B03FDD88DA7E43",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyHpLostAfterOstyLate(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F027062EC4624F5B91851DD4C9641248E4094C2EE638D64D77B03FDD88DA7E43",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyHpLostBeforeOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F027062EC4624F5B91851DD4C9641248E4094C2EE638D64D77B03FDD88DA7E43",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.System.Decimal ModifyHpLostBeforeOstyLate(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F027062EC4624F5B91851DD4C9641248E4094C2EE638D64D77B03FDD88DA7E43",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.AbstractModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature ModifyUnblockedDamageTarget(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature)",
+      "hash": "1E96E7625241E9E19A5636AF81D0857A06ADC75F90D1CE457C4CAFECA1525F3A",
+      "strategy": "incoming_only_routing",
+      "dependencies": [],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.EnchantmentModel.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "75CEF9C6DAB579F822993D013203B8FE1A3B2719F56A7F50511D6BE47CAEE57E",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.EnchantmentModel.System.Decimal EnchantDamageMultiplicative(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "0B5D7388002E757187C875C40275DBA5DF3A23E2805A2DADE830B669B318220D",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Corrupted.System.Decimal EnchantDamageMultiplicative(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "5AEE2B5A4F2E3B4325D4FA713FFE4DD91B3C606952F035FC7DA021EE2CB91908",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Inky.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "F660D8AA2C14AE7C324AC8D5E04E6702A95A4E52E0C1C1734E77B7A6E08F57B3",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DamageVar get_Damage()",
+        "MegaCrit.Sts2.Core.Models.EnchantmentModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Instinct.System.Decimal EnchantDamageMultiplicative(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "39E49EAE223524288C0B365740184C1DDFF713D45A644EF69FD20DCF001AC24C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Momentum.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "24BB10FED990241B396989D6E026F1BAE468C6453E4E0AE8C8F01576096A1808",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.Enchantments.Momentum.Int32 get_ExtraDamage()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Sharp.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "E3D9CEF4CBB8A6F3CCC135C695038331E484B9392F1E0D405B210832DA6F97D6",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.EnchantmentModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.TezcatarasEmber.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "F660D8AA2C14AE7C324AC8D5E04E6702A95A4E52E0C1C1734E77B7A6E08F57B3",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DamageVar get_Damage()",
+        "MegaCrit.Sts2.Core.Models.EnchantmentModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Enchantments.Vigorous.System.Decimal EnchantDamageAdditive(System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+      "hash": "73FEAD8F10F712B42254F2DC583209F521B959D31E3F2EB59591D13401E5FB69",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.EnchantmentModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.EnchantmentModel.MegaCrit.Sts2.Core.Entities.Enchantments.EnchantmentStatus get_Status()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.AccuracyPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "6FCC3CA518AF80B3E1E0E4A3A174E827EE84B147FDFABA8527920CFFF3BCDA8C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.CardModel.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag] get_Tags()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Linq.Enumerable.Boolean Contains[CardTag](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag], MegaCrit.Sts2.Core.Entities.Cards.CardTag)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.BufferPower.System.Decimal ModifyHpLostAfterOstyLate(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "1701B5877D9240FE16E250492B4C5ACBC4944BCBE4CB722CF88C3E7C61C53122",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.CalcifyPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "D6A88E4F9D521AF0AFFFDA8D5A91A16D6CD70E4E9A66F87176616B2821963DB7",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Entities.Players.Player get_PetOwner()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Models.MonsterModel get_Monster()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.ColossusPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "5E3774779763EC1E4C60833834F1B170AEBDC1DB36B41EA2E3CA2DA565731F24",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Boolean HasPower[VulnerablePower]()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.ConquerorPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "3D1AE19EE81E38F983D749F44A1927C312EA0AC32A520D09EC82BF610D76BAA7",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.CoveredPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "99D256B4431B8851A70B38BDED5C1DE3DA7CCFA87118EA316437F28F19368743",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.DiamondDiademPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "BD89402F9D58AC458037B84DCB04015AC850ED135CD9F6F37DC48B62CC8CEE3C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.DieForYouPower.MegaCrit.Sts2.Core.Entities.Creatures.Creature ModifyUnblockedDamageTarget(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature)",
+      "hash": "3A9C6109BCBBA6242E2C19C4BF2F4990F5CD43093351E4BF3A46B57D467EEA10",
+      "strategy": "incoming_only_routing",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Boolean get_IsDead()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Entities.Players.Player get_PetOwner()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.DoubleDamagePower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "3A4259E5212E3EF9C47F5A33166F60E48855A070494C1FB07AC84CB31459D88C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.System.Collections.Generic.IReadOnlyList`1[MegaCrit.Sts2.Core.Entities.Creatures.Creature] get_Pets()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)",
+        "System.Linq.Enumerable.Boolean Contains[Creature](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Creatures.Creature], MegaCrit.Sts2.Core.Entities.Creatures.Creature)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.FlankingPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "63B9FCF2B9FC44B4F7A062D0BD4758B52CCA1D535EA1D6DD9A783FF7193A592C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Applier()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.FlutterPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "B71D090C2CFB82F344754C79CBA1D029AED806D692B093E8956573AB5CA24074",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Division(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.GigantificationPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "FF27FEE0765BD89CB518C9E07C5890CD9DB0B0E8BCC7080A38C3DA6DCEBF7840",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Commands.Builders.AttackCommand.MegaCrit.Sts2.Core.Models.AbstractModel get_ModelSource()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Data GetInternalData[Data]()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.GigantificationPower+Data.MegaCrit.Sts2.Core.Commands.Builders.AttackCommand commandToModify",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.GuardedPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "BD89402F9D58AC458037B84DCB04015AC850ED135CD9F6F37DC48B62CC8CEE3C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.HangPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F6BAF48B5299C837E0BD5CDBE7D10147969525399F98D56AD691C4769C698ED1",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.HardToKillPower.System.Decimal ModifyDamageCap(MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "BA967754C20167022F91657B3A4E8BEA81CF0B189A4C9E21B8D42C64B1BEB603",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.HardenedShellPower.System.Decimal ModifyHpLostBeforeOstyLate(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "7574C69A65F0874D62CBB3A4D4CB4E58F13BE3FAD00A70362C4270A9EB964967",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Data GetInternalData[Data]()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.HardenedShellPower+Data.System.Decimal damageReceivedThisTurn",
+        "System.Decimal.Boolean op_Equality(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)",
+        "System.Math.System.Decimal Min(System.Decimal, System.Decimal)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.IntangiblePower.System.Decimal ModifyDamageCap(MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "886C3D15BAAF777506253F2FD6055080B930120E5583C4EEC3F4AD81675C53DE",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.IntangiblePower.System.Decimal ModifyHpLostAfterOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "ADE66A430EA257681939460A33BC20BBA007D3EB0B928D3A25EE37893601CBFA",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Combat.CombatManager.Boolean get_IsInProgress()",
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.CombatManager get_Instance()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.Boolean op_LessThan(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.InterceptPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "4F88BB324C725176060024D0A532E6ED01A1C0C46D74E902EA9A080794A8D96E",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Data GetInternalData[Data]()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.InterceptPower+Data.System.Collections.Generic.List`1[MegaCrit.Sts2.Core.Entities.Creatures.Creature] coveredCreatures",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Collections.Generic.List`1[[MegaCrit.Sts2.Core.Entities.Creatures.Creature, sts2, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null]].Int32 get_Count()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.KnockdownPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "63B9FCF2B9FC44B4F7A062D0BD4758B52CCA1D535EA1D6DD9A783FF7193A592C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Applier()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.LeadershipPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "9A767A3A0694C40C091C6617CFD26188C654F3A02C1D80C5483B91F2D458CB7B",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Combat.CombatSide get_Side()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.LethalityPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "7D5DF9E1367FAEE52B6CE40DB2721CAC4C8D94DE58D0FA0496370F1224ECEC6F",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.CombatManager get_Instance()",
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.History.CombatHistory get_History()",
+        "MegaCrit.Sts2.Core.Combat.History.CombatHistory.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayStartedEntry] get_CardPlaysStarted()",
+        "MegaCrit.Sts2.Core.Entities.Cards.CardPile.MegaCrit.Sts2.Core.Entities.Cards.PileType get_Type()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.CardModel.Int32 get_CurrentPlayIndex()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Cards.CardPile get_Pile()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.LethalityPower.Boolean <ModifyDamageMultiplicative>b__4_0(MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayStartedEntry)",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Addition(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Division(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Decimal.Void .ctor(Int32)",
+        "System.Func`2[[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayStartedEntry, sts2, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null],[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]].Void .ctor(System.Object, IntPtr)",
+        "System.Linq.Enumerable.Int32 Count[CardPlayStartedEntry](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayStartedEntry], System.Func`2[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayStartedEntry,System.Boolean])"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.Mocks.MockRevivePower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "13239967CB3FD14165EE6D1CDDCC4B0F19C9E819A1CA004C17C74E97CFE00AD8",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.Mocks.MockRevivePower.Boolean get_IsReviving()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.PhantomBladesPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "79B47950072D74F3EE68455477D3DE9FBAB051097693F05BFBA0B2A9144B0D8C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.CombatManager get_Instance()",
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.History.CombatHistory get_History()",
+        "MegaCrit.Sts2.Core.Combat.History.CombatHistory.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayFinishedEntry] get_CardPlaysFinished()",
+        "MegaCrit.Sts2.Core.Models.CardModel.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag] get_Tags()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.PhantomBladesPower.Boolean <ModifyDamageAdditive>b__8_0(MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayFinishedEntry)",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Func`2[[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayFinishedEntry, sts2, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null],[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]].Void .ctor(System.Object, IntPtr)",
+        "System.Linq.Enumerable.Boolean Contains[CardTag](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag], MegaCrit.Sts2.Core.Entities.Cards.CardTag)",
+        "System.Linq.Enumerable.Int32 Count[CardPlayFinishedEntry](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayFinishedEntry], System.Func`2[MegaCrit.Sts2.Core.Combat.History.Entries.CardPlayFinishedEntry,System.Boolean])"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.ShrinkPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "0180DE5146C9C580AC81738F914C111314178131B6F53B2CC1F5530B6251E3D5",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Division(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.SlipperyPower.System.Decimal ModifyHpLostAfterOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "A7FB63FC30F7C10230406FA7008AC4E1957DF128E72CE1526504BAA4F286A8DB",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "System.Decimal.Boolean op_LessThan(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.SlowPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "9BD9BAA58758F150D1F2F8A8D21679B8B394853A468D88BC1EA81ADF528C6806",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Addition(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Multiply(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.SoarPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "B71D090C2CFB82F344754C79CBA1D029AED806D692B093E8956573AB5CA24074",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Division(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.StrengthPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "0F677F415A6BF82C64D5A201ED393D799BF7C17095974F5D3330204E5D066734",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.SurroundedPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "A165575268B00D0D4563F4C65E59781BC9BF454DE3111027A39BD1F7DF2F743C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Boolean HasPower[BackAttackLeftPower]()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Boolean HasPower[BackAttackRightPower]()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.SurroundedPower.Direction get_Facing()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.TaintedPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "65D459F31E3E9878429B9F912CFB97B9DA76D70371E5D30A6EB2841399CEEBE9",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.TankPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "AF59F63D8687A1074BCC76E369452E354D9E8EB03B8F1B3D0C952078B4919D26",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.TrackingPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "4DEE1A63697970F490CF866F15AEE1BE37D867BC930491727751C4E5981AD848",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Boolean HasPower[WeakPower]()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.System.Collections.Generic.IReadOnlyList`1[MegaCrit.Sts2.Core.Entities.Creatures.Creature] get_Pets()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Linq.Enumerable.Boolean Contains[Creature](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Creatures.Creature], MegaCrit.Sts2.Core.Entities.Creatures.Creature)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AttackMultiplierChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.VigorPower.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "5DDB2734379E09A82C6FC0FD2F609C9E5013E81AF7CD38E9A4C12D40A6C4D6F5",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Commands.Builders.AttackCommand.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Attacker()",
+        "MegaCrit.Sts2.Core.Commands.Builders.AttackCommand.MegaCrit.Sts2.Core.Models.AbstractModel get_ModelSource()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Data GetInternalData[Data]()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Powers.VigorPower+Data.MegaCrit.Sts2.Core.Commands.Builders.AttackCommand commandToModify",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_snapshot_rule_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/AdditiveChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.VulnerablePower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "2AA0443834CDB912CA3CDAD4D4A34DBE7CA61E86D10CD0942AD9DD70738039CA",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Entities.Players.Player get_Player()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Models.Powers.CrueltyPower GetPower[CrueltyPower]()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Models.Powers.DebilitatePower GetPower[DebilitatePower]()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Models.Relics.PaperPhrog GetRelic[PaperPhrog]()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.Models.Powers.CrueltyPower.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+        "MegaCrit.Sts2.Core.Models.Powers.DebilitatePower.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+        "MegaCrit.Sts2.Core.Models.Relics.PaperPhrog.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.WeakPower.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "4A2D7E631A487E3E811F5701804AD79BAD031E60860A8783D4097D1D674D129C",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Entities.Players.Player get_Player()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.MegaCrit.Sts2.Core.Models.Powers.DebilitatePower GetPower[DebilitatePower]()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Models.Relics.PaperKrane GetRelic[PaperKrane]()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.Models.Powers.DebilitatePower.System.Decimal ModifyWeakMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+        "MegaCrit.Sts2.Core.Models.Relics.PaperKrane.System.Decimal ModifyWeakMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.BeatingRemnant.System.Decimal ModifyHpLostAfterOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "E65F62045DCDDE4B50CE415D40ED20F7A1B64BAB185102C9F9D57816B61249D1",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Combat.CombatManager.Boolean get_IsInProgress()",
+        "MegaCrit.Sts2.Core.Combat.CombatManager.MegaCrit.Sts2.Core.Combat.CombatManager get_Instance()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.Models.Relics.BeatingRemnant.System.Decimal get_DamageReceivedThisTurn()",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)",
+        "System.Math.System.Decimal Min(System.Decimal, System.Decimal)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.FakeStrikeDummy.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "94C62A1FF64F618D32CE1F440B04E643B34336D9289CC2B231D4C7BC07AD7F0A",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.CardModel.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag] get_Tags()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Linq.Enumerable.Boolean Contains[CardTag](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag], MegaCrit.Sts2.Core.Entities.Cards.CardTag)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.MiniatureCannon.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "3C5895B80EFFB61B00BF0D904CF12DBAD9D873A7A20A749F591D01BF6BB51593",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.CardModel.Boolean get_IsUpgraded()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.MysticLighter.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "0FBFE384F37BFA7D665B635B9837E35569848095D32E9615B47B00F37D2FFBBC",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.Int32 get_IntValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DamageVar get_Damage()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Models.EnchantmentModel get_Enchantment()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Implicit(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.PenNib.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "437A52CA286C2A947D66228DF996516C0AEE5602927B6BECAEBFA515804A23FA",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Cards.CardPile.MegaCrit.Sts2.Core.Entities.Cards.PileType get_Type()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Osty()",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Cards.CardPile get_Pile()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.Relics.PenNib.Int32 get_AttacksPlayed()",
+        "MegaCrit.Sts2.Core.Models.Relics.PenNib.MegaCrit.Sts2.Core.Models.CardModel get_AttackToDouble()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.StrikeDummy.System.Decimal ModifyDamageAdditive(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "94C62A1FF64F618D32CE1F440B04E643B34336D9289CC2B231D4C7BC07AD7F0A",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.CardModel.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag] get_Tags()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal Zero",
+        "System.Linq.Enumerable.Boolean Contains[CardTag](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag], MegaCrit.Sts2.Core.Entities.Cards.CardTag)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.TheBoot.System.Decimal ModifyHpLostAfterOstyLate(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "B3672FFFB27AEEDE83027F8A8F25353C23C76F0C93AA2792A02144E9CEF5BDA9",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Osty()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.Boolean op_GreaterThanOrEqual(System.Decimal, System.Decimal)",
+        "System.Decimal.Boolean op_LessThan(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.TungstenRod.System.Decimal ModifyHpLostAfterOsty(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "BF80866BB94FC14A4A8D84785AD7A3EC68FFD5A7F8B1699C9CDA8DB8A226ECE5",
+      "strategy": "ordered_hp_loss_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "System.Decimal.System.Decimal Zero",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)",
+        "System.Math.System.Decimal Max(System.Decimal, System.Decimal)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.UndyingSigil.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "9D330DC802144CE7E7BFDA3874836D163AE6F083DA13688768B77E057614D647",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Int32 GetPowerAmount[DoomPower]()",
+        "MegaCrit.Sts2.Core.Entities.Creatures.Creature.Int32 get_CurrentHp()",
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar.System.Decimal get_BaseValue()",
+        "MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVar get_Item(System.String)",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Localization.DynamicVars.DynamicVarSet get_DynamicVars()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.VitruvianMinion.System.Decimal ModifyDamageMultiplicative(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "BE15DBC955818471792B00551EB391C49EBE7AF89607CAFCC310FA6E13D3E8CD",
+      "strategy": "frozen_numeric_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.CardModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.Models.CardModel.System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag] get_Tags()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.Void .ctor(Int32)",
+        "System.Linq.Enumerable.Boolean Contains[CardTag](System.Collections.Generic.IEnumerable`1[MegaCrit.Sts2.Core.Entities.Cards.CardTag], MegaCrit.Sts2.Core.Entities.Cards.CardTag)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "pending",
+      "nativeVerification": "pending"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.CrueltyPower.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "C3C151C144D9F74471CF2B170F3CD1C1B44CBD66A744A7101788140829A7E152",
+      "strategy": "multiplier_chain_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.Int32 get_Amount()",
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal op_Addition(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Division(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Implicit(Int32)",
+        "System.Decimal.Void .ctor(Int32)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.DebilitatePower.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "52E4DF8A1A21D872FB6B350136856153C8FE77972EDBC85E0ABD595186AD51A5",
+      "strategy": "multiplier_chain_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Addition(System.Decimal, System.Decimal)",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Powers.DebilitatePower.System.Decimal ModifyWeakMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "B4B9D1A41A849E51EFF612DA079925BB647FF73F31194883BC58F14EE13C34E9",
+      "strategy": "multiplier_chain_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Models.PowerModel.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal One",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.PaperKrane.System.Decimal ModifyWeakMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "F13679EB8A2AB8584CC2CD65C20AA54245B6D87DFFA4C80152FABD6110469381",
+      "strategy": "multiplier_chain_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal op_Subtraction(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    },
+    {
+      "method": "MegaCrit.Sts2.Core.Models.Relics.PaperPhrog.System.Decimal ModifyVulnerableMultiplier(MegaCrit.Sts2.Core.Entities.Creatures.Creature, System.Decimal, MegaCrit.Sts2.Core.ValueProps.ValueProp, MegaCrit.Sts2.Core.Entities.Creatures.Creature, MegaCrit.Sts2.Core.Models.CardModel)",
+      "hash": "830866694AA2EC76109F957018557FFA06CFB9D28E6FB804C289818B4F061D44",
+      "strategy": "multiplier_chain_snapshot",
+      "dependencies": [
+        "MegaCrit.Sts2.Core.Entities.Players.Player.MegaCrit.Sts2.Core.Entities.Creatures.Creature get_Creature()",
+        "MegaCrit.Sts2.Core.Models.RelicModel.MegaCrit.Sts2.Core.Entities.Players.Player get_Owner()",
+        "MegaCrit.Sts2.Core.ValueProps.ValuePropExtensions.Boolean IsPoweredAttack(MegaCrit.Sts2.Core.ValueProps.ValueProp)",
+        "System.Decimal.System.Decimal op_Addition(System.Decimal, System.Decimal)",
+        "System.Decimal.Void .ctor(Int32, Int32, Int32, Boolean, Byte)"
+      ],
+      "structuralContract": "pinned_and_installed_assembly_tested",
+      "eligibilityReview": "branch_table_and_pure_replay_covered",
+      "nativeVerification": "pending",
+      "nativeSnapshotVerification": "pending",
+      "testReference": "tests/MultiplierChainChecks.cs"
+    }
+  ]
+}

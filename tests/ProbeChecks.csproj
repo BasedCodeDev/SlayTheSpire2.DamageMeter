@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net9.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+<PropertyGroup><Sts2DataDir Condition="'$(Sts2DataDir)' == ''">C:/Program Files (x86)/Steam/steamapps/common/Slay the Spire 2/data_sts2_windows_x86_64</Sts2DataDir></PropertyGroup>
+<ItemGroup><Compile Include="../src/ResultRegistry.cs" Link="ResultRegistry.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/ModifierContracts.cs" Link="ModifierContracts.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/EngineDamage.cs" Link="EngineDamage.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/TraceReport.cs" Link="TraceReport.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/ModifierManifest.cs" Link="ModifierManifest.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/ReleaseEvidence.cs" Link="ReleaseEvidence.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/HpLossReplay.cs" Link="HpLossReplay.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/DamageHookContract.cs" Link="DamageHookContract.cs" /></ItemGroup>
+<ItemGroup><None Update="fixtures/*.jsonl" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+<ItemGroup><Compile Include="../src/SourceTotals.cs" Link="SourceTotals.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/ModifierAudit.cs" Link="ModifierAudit.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/ModifierCatalogue.cs" Link="ModifierCatalogue.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/Amplification.cs" Link="Amplification.cs" /><Compile Include="../src/RunStatisticsStore.cs" Link="RunStatisticsStore.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/PowerChangeTracker.cs" Link="PowerChangeTracker.cs" /><None Update="fixtures/*.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+<ItemGroup><Reference Include="0Harmony"><HintPath>$(Sts2DataDir)/0Harmony.dll</HintPath></Reference><Compile Include="../src/OwnershipHooks.cs" Link="OwnershipHooks.cs" /><Compile Include="../src/SourceContext.cs" Link="SourceContext.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/Accounting.cs" Link="Accounting.cs" /><Compile Include="../src/StatusOwnershipLedger.cs" Link="StatusOwnershipLedger.cs" /></ItemGroup>
+<ItemGroup><Compile Include="../src/MultiplierChain.cs" Link="MultiplierChain.cs" /></ItemGroup><ItemGroup><Compile Include="../src/AdditiveSnapshot.cs" Link="AdditiveSnapshot.cs"/></ItemGroup><ItemGroup><Compile Include="../src/AdditiveContract.cs" Link="AdditiveContract.cs"/></ItemGroup><ItemGroup><Compile Include="../src/AttackMultiplierSnapshot.cs" Link="AttackMultiplierSnapshot.cs"/></ItemGroup><ItemGroup><Compile Include="../src/AttackMultiplierContract.cs" Link="AttackMultiplierContract.cs"/></ItemGroup><ItemGroup><Compile Include="../src/ModifierDispatch.cs" Link="ModifierDispatch.cs"/></ItemGroup></Project>

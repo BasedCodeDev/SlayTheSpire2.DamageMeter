@@ -1,0 +1,17 @@
+{
+  "description": "Anonymised observed failure reasons, not a replay of historical amplification.",
+  "gameVersion": "v0.107.1",
+  "modVersion": "0.3.0-preview.10",
+  "count": 35,
+  "sourceSession": "16388aa32fb54a59b7545b651350ce1d",
+  "originalSequence": 36,
+  "reasons": [
+    "multiplier chain callback/order mismatch",
+    "chain snapshot: Unable to cast object of type 'MegaCrit.Sts2.Core.Entities.Creatures.Creature' to type 'MegaCrit.Sts2.Core.ValueProps.ValueProp'."
+  ],
+  "normalized": {
+    "Hp": 9,
+    "Block": 0,
+    "Overkill": 0
+  }
+}

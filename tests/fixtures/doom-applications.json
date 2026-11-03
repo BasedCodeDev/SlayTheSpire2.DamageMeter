@@ -1,0 +1,6 @@
+[
+  { "operation": "deathbringer-1", "target": "enemy-2:Doom", "incomingModel": "unattached-1", "appliedModel": "active-2", "constructionAmount": 0, "before": 0, "after": 21, "owner": "B", "source": "Deathbringer" },
+  { "operation": "deathbringer-2", "target": "enemy-3:Doom", "incomingModel": "unattached-2", "appliedModel": "active-3", "constructionAmount": 0, "before": 0, "after": 21, "owner": "B", "source": "Deathbringer" },
+  { "operation": "deathbringer-3", "target": "enemy-4:Doom", "incomingModel": "unattached-3", "appliedModel": "active-4", "constructionAmount": 0, "before": 0, "after": 21, "owner": "B", "source": "Deathbringer" },
+  { "operation": "blightstrike", "target": "enemy-2:Doom", "incomingModel": "active-2", "appliedModel": "active-2", "constructionAmount": 0, "before": 21, "after": 30, "owner": "B", "source": "BlightStrike" }
+]

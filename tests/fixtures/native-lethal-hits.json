@@ -1,0 +1,6 @@
+[
+  {"label":"recorded lethal 6 HP","unblocked":6,"block":0,"overkill":3,"modified":9,"preHp":6},
+  {"label":"recorded lethal 5 HP","unblocked":5,"block":0,"overkill":2,"modified":7,"preHp":5},
+  {"label":"recorded lethal 1 HP","unblocked":1,"block":0,"overkill":6,"modified":7,"preHp":1},
+  {"label":"20 against 5 block and 10 HP","unblocked":10,"block":5,"overkill":5,"modified":20,"preHp":10}
+]
