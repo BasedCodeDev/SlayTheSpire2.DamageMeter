@@ -36,7 +36,7 @@ public sealed record MeterTooltipModel(string Summary,IReadOnlyList<string> Entr
   return $"{identity}{Labels[metric]} ({(run?"This Run":"Current Fight")})\nTotal: {value:0.##}{share}\n";
  }
  public bool ShowSources { get; init; }=true;
- public static readonly string[] Labels={"Damage (HP + Block)","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Actual Damage","Effective Damage"};
+ public static readonly string[] Labels={"Damage","HP Only","Block Only","Poison HP","Doom HP","Amplification","Support Damage","Actual Damage","Effective Damage"};
  public static string Description(int metric)=>metric switch{
   8=>"HP plus block from shields breached by a later block-respecting HP hit. Pending block is excluded.",
   5=>"Bonuses provided to yourself and teammates; already included in Damage.",
