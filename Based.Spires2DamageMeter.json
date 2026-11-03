@@ -3,7 +3,7 @@
   "name": "Based Damage Meter (Diagnostic)",
   "author": "Based",
   "description": "Local multiplayer damage, amplification and support meter; checkpoint-aware run statistics. Preview coverage is reported in-game.",
-  "version": "0.3.0-preview.23",
+  "version": "0.3.0-preview.24",
   "min_game_version": "v0.107.1",
   "has_dll": true,
   "has_pck": false,

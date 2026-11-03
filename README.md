@@ -440,3 +440,19 @@ presentation stays unchanged, including one-player multiplayer sessions. Native
 checks pending: solo Fight/Run across metrics, Unattributed rows, solo/multiplayer
 transitions, new rows, minimum width, collapse/expand, F8 and dragging/resizing.
 No changes to saves, accounting or capture hooks.
+
+## 0.3.0-preview.24 - structured tooltips
+
+Player hover now shows a metric/scope header, prominent total, aligned breakdown,
+source table and separate explanatory/warning notes. HP numbers are red, block
+blue, bonuses orange; combined totals stay neutral. Combined views show HP/Block/
+Total columns; single metrics use one Value column. Support lists recipient/source
+with bonus destinations. Already included and pending/excluded amounts are clearly
+separated. Solo hides player identity and party share. Long source names wrap and
+lists trim to twelve or fewer entries within viewport height, with +N more.
+
+Native visual verification remains pending: check every metric in Fight/Run,
+solo/multiplayer, long names, large/fractional values, zero/unknown data, warnings,
+live updates, screen edges and 1280x720/1920x1080. Verify colour readability,
+column alignment, wrapping, trimming and closure on collapse/F8/row removal.
+Capture, accounting and save handling are unchanged.

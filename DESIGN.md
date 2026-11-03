@@ -459,3 +459,22 @@ party-share text. Bars fill freed columns with centred total intact. Unknown
 session types retain the last known mode, initially multiplayer presentation.
 Preserve multiplayer, dimensions, collapse, drag/resize, F8 and all accounting.
 No save or capture-hook changes; native visual verification remains pending.
+
+## Preview.24 structured tooltips
+Replace flat player text with title/scope, prominent total, aligned breakdown,
+Already included bonus rows, source table and separate notes/warnings. Use shared
+legend text colours: HP red, block blue, bonus orange; combined totals neutral.
+Combined views use Source/HP/Block/Total; single metrics Source/Value; support
+Recipient-source/Bonus HP/Bonus Block/Total. Pending block is muted and excluded.
+Keep solo suppression, live native hover, viewport bounds and twelve-source cap.
+No capture, accounting or persistence changes. Native visual checks remain pending.
+
+### Preview.24 implementation checkpoint
+Typed semantic numeric cells and source rows now drive native container cards.
+Palette is shared with the legend; summary subsets, support destinations and
+pending block are separated. Existing card instances update values without
+resetting hover; structural changes rebuild only when the table/section shape
+changes. Wrapped source rows are height-budgeted within the game viewport with
+explicit remainder count. Package gate passes 571 checks, including semantic
+colour/aggregation, solo, zero and warning presentation checks. Native visual
+acceptance remains pending; no save/capture/accounting changes were made.

@@ -146,11 +146,9 @@ public partial class MeterPanel : CanvasLayer
             row.Bar.Orange=Metric switch{0 or 8=>total.AmplifiedHp+total.AmplifiedBlock,1=>total.AmplifiedHp,2=>total.AmplifiedBlock,5=>value,6=>value,7=>total.AmplifiedHp+total.AmplifiedBlock,3=>ledger.Credits.Where(c=>c.Player==id&&c.Kind=="Poison"&&c.Amplification).Sum(c=>c.Hp),_=>0};
             row.Bar.Block=Metric switch{0 or 8=>Math.Max(0,total.Block-total.AmplifiedBlock),2=>Math.Max(0,total.Block-total.AmplifiedBlock),7=>Math.Max(0,total.Block-total.AmplifiedBlock),_=>0};
             row.Bar.Hp=Math.Max(0,value-row.Bar.Block-row.Bar.Orange); row.Bar.Maximum=max; row.Bar.QueueRedraw();
-            var summary=MeterTooltipModel.RowSummary(row.Name.Text,Metric,scope.CurrentTab==1,value,team,solo,id==StatusOwnershipLedger.Unknown)+MeterTooltipModel.Detail(Metric,total);
-            if(Metric==8)summary+=$"\nQualified block: {total.Block:0.##}; pending block (excluded): {effective.PendingFor(id):0.##}\n"+MeterTooltipModel.Description(8);
-            if(Metric==3)summary+=$"\nBonus HP included: {row.Bar.Orange:0.##}";
             var affected=(Metric==8&&(!EffectiveCapture.Enabled||effective.Incomplete))||Probe.Health.StartsWith("INCOMPLETE")||!Probe.OwnershipAvailable||(Metric!=7&&(!NativeDamageCapture.Enabled||ledger.Provisional>0||NativeDamageCapture.Unmatched>0))||(scope.CurrentTab==1&&(RunSession.StorageIncomplete||RunSession.HistoryPartial||(Metric!=7&&RunSession.AttributionPartial)));
-            row.Button.UpdateTooltip(new(summary,MeterTooltipModel.Sources(id,Metric,breakdowns,transfers,p=>Probe.Names.GetValueOrDefault(p,p)),affected?"Data may be incomplete. Hover the resize arrow for details.":""));
+            var card=MeterTooltipModel.BuildCard(id,row.Name.Text,Metric,scope.CurrentTab==1,solo,value,team,total,effective.PendingFor(id),row.Bar.Orange,breakdowns,transfers,p=>Probe.Names.GetValueOrDefault(p,p),affected?"Data may be incomplete. Hover the resize arrow for details.":"");
+            row.Button.UpdateTooltip(new("",Array.Empty<string>(),""){Card=card});
 
         }
         var overhead=panel.GetCombinedMinimumSize().Y-scroll.CustomMinimumSize.Y;
@@ -164,9 +162,9 @@ public partial class MeterPanel : CanvasLayer
         if(legendMetric==Metric)return;legendMetric=Metric;
         foreach(var child in legend.GetChildren()){legend.RemoveChild(child);child.QueueFree();}
         void Swatch(string text,Color color){var item=new Label{Text=text};item.AddThemeColorOverride("font_color",color);legend.AddChild(item);}
-        if(Metric is 0 or 2 or 7 or 8)Swatch("■ Block",new(.35f,.7f,1f));
-        if(Metric is 0 or 1 or 3 or 4 or 7 or 8)Swatch("■ HP",new(1f,.45f,.5f));
-        if(Metric!=4)Swatch("■ Bonus",new(1f,.65f,.3f));
+        if(Metric is 0 or 2 or 7 or 8)Swatch("■ Block",MeterPalette.Colour(TooltipTone.Block));
+        if(Metric is 0 or 1 or 3 or 4 or 7 or 8)Swatch("■ HP",MeterPalette.Colour(TooltipTone.Hp));
+        if(Metric!=4)Swatch("■ Bonus",MeterPalette.Colour(TooltipTone.Bonus));
     }
     private void CloseTooltips(){if(resize!=null)resize.CloseTooltip();foreach(var row in controls.Values)row.Button.CloseTooltip();}
     public override void _ExitTree() { CloseTooltips();Save(); Probe.Flush(); instance=null; }

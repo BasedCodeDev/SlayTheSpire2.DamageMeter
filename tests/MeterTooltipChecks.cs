@@ -41,5 +41,23 @@ static class MeterTooltipChecks
   var transfers=new[]{new SupportTransfer("A","B","Vulnerable",2,0),new SupportTransfer("A","B","Vulnerable",0,1),new SupportTransfer("B","A","Vulnerable",9,0)};
   var support=MeterTooltipModel.Sources("A",6,sources,transfers,id=>id=="B"?"Teammate":id);
   check(support.SequenceEqual(new[]{"To Teammate (Vulnerable): HP 2, block 1"}),"tooltip groups outgoing support by recipient and source");
+  TooltipCard Card(int metric,bool solo=false)=>MeterTooltipModel.BuildCard("A","Player",metric,false,solo,9,18,detail,7,1,sources,transfers,s=>s,"Coverage warning");
+  var card=Card(0);
+  check(card.Headers.SequenceEqual(new[]{"Source","HP","Block","Total"}),"combined tooltip has destination table columns");
+  check(card.Sources.First().Values.Select(n=>n.Value).SequenceEqual(new[]{6m,2m,8m}),"source table separates HP block and conserved total");
+  check(card.Sources.First().Values.Select(n=>n.Tone).SequenceEqual(new[]{TooltipTone.Hp,TooltipTone.Block,TooltipTone.Neutral}),"source destination values use semantic colours");
+  check(card.Total.Tone==TooltipTone.Neutral&&card.PartyShare==50,"combined total and party share remain distinct");
+  check(card.Stats.Where(r=>r.Section=="Already included").All(r=>r.Number.Tone==TooltipTone.Bonus),"bonus subset is separately labelled and orange");
+  check(Card(2).Headers.Count==2&&Card(2).Sources.Single().Values.Single().Tone==TooltipTone.Block,"block view uses one blue value column");
+  check(Card(3).Sources.Single().Name=="Poison"&&Card(3).Total.Tone==TooltipTone.Hp,"poison HP retains red destination semantics");
+  check(Card(4).Sources.Single().Name=="Doom"&&Card(4).Total.Tone==TooltipTone.Hp,"Doom HP retains red destination semantics");
+  check(Card(5).Sources.Single().Values.Single().Value==1&&Card(5).Total.Tone==TooltipTone.Bonus,"amplification table filters base damage and colours bonuses");
+  check(Card(6).Sources.Single().Values.Select(n=>n.Value).SequenceEqual(new[]{2m,1m,3m})&&Card(6).Sources.Single().Values.All(n=>n.Tone==TooltipTone.Bonus),"support recipient table retains bonus destinations");
+  check(Card(8).Stats.Single(s=>s.Section=="Not counted").Number==new TooltipNumber(7,TooltipTone.MutedBlock),"pending block is separated and muted");
+  check(Card(0,true).PartyShare==null&&!Card(0,true).Title.Contains("Player"),"structured solo card omits identity and share");
+  check(card.Warning=="Coverage warning"&&card.Note.Length>0,"card retains explanatory note and warning independently");
+  var emptyCard=MeterTooltipModel.BuildCard("absent","Unknown",0,false,true,0,0,new(),0,0,sources,transfers,s=>s,"");
+  check(emptyCard.Sources.Count==0&&emptyCard.Total.Value==0,"structured card supports zero values and empty sources");
+
  }
 }
