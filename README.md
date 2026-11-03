@@ -6,7 +6,7 @@ An unofficial damage-meter mod for **Slay the Spire 2**, with solo and multiplay
 views, source breakdowns and credit for the players who provide damage bonuses.
 Collection is local; teammates do not need this mod installed.
 
-**Status:** experimental preview, currently `0.3.0-preview.24`, targeting game
+**Status:** experimental preview, currently `0.3.0-preview.36`, targeting game
 `v0.107.1`. Automated checks pass, but native startup, persistence, UI and
 host/guest verification remain incomplete. Windows is the current development
 and deployment target; Linux/macOS are not verified.
@@ -41,26 +41,33 @@ persists. Teammates share the breakthrough, retaining their original ownership.
 Natural expiration, a new shield after zero, death or combat end discards
 unqualified block credit. Poison and Doom HP count but do not unlock block credit.
 
-Unknown ownership stays **Unattributed**. Unsupported observations and missing
-history produce coverage notices rather than invented credit.
+Unknown ownership stays **Unattributed** and is hidden by default; the header `?`
+toggle shows it. Unsupported observations and missing history produce coverage
+notices rather than invented credit.
 
 ## Using the meter
 
 | Control | Action |
 | --- | --- |
 | Dropdown | Choose a metric. New installations default to Effective Damage. |
-| Current Fight / This Run | Switch scope. Run history may be partial after missing or incompatible checkpoints. |
+| Scope icon | Toggle Current Fight / This Run; hover to see the active scope. Run history may be partial. |
+| ? | Show or hide Unattributed damage. |
 | Minus / plus | Collapse to one button / expand to the previous width. |
 | Resize arrow | Left-drag to change width; hover for version, help and diagnostics. |
 | Grab handle | Left-drag to move. |
 | Player bar | Hover for a structured damage breakdown and source table. |
 | F8 | Show or hide the panel. |
 
-HP values are red, block blue and bonuses orange. Combined totals stay neutral.
-Bonus rows are labelled **Already included**; pending block is explicitly excluded.
-Solo play hides character names and party percentages, retaining Unattributed
-labels. Multiplayer shows names and party share. Bar lengths scale against the
-largest displayed player total; percentages use the selected party total.
+Multiplayer rows show character icons and player names inside class-coloured bars.
+HP and shield damage share the lighter shade; amplification uses the darker shade.
+Rows sort by total HP damage regardless of the selected metric. Damage labels are
+rounded to whole numbers, with precise values available on hover.
+
+Tooltips retain HP/block/bonus colours and separate **Already included** and
+excluded pending amounts. Their content scrolls within bounds relative to the
+meter and viewport. Solo play hides player identity and party share. Multiplayer
+percentages use the currently visible rows, so toggling Unattributed can change
+those percentages. Bar lengths scale against the largest displayed player total.
 
 ## Deploy from a checkout (Windows)
 

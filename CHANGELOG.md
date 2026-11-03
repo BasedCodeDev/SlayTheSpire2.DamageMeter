@@ -483,3 +483,73 @@ solo/multiplayer, long names, large/fractional values, zero/unknown data, warnin
 live updates, screen edges and 1280x720/1920x1080. Verify colour readability,
 column alignment, wrapping, trimming and closure on collapse/F8/row removal.
 Capture, accounting and save handling are unchanged.
+
+## 0.3.0-preview.25 - character icons, class colours and HP ordering
+
+Multiplayer rows show the game's small character icon before the player label.
+Rows are ordered by total HP damage, highest first, regardless of the selected
+metric; equal HP totals use a stable player-ID order. Bars use character colours:
+HP and shield damage share the supplied lighter shade, and amplification uses
+the supplied darker shade. Ironclad is red, Silent green, Regent orange, Necrobinder
+pink and Defect blue. There is no separate shield or blue Block segment. Native
+visual verification remains pending.
+
+## 0.3.0-preview.26 - compact player rows
+
+The character icon remains at the left of each multiplayer row. The username is
+drawn at the start of the filled bar, with rounded damage and party share at the
+right (for example, `153 | 62.7%`). The Party % column heading is removed.
+Damage labels are rounded to whole numbers; hover
+details retain the underlying precise totals. Native visual verification remains
+pending.
+
+## 0.3.0-preview.27 - two-color damage bars
+
+Shield damage is included in the HP-colored portion of the bar instead of being
+drawn as its own segment. Bars show only HP (including shield damage) and
+amplification. Amplification uses each character's darker supplied color.
+Accounting and effective-damage qualification are unchanged.
+
+## 0.3.0-preview.29 - remove bar legend
+
+Removed the HP / Amp / % title above player rows; the bar segments remain
+unchanged.
+
+## 0.3.0-preview.30 - softened damage bars
+
+Player bars use rounded ends and a subtle class-color glow. The HP / Amp / %
+title remains removed to keep the meter compact.
+
+## 0.3.0-preview.31 - translucent cast-bar styling
+
+The meter panel and unfilled tracks are translucent so the game remains visible
+behind the overlay. Class-color HP/Amp fills retain a soft glow and gloss while
+also allowing the game to show through.
+
+## 0.3.0-preview.32 - Segoe UI Light typography
+
+The meter uses the installed Segoe UI Light system font, with Segoe UI as a
+fallback. No font files are bundled.
+
+## 0.3.0-preview.33 - preferred font fallback chain
+
+The meter requests ITC Avant Garde Gothic/Avant Garde first, then DejaVu Sans,
+with Segoe UI Light as the final fallback. The system uses the first installed
+family; font files are not bundled.
+
+## 0.3.0-preview.34 - compact meter layout
+
+Moved Current Fight / This Run selection into a small, state-aware header icon
+and tightened the panel padding, control spacing, player rows, and default width.
+
+## 0.3.0-preview.35 - attributed rows and stronger class colors
+
+Unattributed damage is hidden by default and can be shown with the header `?`
+toggle. Player-share percentages use the currently visible rows. Class colors
+are more saturated and their bar fill is slightly more opaque.
+
+## 0.3.0-preview.36 - bounded, scrollable detail tooltips
+
+Player detail tooltips use a scrollable content box sized relative to the meter's
+current width and height, with a viewport cap. The full source breakdown remains
+available without expanding the tooltip over the game screen.
