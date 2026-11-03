@@ -89,7 +89,7 @@ public partial class MeterPanel : CanvasLayer
         metric.Select(metric.GetItemIndex(savedMetric));metric.ItemSelected+=_=>Save();
         empty=new Label {Text="No damage recorded yet"};body.AddChild(empty);
         scroll=new ScrollContainer { HorizontalScrollMode=ScrollContainer.ScrollMode.Disabled }; body.AddChild(scroll);
-        rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill };rows.AddThemeConstantOverride("separation",0); scroll.AddChild(rows);
+        rows=new VBoxContainer { SizeFlagsHorizontal=Control.SizeFlags.ExpandFill };rows.AddThemeConstantOverride("separation",1); scroll.AddChild(rows);
         ApplyCollapsedState(settings.GetValue("layout","collapsed",false).AsBool());
     }
     private void UpdateScopeToggle()
@@ -186,7 +186,7 @@ public partial class MeterPanel : CanvasLayer
         {
             if(!controls.TryGetValue(id,out var row))
             {
-                var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,20) };
+                var button=new MeterHoverButton { TooltipText="Player details",FocusMode=Control.FocusModeEnum.None, CustomMinimumSize=new Vector2(0,21) };
                 button.AddThemeStyleboxOverride("normal",new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("focus",new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("pressed",new StyleBoxEmpty());
@@ -218,7 +218,7 @@ public partial class MeterPanel : CanvasLayer
 
         }
         var overhead=panel.GetCombinedMinimumSize().Y-scroll.CustomMinimumSize.Y;
-        var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-overhead-8),Math.Max(0,controls.Count*20));
+        var desired=Math.Min(Math.Max(0,viewport.Y-panel.Position.Y-overhead-8),Math.Max(0,controls.Count*21));
         scroll.CustomMinimumSize=new Vector2(0,desired);
         QueueHeightRefresh();
     }

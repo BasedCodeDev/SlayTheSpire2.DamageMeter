@@ -563,3 +563,7 @@ the bar height for a tightly stacked meter appearance.
 
 Single-player rows show the hero portrait and username beside the selected damage
 total, while keeping the multiplayer-only share format hidden.
+
+## 0.3.0-preview.39 - subtle player row spacing
+
+Added a one-pixel vertical gap between adjacent player bars.
