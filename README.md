@@ -41,7 +41,7 @@ persists. Teammates share the breakthrough, retaining their original ownership.
 Natural expiration, a new shield after zero, death or combat end discards
 unqualified block credit. Poison and Doom HP count but do not unlock block credit.
 
-Unknown ownership stays **Unattributed** and is hidden by default; the header `?`
+Unknown ownership stays **Unattributed** and is hidden by default; the header eye
 toggle shows it. Unsupported observations and missing history produce coverage
 notices rather than invented credit.
 
@@ -50,20 +50,34 @@ notices rather than invented credit.
 | Control | Action |
 | --- | --- |
 | Dropdown | Choose a metric. New installations default to Effective Damage. |
-| Scope icon | Toggle Current Fight / This Run; hover to see the active scope. Run history may be partial. |
-| ? | Show or hide Unattributed damage. |
+| Swords / scroll | Toggle Current Fight / This Run; hover to see the active scope. Run history may be partial. |
+| Closed / open eye | Hide or show Unattributed damage. |
 | Minus / plus | Collapse to one button / expand to the previous width. |
 | Resize arrow | Left-drag to change width; hover for version, help and diagnostics. |
-| Grab handle | Left-drag to move. |
+| Hand | Left-drag to move. |
+| Green exclamation | A hot reload completed; hover for build details and click to dismiss. |
 | Player bar | Hover for a structured damage breakdown and source table. |
 | F8 | Show or hide the panel. |
 
 Multiplayer rows show character icons and player names inside class-coloured bars.
+The collapse button switches to the end nearest the viewport edge as you drag.
+Collapsing and expanding keep that edge fixed, growing inward on the right.
+Player rows are 24 pixels tall. Hover anywhere over the meter to reveal its
+controls above the rows (below them near the top screen edge); they hide after
+200 ms outside the meter without moving the rows. Controls stay visible while
+dragging, resizing or using the dropdown. The collapsed expand button stays
+visible. Player rows scroll vertically only when available screen height is
+insufficient to show them all.
 HP and shield damage share the lighter shade; amplification uses the darker shade.
 Rows sort by total HP damage regardless of the selected metric. Damage labels are
 rounded to whole numbers, with precise values available on hover.
 
-Tooltips retain HP/block/bonus colours and separate **Already included** and
+Player tooltips appear immediately with a 150 ms fade. Move onto the tooltip to
+read or scroll its source table. Leaving both the row and tooltip starts a 200 ms
+grace period followed by a 150 ms fade-out; returning reverses the fade.
+Tooltip numbers match the player's bar: HP/block use its lighter shade and bonuses
+use its darker shade. Mixed totals stay neutral and excluded pending block is grey.
+Tooltips separate **Already included** and
 excluded pending amounts. Their content scrolls within bounds relative to the
 meter and viewport. Solo play hides player identity and party share. Multiplayer
 percentages use the currently visible rows, so toggling Unattributed can change

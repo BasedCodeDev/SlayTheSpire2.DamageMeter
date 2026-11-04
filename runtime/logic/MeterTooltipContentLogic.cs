@@ -6,13 +6,24 @@ namespace Based.Spires2DamageMeter.Runtime;
 internal static class MeterTooltipContentLogic
 {
     public static Label Label(MeterTooltipContent self, string text, int size) { var l = new Label { Text = text, MouseFilter = MouseFilterEnum.Ignore, AutowrapMode = TextServer.AutowrapMode.WordSmart }; if (size > 0) l.AddThemeFontSizeOverride("font_size", size); return l; }
-    public static void Set(MeterTooltipContent self, Label label, string text, TooltipTone tone) { if (label.Text != text) label.Text = text; label.AddThemeColorOverride("font_color", MeterPalette.Colour(tone)); }
+    public static void Set(MeterTooltipContent self, Label label, string text, TooltipTone tone)
+    {
+        if (label.Text != text) label.Text = text;
+        var key = tone is TooltipTone.Hp or TooltipTone.Block ? "bar_hp" : tone == TooltipTone.Bonus ? "bar_bonus" : "";
+        var matching = key.Length > 0 && self.HasMeta(key);
+        var colour = matching ? self.GetMeta(key).AsColor() : tone == TooltipTone.MutedBlock ? new Color(.6f, .6f, .6f) : MeterPalette.Colour(tone);
+        label.AddThemeColorOverride("font_color", colour);
+        // A subtle neutral outline keeps the dark bonus shades readable on the tooltip.
+        label.AddThemeColorOverride("font_outline_color", new Color(1, 1, 1, .35f));
+        label.AddThemeConstantOverride("outline_size", matching ? 1 : 0);
+    }
     public static HBoxContainer Row(MeterTooltipContent self) { var row = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore }; self.content.AddChild(row); return row; }
     public static void Heading(MeterTooltipContent self, string text) { var label = self.Label(text); self.content.AddChild(label); self.textLabels.Add(label); }
     public static void _Ready(MeterTooltipContent self)
     {
         self.scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled, VerticalScrollMode = ScrollContainer.ScrollMode.Auto, SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsVertical = SizeFlags.ExpandFill };
         self.content = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+        self.scroll.MouseFilter = MouseFilterEnum.Stop; self.scroll.FocusMode = FocusModeEnum.None; self.scroll.GetVScrollBar().FocusMode = FocusModeEnum.None; self.scroll.GetHScrollBar().FocusMode = FocusModeEnum.None; self.content.MouseFilter = MouseFilterEnum.Ignore;
         self.scroll.AddChild(self.content); self.AddChild(self.scroll); self.Refresh();
     }
     public static void Build(MeterTooltipContent self, TooltipCard? card)
@@ -32,9 +43,14 @@ internal static class MeterTooltipContentLogic
     public static void Refresh(MeterTooltipContent self)
     {
         if (!self.IsInsideTree()) return;
-        self.width = Math.Max(120, Math.Min(600, self.AvailableSize.X - 16)); var height = Math.Max(120, Math.Min(700, self.AvailableSize.Y - 16)); self.CustomMinimumSize = new(self.width + 16, height + 16); self.Size = new(self.width + 16, height + 16); self.scroll.CustomMinimumSize = new(self.width, height); self.content.CustomMinimumSize = new(self.width, 0); self.MouseFilter = MouseFilterEnum.Ignore;
+        self.width = Math.Max(self.HasMeta("interactive") ? 1 : 120, Math.Min(600, self.AvailableSize.X - 16)); var height = Math.Max(self.HasMeta("interactive") ? 1 : 120, Math.Min(700, self.AvailableSize.Y - 16)); self.CustomMinimumSize = new(self.width + 16, height + 16); self.Size = new(self.width + 16, height + 16); self.scroll.CustomMinimumSize = new(self.width, height); self.content.CustomMinimumSize = new(self.width, 0); self.MouseFilter = self.HasMeta("interactive") ? MouseFilterEnum.Pass : MouseFilterEnum.Ignore;
+        if (self.HasMeta("interactive")) { self.width = Math.Max(1, self.width - self.scroll.GetVScrollBar().GetCombinedMinimumSize().X); self.content.CustomMinimumSize = new Vector2(self.width,0); }
         var card = self.Model.Card; var key = card == null ? "plain" : string.Join("|", card.Stats.Select(s => s.Section + ":" + s.Label)) + "/" + string.Join("|", card.Headers) + "/" + card.Sources.Count;
-        if (self.shape != key) { self.shape = key; self.Build(card); }
+        if (self.shape != key)
+        {
+            var scrollPosition = self.scroll.ScrollVertical; self.shape = key; self.Build(card);
+            if (scrollPosition > 0 && self.HasMeta("interactive")) Hosting.RuntimeHost.Defer(() => { if (GodotObject.IsInstanceValid(self) && self.IsInsideTree() && self.shape == key) self.scroll.ScrollVertical = scrollPosition; });
+        }
         var font = self.GetThemeDefaultFont(); var fontSize = self.GetThemeDefaultFontSize();
         if (card == null) { self.Set(self.plain, self.Model.Render()); self.plain.CustomMinimumSize = new(self.width, 0); return; }
         self.Set(self.title, card.Title); self.Set(self.scope, card.Scope); self.Set(self.total, card.Total.Text, card.Total.Tone); self.share.Visible = card.PartyShare.HasValue; self.Set(self.share, card.PartyShare.HasValue ? $"{card.PartyShare:0.#}% of party" : "");

@@ -35,7 +35,9 @@ try {
     $variant = Join-Path $output 'variant'
     New-Item -ItemType Directory -Path $variant -Force | Out-Null
     $calc = (Get-Content -LiteralPath 'runtime/logic/EngineDamageLogic.cs' -Encoding UTF8 -Raw).Replace('Math.Max(0, unblockedDamage)', 'Math.Max(0, unblockedDamage) + 1')
-    $ui = (Get-Content -LiteralPath 'runtime/logic/MeterPanelLogic.cs' -Encoding UTF8 -Raw).Replace('"\u2630"', '"DEV 2"')
+    $uiSource = Get-Content -LiteralPath 'runtime/logic/MeterPanelLogic.cs' -Encoding UTF8 -Raw
+    $ui = $uiSource.Replace('IconAssets.Apply(self.grab, "drag")', 'IconAssets.Apply(self.grab, "expand")')
+    if ($ui -eq $uiSource) { throw 'UI fixture did not change the drag icon' }
     [IO.File]::WriteAllText((Join-Path $variant 'EngineDamageLogic.cs'), $calc)
     [IO.File]::WriteAllText((Join-Path $variant 'MeterPanelLogic.cs'), $ui)
     $xmlRoot = [Security.SecurityElement]::Escape($root.Replace('\','/'))
@@ -45,6 +47,7 @@ try {
 <Project Sdk="Microsoft.NET.Sdk">
 <PropertyGroup><TargetFramework>net9.0</TargetFramework><AssemblyName>Based.Spires2DamageMeter.Runtime</AssemblyName><Version>$version</Version><EnableDefaultCompileItems>false</EnableDefaultCompileItems><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
 <ItemGroup>
+<EmbeddedResource Include="$xmlRoot/assets/ui-icons/*.png" LogicalName="MeterIcon.%(Filename)%(Extension)" />
 <Reference Include="Based.Spires2DamageMeter"><HintPath>$xmlHost/Based.Spires2DamageMeter.dll</HintPath><Private>false</Private></Reference>
 <Reference Include="Based.Spires2DamageMeter.Contracts"><HintPath>$xmlHost/Based.Spires2DamageMeter.Contracts.dll</HintPath><Private>false</Private></Reference>
 <Reference Include="GodotSharp"><HintPath>$xmlHost/GodotSharp.dll</HintPath><Private>false</Private></Reference>

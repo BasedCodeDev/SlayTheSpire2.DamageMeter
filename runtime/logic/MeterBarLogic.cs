@@ -41,16 +41,25 @@ internal static class MeterBarLogic
     {
         if (self.Size.X <= 0) return;
         var font = self.GetThemeDefaultFont(); var fontSize = Math.Clamp(self.GetThemeDefaultFontSize(), 10, 15);
-        var summary = self.ShowDetails ? $"{self.DamageText} | {self.ShareText}" : self.DamageText;
-        var summarySize = font.GetStringSize(summary, HorizontalAlignment.Left, -1, fontSize);
-        var name = self.ShowPlayerName ? self.PlayerName : "";
-        var nameWidth = Math.Max(0, self.Size.X - summarySize.X - 20);
-        while (name.Length > 0 && font.GetStringSize(name, HorizontalAlignment.Left, -1, fontSize).X > nameWidth)
-            name = name.Length > 1 ? name[..^2] + "…" : "";
+        var damage = self.ShowDetails ? $"{self.DamageText} | {self.ShareText}" : self.DamageText;
+        while (fontSize > 10 && font.GetStringSize(damage, HorizontalAlignment.Left, -1, fontSize).X + 8 > self.Size.X) fontSize--;
+        var damageWidth = font.GetStringSize(damage, HorizontalAlignment.Left, -1, fontSize).X;
+        var damageX = (self.Size.X - damageWidth) / 2;
         var y = (self.Size.Y - font.GetHeight(fontSize)) / 2 + font.GetAscent(fontSize);
+        if (damageWidth + 8 > self.Size.X) return;
+        var originalName = self.ShowPlayerName ? self.PlayerName : "";
+        var name = originalName;
+        var nameWidth = Math.Max(0, damageX - 12);
+        while (name.Length > 0 && font.GetStringSize(name, HorizontalAlignment.Left, -1, fontSize).X > nameWidth)
+            name = name[..^1];
+        if (name != originalName)
+        {
+            while (name.Length > 0 && font.GetStringSize(name + "\u2026", HorizontalAlignment.Left, -1, fontSize).X > nameWidth)
+                name = name[..^1];
+            if (name.Length > 0) name += "\u2026";
+        }
         if (name.Length > 0) self.DrawOutlined(font, new Vector2(4, y), name, fontSize);
-        if (summary.Length > 0 && summarySize.X + 8 <= self.Size.X)
-            self.DrawOutlined(font, new Vector2(self.Size.X - summarySize.X - 4, y), summary, fontSize);
+        self.DrawOutlined(font, new Vector2(damageX, y), damage, fontSize);
     }
     public static void DrawOutlined(MeterBar self, Font font, Vector2 position, string text, int fontSize)
     {
