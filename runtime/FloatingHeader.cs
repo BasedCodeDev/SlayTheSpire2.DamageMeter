@@ -36,7 +36,7 @@ internal static class FloatingHeader
         var y = meter.panel.Position.Y >= height ? meter.panel.Position.Y - height : meter.panel.Position.Y + meter.panel.Size.Y;
         strip.Position = new Vector2(Math.Clamp(meter.panel.Position.X, 0, Math.Max(0, viewport.X - strip.Size.X)), Math.Clamp(y, 0, Math.Max(0, viewport.Y - height)));
         var hover = meter.panel.GetGlobalRect().HasPoint(pointer) || (strip.Visible && strip.GetGlobalRect().HasPoint(pointer));
-        var keep = hover || meter.dragging || meter.resizing || meter.metric.GetPopup().Visible;
+        var keep = hover || PlayerTooltips.IsHovered(meter, pointer) || meter.dragging || meter.resizing || meter.metric.GetPopup().Visible;
         var outside = keep ? 0 : strip.GetMeta("outside").AsDouble() + Math.Max(0, delta);
         strip.SetMeta("outside", outside);
         strip.Visible = outside < .2;

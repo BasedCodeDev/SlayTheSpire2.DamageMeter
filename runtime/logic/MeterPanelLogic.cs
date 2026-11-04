@@ -223,6 +223,7 @@ internal static class MeterPanelLogic
         if (!Mathf.IsEqualApprox(width, self.panel.Size.X)) self.panel.Size = new Vector2(width, 0);
         EdgePlacement.Clamp(self);
         EdgePlacement.Update(self);
+        PlayerTooltips.Update(self, delta);
         FloatingHeader.Update(self, delta);
         var tooltipBounds = self.TooltipBounds(viewport);
         self.elapsed += delta; if (self.elapsed < .1) return; self.elapsed = 0;
@@ -238,7 +239,7 @@ internal static class MeterPanelLogic
         decimal Value(Totals t) => self.Metric switch { 1 => t.Hp, 2 => t.Block, 3 => t.Poison, 4 => t.Doom, 5 => t.AmplifiedHp + t.AmplifiedBlock, 6 => t.SupportGiven, 7 => t.Hp + t.Block, _ => t.Hp + t.Block };
         var visibleData = data.Where(p => self.showUnattributed || p.Key != StatusOwnershipLedger.Unknown).ToArray();
         var ordered = visibleData.OrderByDescending(p => actual.GetValueOrDefault(p.Key)?.Hp ?? 0).ThenBy(p => p.Key, StringComparer.Ordinal).ToArray(); var max = ordered.Select(p => Value(p.Value)).DefaultIfEmpty().Max(); var team = visibleData.Sum(p => Value(p.Value));
-        var hovered = self.panel.GetGlobalRect().HasPoint(self.GetViewport().GetMousePosition());
+        var hovered = self.panel.GetGlobalRect().HasPoint(self.GetViewport().GetMousePosition()) || PlayerTooltips.IsOpen(self);
         var visibleIds = visibleData.Select(p => p.Key).ToHashSet(StringComparer.Ordinal);
         foreach (var id in self.controls.Keys.Except(visibleIds).ToArray()) { self.controls[id].Button.CloseTooltip(); self.controls[id].Button.QueueFree(); self.controls.Remove(id); }
         var breakdowns = self.Metric == 7 ? (self.scopeIndex == 0 ? Probe.Meter.StructuredSources : RunSession.SourceBreakdowns()) : ledger.Sources();
@@ -254,7 +255,7 @@ internal static class MeterPanelLogic
         {
             if (!self.controls.TryGetValue(id, out var row))
             {
-                var button = new MeterHoverButton { TooltipText = "Player details", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 24) };
+                var button = new MeterHoverButton { TooltipText = "", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 24) };
                 button.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());

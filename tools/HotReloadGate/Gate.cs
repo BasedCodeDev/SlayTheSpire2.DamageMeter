@@ -116,6 +116,43 @@ public partial class Gate : Node
                 var update = module.GetType().Assembly.GetType("Based.Spires2DamageMeter.Runtime.FloatingHeader")!.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Static, new[] { typeof(MeterPanel), typeof(double), typeof(Vector2) })!;
                 void Hover(double delta, Vector2 point) => update.Invoke(null, new object[] { meter, delta, point });
                 var strip = meter.GetNode<PanelContainer>("HoverHeader");
+                var tipUpdate = module.GetType().Assembly.GetType("Based.Spires2DamageMeter.Runtime.PlayerTooltips")!.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Static, new[] { typeof(MeterPanel), typeof(double), typeof(Vector2) })!;
+                void Tip(double delta, Vector2 point) => tipUpdate.Invoke(null, new object[] { meter, delta, point });
+                root.Size = new Vector2I(1400,900); await Settle();
+                var tipOwner = meter.controls.Values.First().Button;
+                var tipModel = tipOwner.model;
+                try
+                {
+                    var longModel = tipModel with { Card = tipModel.Card! with { Sources = Enumerable.Range(0,60).Select(i => new TooltipSource("Source " + i, new[] { new TooltipNumber(i,TooltipTone.Hp), new TooltipNumber(i,TooltipTone.Block), new TooltipNumber(i*2,TooltipTone.Neutral) })).ToArray() } };
+                    tipOwner.UpdateTooltip(longModel, new Vector2(400,300));
+                    var rowPoint = tipOwner.GetGlobalRect().GetCenter();
+                    Tip(.075, rowPoint);
+                    var tipPanel = meter.GetNode<PanelContainer>("PlayerTooltip");
+                    Require(tipPanel.Modulate.A > 0 && tipPanel.Modulate.A < 1, "Tooltip did not fade in");
+                    await Settle(); Tip(.075, tipPanel.GetGlobalRect().GetCenter());
+                    Require(Math.Abs(tipPanel.Modulate.A - 1) < .01, "Pointer could not enter tooltip");
+                    var tipContent = tipOwner.popup!;
+                    Require(tipOwner._MakeCustomTooltip("") == null, "Empty native tooltip request created a duplicate");
+                    Require(ReferenceEquals(tipOwner.popup, tipContent), "Native tooltip request replaced interactive content reference");
+                    Require(meter.GetChildren().OfType<PanelContainer>().Count(p => p.Visible && p.Name.ToString().StartsWith("PlayerTooltip")) == 1, "Expected one visible interactive tooltip");
+                    Require(tipContent.scroll.MouseFilter == Control.MouseFilterEnum.Stop, "Tooltip scroll input disabled");
+                    tipContent.scroll.ScrollVertical = 150; await Settle();
+                    var scrollPosition = tipContent.scroll.ScrollVertical;
+                    tipOwner.UpdateTooltip(longModel, new Vector2(400,300)); await Settle();
+                    Require(scrollPosition > 0 && tipContent.scroll.ScrollVertical == scrollPosition, "Live update lost tooltip scroll position");
+                    Tip(.1,new Vector2(-100,-100)); Require(tipPanel.Modulate.A == 1, "Tooltip exit grace missing");
+                    Tip(.175,new Vector2(-100,-100)); var faded = tipPanel.Modulate.A; Require(faded > 0 && faded < 1, "Tooltip did not fade out");
+                    Tip(.03,tipPanel.GetGlobalRect().GetCenter()); Require(tipPanel.Modulate.A > faded, "Tooltip fade did not reverse");
+                    Hover(1,tipPanel.GetGlobalRect().GetCenter()); Require(strip.Visible, "Header hid over interactive tooltip");
+                    Tip(.5,new Vector2(-100,-100)); Require(!tipPanel.Visible, "Tooltip did not dismiss after exit");
+                    await Settle(); Tip(.15,rowPoint);
+                    Require(tipOwner.popup!.scroll.ScrollVertical == 0, "New tooltip did not reset scroll");
+                    meter.panel.Visible = false; Tip(0,rowPoint);
+                    Require(!meter.GetChildren().OfType<PanelContainer>().Any(p => p.Name.ToString().StartsWith("PlayerTooltip") && p.Visible), "Hidden meter retained tooltip");
+                    meter.panel.Visible = true;
+                    evidence.Add("PASS interactive tooltip entry, fades/grace/reversal, scroll retention, header hover and hidden-meter cleanup");
+                }
+                finally { tipOwner.CloseTooltip(); tipOwner.UpdateTooltip(tipModel,new Vector2(500,500)); }
                 var bodyRect = meter.panel.GetGlobalRect();
                 Hover(0, bodyRect.GetCenter());
                 Require(strip.Visible && strip.Position.Y < meter.panel.Position.Y, "Header did not reveal above rows");

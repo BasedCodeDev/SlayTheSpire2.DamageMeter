@@ -72,6 +72,9 @@ HP and shield damage share the lighter shade; amplification uses the darker shad
 Rows sort by total HP damage regardless of the selected metric. Damage labels are
 rounded to whole numbers, with precise values available on hover.
 
+Player tooltips appear immediately with a 150 ms fade. Move onto the tooltip to
+read or scroll its source table. Leaving both the row and tooltip starts a 200 ms
+grace period followed by a 150 ms fade-out; returning reverses the fade.
 Tooltip numbers match the player's bar: HP/block use its lighter shade and bonuses
 use its darker shade. Mixed totals stay neutral and excluded pending block is grey.
 Tooltips separate **Already included** and

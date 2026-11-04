@@ -35,5 +35,5 @@ public sealed class RuntimeModule : IRuntimeModule
         }
         return Operations.Invoke(operation, arguments);
     }
-    public void Dispose() => IconAssets.Dispose();
+    public void Dispose() { PlayerTooltips.Dispose(); IconAssets.Dispose(); }
 }
