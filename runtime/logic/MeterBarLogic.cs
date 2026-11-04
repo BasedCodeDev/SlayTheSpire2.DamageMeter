@@ -14,14 +14,17 @@ internal static class MeterBarLogic
         self.glossStyle ??= CreateStyle(new(1, 1, 1, .11f), 5, 0);
         var barRect = new Rect2(0, 3, self.Size.X, Math.Max(0, self.Size.Y - 6));
         self.DrawStyleBox(self.trackStyle, barRect);
-        if (self.Maximum > 0)
+        var frame = BarAnimations.Frame(self);
+        if (frame.End > 0)
         {
-            var hp = Math.Clamp(self.Size.X * (float)((self.Hp + self.Block) / self.Maximum), 0, self.Size.X);
-            var amp = Math.Clamp(self.Size.X * (float)(self.Orange / self.Maximum), 0, Math.Max(0, self.Size.X - hp));
+            var hp = self.Size.X * (float)frame.Base;
+            var amp = self.Size.X * (float)(frame.End - frame.Base);
             if (hp > 0) self.DrawStyleBox(self.hpStyle, new Rect2(0, 3, hp, barRect.Size.Y));
             if (amp > 0) self.DrawStyleBox(self.ampStyle, new Rect2(hp, 3, amp, barRect.Size.Y));
             var filledWidth = hp + amp;
             if (filledWidth > 12) self.DrawStyleBox(self.glossStyle, new Rect2(2, 4, filledWidth - 4, Math.Max(0, barRect.Size.Y * .32f)));
+            var pulse = BarAnimations.Pulse(self);
+            if (pulse > 0 && filledWidth > 8) self.DrawRect(new Rect2(4, 5, filledWidth - 8, Math.Max(0,barRect.Size.Y - 4)),new Color(1,1,1,pulse));
         }
         self.DrawRowText();
     }
@@ -41,7 +44,7 @@ internal static class MeterBarLogic
     {
         if (self.Size.X <= 0) return;
         var font = self.GetThemeDefaultFont(); var fontSize = Math.Clamp(self.GetThemeDefaultFontSize(), 10, 15);
-        var damage = self.ShowDetails ? $"{self.DamageText} | {self.ShareText}" : self.DamageText;
+        var damage = BarAnimations.Text(self);
         while (fontSize > 10 && font.GetStringSize(damage, HorizontalAlignment.Left, -1, fontSize).X + 8 > self.Size.X) fontSize--;
         var damageWidth = font.GetStringSize(damage, HorizontalAlignment.Left, -1, fontSize).X;
         var damageX = (self.Size.X - damageWidth) / 2;
@@ -49,7 +52,9 @@ internal static class MeterBarLogic
         if (damageWidth + 8 > self.Size.X) return;
         var originalName = self.ShowPlayerName ? self.PlayerName : "";
         var name = originalName;
-        var nameWidth = Math.Max(0, damageX - 12);
+        var reservedWidth = Math.Max(damageWidth, font.GetStringSize(BarAnimations.Text(self, true), HorizontalAlignment.Left,-1,fontSize).X);
+        reservedWidth = Math.Max(reservedWidth, font.GetStringSize(BarAnimations.StartText(self),HorizontalAlignment.Left,-1,fontSize).X);
+        var nameWidth = Math.Max(0, (self.Size.X - reservedWidth) / 2 - 12);
         while (name.Length > 0 && font.GetStringSize(name, HorizontalAlignment.Left, -1, fontSize).X > nameWidth)
             name = name[..^1];
         if (name != originalName)

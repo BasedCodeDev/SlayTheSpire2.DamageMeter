@@ -10,6 +10,8 @@ internal static class PlayerTooltips
         public Vector2 Anchor;
         public double Outside;
         public float Alpha;
+        public Vector2? Pointer;
+        public bool HoldPlayer;
     }
     private static readonly Dictionary<MeterPanel, State> states = new();
     public static bool IsOpen(MeterPanel meter) => states.TryGetValue(meter, out var state) && GodotObject.IsInstanceValid(state.Panel);
@@ -17,7 +19,7 @@ internal static class PlayerTooltips
     private static void Close(State state)
     {
         if (GodotObject.IsInstanceValid(state.Panel)) { state.Panel!.Hide(); state.Panel.QueueFree(); }
-        state.Panel = null; state.Source = null; state.Alpha = 0; state.Outside = 0;
+        state.Panel = null; state.Source = null; state.Alpha = 0; state.Outside = 0; state.HoldPlayer = false;
     }
     public static void CloseFor(MeterHoverButton source)
     {
@@ -32,7 +34,14 @@ internal static class PlayerTooltips
         { Close(state); return; }
         if (state.Source != null && (!GodotObject.IsInstanceValid(state.Source) || !state.Source.IsInsideTree() || !meter.controls.Values.Any(r => r.Button == state.Source))) Close(state);
         var overPopup = IsHovered(meter, pointer);
-        var source = overPopup ? state.Source : meter.controls.Values.Select(r => r.Button).FirstOrDefault(b => b.IsVisibleInTree() && b.GetGlobalRect().HasPoint(pointer));
+        var moved = !state.Pointer.HasValue || state.Pointer.Value.DistanceSquaredTo(pointer) > 1;
+        if (moved) state.HoldPlayer = false;
+        else if (state.Source != null && RowAnimations.IsMoving(meter)) state.HoldPlayer = true;
+        state.Pointer = pointer;
+        var overRows = meter.scroll.GetGlobalRect().HasPoint(pointer);
+        var source = overPopup || (state.HoldPlayer && overRows) ? state.Source : overRows ? meter.controls.Values.Select(r => r.Button)
+            .OrderByDescending(b => ((Control)b.GetParent()).ZIndex).ThenByDescending(b => b.GetParent().GetIndex())
+            .FirstOrDefault(b => b.IsVisibleInTree() && b.GetGlobalRect().HasPoint(pointer)) : null;
         if (source != null && source != state.Source)
         {
             var alpha = state.Alpha;

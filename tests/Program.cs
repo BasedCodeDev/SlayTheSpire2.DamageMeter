@@ -8,6 +8,7 @@ Based.Spires2DamageMeter.Hosting.RuntimeHost.LoadBuiltRuntimeForChecks(args.Leng
 
 void Check(bool ok, string name) { if (!ok) throw new Exception(name); Console.WriteLine("PASS " + name); }
 OwnershipChecks.Run(Check);
+BarMotionChecks.Run(Check);
 NormalizationChecks.Run(Check);
 CreditedDamageChecks.Run(Check);
 MeterTooltipChecks.Run(Check);

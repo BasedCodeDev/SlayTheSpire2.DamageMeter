@@ -223,9 +223,11 @@ internal static class MeterPanelLogic
         if (!Mathf.IsEqualApprox(width, self.panel.Size.X)) self.panel.Size = new Vector2(width, 0);
         EdgePlacement.Clamp(self);
         EdgePlacement.Update(self);
+        RowAnimations.Advance(self, delta);
         PlayerTooltips.Update(self, delta);
         FloatingHeader.Update(self, delta);
         var tooltipBounds = self.TooltipBounds(viewport);
+        BarAnimations.Advance(self, delta);
         self.elapsed += delta; if (self.elapsed < .1) return; self.elapsed = 0;
         var sessionType = RunManager.Instance?.NetService?.Type.ToString();
         var detectedSolo = MeterTooltipModel.SoloForSession(sessionType);
@@ -238,10 +240,9 @@ internal static class MeterPanelLogic
         var data = self.Metric == 7 ? actual : credited;
         decimal Value(Totals t) => self.Metric switch { 1 => t.Hp, 2 => t.Block, 3 => t.Poison, 4 => t.Doom, 5 => t.AmplifiedHp + t.AmplifiedBlock, 6 => t.SupportGiven, 7 => t.Hp + t.Block, _ => t.Hp + t.Block };
         var visibleData = data.Where(p => self.showUnattributed || p.Key != StatusOwnershipLedger.Unknown).ToArray();
-        var ordered = visibleData.OrderByDescending(p => actual.GetValueOrDefault(p.Key)?.Hp ?? 0).ThenBy(p => p.Key, StringComparer.Ordinal).ToArray(); var max = ordered.Select(p => Value(p.Value)).DefaultIfEmpty().Max(); var team = visibleData.Sum(p => Value(p.Value));
-        var hovered = self.panel.GetGlobalRect().HasPoint(self.GetViewport().GetMousePosition()) || PlayerTooltips.IsOpen(self);
+        var ordered = visibleData.OrderByDescending(p => Value(p.Value)).ThenBy(p => self.controls.TryGetValue(p.Key,out var row) ? row.Button.GetParent().GetIndex() : int.MaxValue).ThenBy(p => p.Key, StringComparer.Ordinal).ToArray(); var max = ordered.Select(p => Value(p.Value)).DefaultIfEmpty().Max(); var team = visibleData.Sum(p => Value(p.Value));
         var visibleIds = visibleData.Select(p => p.Key).ToHashSet(StringComparer.Ordinal);
-        foreach (var id in self.controls.Keys.Except(visibleIds).ToArray()) { self.controls[id].Button.CloseTooltip(); self.controls[id].Button.QueueFree(); self.controls.Remove(id); }
+        foreach (var id in self.controls.Keys.Except(visibleIds).ToArray()) { BarAnimations.Forget(self.controls[id].Bar); self.controls[id].Button.CloseTooltip(); var slot = self.controls[id].Button.GetParent(); self.rows.RemoveChild(slot); slot.QueueFree(); self.controls.Remove(id); }
         var breakdowns = self.Metric == 7 ? (self.scopeIndex == 0 ? Probe.Meter.StructuredSources : RunSession.SourceBreakdowns()) : ledger.Sources();
         var diagnostics = $"{Probe.Combat} | {Probe.Health}\n{RunSession.Status}\n{(self.scopeIndex == 1 && RunSession.AttributionPartial ? "Partial credited history; earlier actuals available in Actual Damage" : "")}\nAttribution: {ledger.Provisional} provisional/unknown events\nEnemy amplification: {NativeDamageCapture.Matched} matched, {NativeDamageCapture.Unmatched} unmeasured (audit pending)\n{Probe.OwnershipStatus}\nEffective: {(EffectiveCapture.Enabled ? "enabled" : "unavailable")}, {(effective.Incomplete ? "partial coverage" : "observed coverage")}";
         var badge = MeterTooltipModel.Status((self.Metric == 8 && (!EffectiveCapture.Enabled || effective.Incomplete)) || Probe.Health.StartsWith("INCOMPLETE") || !NativeDamageCapture.Enabled || !Probe.OwnershipAvailable || RunSession.StorageIncomplete, ledger.Provisional > 0 || NativeDamageCapture.Unmatched > 0 || (self.scopeIndex == 1 && (RunSession.AttributionPartial || RunSession.HistoryPartial)));
@@ -250,7 +251,6 @@ internal static class MeterPanelLogic
         if (self.metric.TooltipText != metricTip) self.metric.TooltipText = metricTip;
         self.empty.Text = !self.showUnattributed && data.ContainsKey(StatusOwnershipLedger.Unknown) ? "No attributed damage yet" : "No damage recorded yet";
         self.empty.Visible = ordered.Length == 0;
-        var index = 0;
         foreach (var (id, total) in ordered)
         {
             if (!self.controls.TryGetValue(id, out var row))
@@ -261,13 +261,13 @@ internal static class MeterPanelLogic
                 button.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("disabled", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("hover", new StyleBoxFlat { BgColor = new Color(1, 1, 1, .05f) });
-                self.rows.AddChild(button);
+                var slot = new Control { CustomMinimumSize = new Vector2(0,24), SizeFlagsHorizontal = SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
+                self.rows.AddChild(slot); slot.AddChild(button); button.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
                 var line = new HBoxContainer { MouseFilter = Control.MouseFilterEnum.Ignore }; button.AddChild(line); line.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
                 var icon = new TextureRect { CustomMinimumSize = new Vector2(18, 18), ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, MouseFilter = Control.MouseFilterEnum.Ignore }; line.AddChild(icon);
                 var bar = new MeterBar { CustomMinimumSize = new Vector2(70, 20), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, MouseFilter = Control.MouseFilterEnum.Ignore }; line.AddChild(bar);
                 self.controls[id] = row = (button, icon, bar);
             }
-            if (!hovered) self.rows.MoveChild(row.Button, index); index++;
             row.Icon.Texture = Probe.CharacterIcons.GetValueOrDefault(id);
             row.Icon.Visible = row.Icon.Texture != null;
             (Color Hp, Color Amp) colors = Probe.CharacterColors.GetValueOrDefault(id, (Colors.Gray, Colors.Gray));
@@ -282,12 +282,13 @@ internal static class MeterPanelLogic
             row.Bar.ShowDetails = !self.solo;
             row.Bar.Orange = self.Metric switch { 0 or 8 => total.AmplifiedHp + total.AmplifiedBlock, 1 => total.AmplifiedHp, 2 => total.AmplifiedBlock, 5 => value, 6 => value, 7 => total.AmplifiedHp + total.AmplifiedBlock, 3 => ledger.Credits.Where(c => c.Player == id && c.Kind == "Poison" && c.Amplification).Sum(c => c.Hp), _ => 0 };
             row.Bar.Block = self.Metric switch { 0 or 8 => Math.Max(0, total.Block - total.AmplifiedBlock), 2 => Math.Max(0, total.Block - total.AmplifiedBlock), 7 => Math.Max(0, total.Block - total.AmplifiedBlock), _ => 0 };
-            row.Bar.Hp = Math.Max(0, value - row.Bar.Block - row.Bar.Orange); row.Bar.Maximum = max; row.Bar.QueueRedraw();
+            row.Bar.Hp = Math.Max(0, value - row.Bar.Block - row.Bar.Orange); row.Bar.Maximum = max; BarAnimations.Set(self, row.Bar, value, team > 0 ? 100 * value / team : 0); row.Bar.QueueRedraw();
             var affected = (self.Metric == 8 && (!EffectiveCapture.Enabled || effective.Incomplete)) || Probe.Health.StartsWith("INCOMPLETE") || !Probe.OwnershipAvailable || (self.Metric != 7 && (!NativeDamageCapture.Enabled || ledger.Provisional > 0 || NativeDamageCapture.Unmatched > 0)) || (self.scopeIndex == 1 && (RunSession.StorageIncomplete || RunSession.HistoryPartial || (self.Metric != 7 && RunSession.AttributionPartial)));
             var card = MeterTooltipModel.BuildCard(id, row.Bar.PlayerName, self.Metric, self.scopeIndex == 1, self.solo, value, team, total, effective.PendingFor(id), row.Bar.Orange, breakdowns, transfers, p => Probe.Names.GetValueOrDefault(p, p), affected ? "Data may be incomplete. Hover the resize arrow for details." : "");
             row.Button.UpdateTooltip(new("", Array.Empty<string>(), "") { Card = card }, tooltipBounds);
 
         }
+        RowAnimations.Reorder(self, ordered.Select(p => self.controls[p.Key].Button).ToArray());
         self.QueueHeightRefresh();
     }
     public static void CloseTooltips(MeterPanel self) { if (self.resize != null) self.resize.CloseTooltip(); foreach (var row in self.controls.Values) row.Button.CloseTooltip(); }
