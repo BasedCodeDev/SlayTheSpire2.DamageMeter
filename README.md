@@ -69,7 +69,10 @@ dragging, resizing or using the dropdown. The collapsed expand button stays
 visible. Player rows scroll vertically only when available screen height is
 insufficient to show them all.
 HP and shield damage share the lighter shade; amplification uses the darker shade.
-Rows sort by total HP damage regardless of the selected metric. Damage labels are
+Rows rank by exact contribution to the selected metric, largest percentage first.
+Ranking changes slide whole player rows into place over 200 ms, including during
+hover. Exact ties retain their previous order. An open tooltip keeps its player
+when a row moves beneath a stationary pointer. Damage labels are
 rounded to whole numbers, with precise values available on hover.
 
 Player tooltips appear immediately with a 150 ms fade. Move onto the tooltip to
@@ -82,6 +85,10 @@ excluded pending amounts. Their content scrolls within bounds relative to the
 meter and viewport. Solo play hides player identity and party share. Multiplayer
 percentages use the currently visible rows, so toggling Unattributed can change
 those percentages. Bar lengths scale against the largest displayed player total.
+Live fills, damage counters and percentages ease toward new values over 200 ms.
+An increase in contribution adds a subtle 300 ms highlight, at most once every
+500 ms; relative rescaling does not pulse. Tooltips stay exact. Switching views,
+starting fights, restoring history and hot reload show values immediately.
 
 ## Deploy from a checkout (Windows)
 

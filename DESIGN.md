@@ -530,3 +530,33 @@ assemblies even with distinct serializer options. Native tests explicitly emit
 private anonymous log values through repeated reloads and check collection.
 The developer workflow and implementation boundaries are in `docs/hot-reload.md`.
 Isolated engine tests do not certify live multiplayer or save/progress safety.
+
+## Live bar motion
+
+Bar animation is always enabled. Live segment boundaries and numeric labels use
+200 ms cubic ease-out transitions, retargeting from the current displayed frame.
+Tooltip/accounting values remain exact. A 300 ms low-opacity highlight indicates
+increased contribution, with a 500 ms cooldown; scale/percentage-only changes
+and decreases do not pulse. Initial population, context changes, hidden/collapsed
+views and runtime replacement snap to current values without replaying activity.
+Name-space reservation considers starting and target labels. Existing ranking
+and tooltip hover stability remain intact.
+
+The design applies restrained data-display motion from
+[Fluent](https://fluent2.microsoft.design/motion) and
+[Carbon](https://www.carbondesignsystem.com/building-blocks/foundations/motion/overview),
+and continuity guidance from
+[Heer and Robertson](https://sites.stat.columbia.edu/gelman/communication/HeerRobertson2007.pdf).
+Counts and fills do not overshoot; no trails, shimmer, bouncing or animated ranking
+are introduced. Runtime-owned state is discarded on retirement.
+
+## Contribution ranking and row transitions
+
+Rank rows by the selected metric's exact contribution (equivalent to party share),
+retaining the prior order for exact ties and using player IDs for initial ties.
+Whole rows slide for 200 ms with cubic ease-out even during hover. Fixed-height
+slots preserve the 24px rows and scroll geometry. Rapid changes retarget from the
+current visual position rather than queueing swaps. Pointer hit tests use visible
+row bounds and overlap order; stationary pointers retain an open tooltip's player
+until deliberate movement. Initial population, new fights, restored history,
+hidden/collapsed views and runtime replacement snap to current order.
