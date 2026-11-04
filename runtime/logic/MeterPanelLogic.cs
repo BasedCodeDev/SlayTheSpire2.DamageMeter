@@ -44,7 +44,7 @@ internal static class MeterPanelLogic
         self.metric.GetPopup().AboutToPopup += () => self.metric.AddThemeIconOverride("arrow", IconAssets.Get("dropdown-open"));
         self.metric.GetPopup().PopupHide += () => self.metric.AddThemeIconOverride("arrow", IconAssets.Get("dropdown"));
         self.resize = new MeterHoverLabel { Text = "", TooltipText = "Meter controls", HorizontalAlignment = HorizontalAlignment.Right, MouseFilter = Control.MouseFilterEnum.Stop, CustomMinimumSize = new Vector2(24, 26) }; header.AddChild(self.resize);
-        var resizeIcon = new TextureRect { Texture = IconAssets.Get("resize"), MouseFilter = MouseFilterEnum.Ignore, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered };
+        var resizeIcon = new TextureRect { Texture = IconAssets.Get("resize"), MouseFilter = MouseFilterEnum.Ignore, ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepCentered };
         self.resize.AddChild(resizeIcon);
         resizeIcon.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
         self.resize.GuiInput += e =>
@@ -70,6 +70,8 @@ internal static class MeterPanelLogic
         header.AddChild(self.unattributedToggle);
         header.MoveChild(self.unattributedToggle, 3);
         self.UpdateUnattributedToggle();
+        ConfigureHeader(header, self.panel.GetThemeDefaultFont(), Math.Clamp(self.panel.GetThemeDefaultFontSize(), 10, 15));
+        FloatingHeader.Create(self, header);
         self.body = new VBoxContainer(); self.body.AddThemeConstantOverride("separation", 2); self.layout.AddChild(self.body); self.collapse.Pressed += () => { self.ApplyCollapsedState(!self.collapsed); self.Save(); };
         self.metric.AddSeparator("Damage");
         for (var id = 0; id < 9; id++) { if (id == 8) self.metric.AddSeparator("Effective"); if (id == 5) self.metric.AddSeparator("Attribution"); self.metric.AddItem(MeterTooltipModel.Labels[id], id); self.metric.GetPopup().SetItemTooltip(self.metric.ItemCount - 1, MeterTooltipModel.Description(id)); if (id is 5 or 6) self.metric.SetItemDisabled(self.metric.ItemCount - 1, !NativeDamageCapture.Enabled); }
@@ -79,11 +81,12 @@ internal static class MeterPanelLogic
         self.empty = new Label { Text = "No damage recorded yet" }; self.body.AddChild(self.empty);
         self.scroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled }; self.body.AddChild(self.scroll);
         self.rows = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill }; self.rows.AddThemeConstantOverride("separation", 1); self.scroll.AddChild(self.rows);
-        self.ApplyCollapsedState(self.settings.GetValue("layout", "collapsed", false).AsBool());
+        ApplyCollapsedState(self, self.settings.GetValue("layout", "collapsed", false).AsBool(), false);
         // Runtime-owned sibling: it follows the panel without changing its layout.
         var notice = new Button
         {
             Name = "ReloadNotice", Visible = false,
+            IconAlignment = HorizontalAlignment.Center,
             Theme = self.panel.Theme, MouseFilter = MouseFilterEnum.Stop,
             FocusMode = FocusModeEnum.None,
             CustomMinimumSize = new Vector2(30, 30), PivotOffset = new Vector2(15, 15)
@@ -102,6 +105,29 @@ internal static class MeterPanelLogic
         notice.SetMeta("age", 0d);
         notice.Pressed += () => { notice.SetMeta("pending", false); notice.Hide(); };
         self.AddChild(notice);
+    }
+    private static void ConfigureHeader(HBoxContainer header, Font font, int fontSize)
+    {
+        foreach (var control in header.GetChildren().OfType<Control>())
+        {
+            control.CustomMinimumSize = new Vector2(control.CustomMinimumSize.X, 24);
+            control.AddThemeFontSizeOverride("font_size", fontSize);
+            if (control is not Button button) continue;
+            foreach (var state in new[] { "normal", "hover", "pressed", "disabled", "focus", "hover_pressed" })
+            {
+                if (!button.HasThemeStylebox(state)) continue;
+                var style = (StyleBox)button.GetThemeStylebox(state).Duplicate();
+                style.ContentMarginTop = 2;
+                style.ContentMarginBottom = 2;
+                button.AddThemeStyleboxOverride(state, style);
+            }
+            if (button is not OptionButton dropdown) continue;
+            var popup = dropdown.GetPopup();
+            popup.AddThemeFontOverride("font", font);
+            popup.AddThemeFontOverride("font_separator", font);
+            popup.AddThemeFontSizeOverride("font_size", fontSize);
+            popup.AddThemeFontSizeOverride("font_separator_size", fontSize);
+        }
     }
     public static void UpdateScopeToggle(MeterPanel self)
     {
@@ -128,11 +154,13 @@ internal static class MeterPanelLogic
         var height = Math.Min(Math.Max(240, Math.Max(self.panel.Size.X, self.panel.Size.Y) * 1.15f), Math.Max(120, viewport.Y * .7f));
         return new(width, height);
     }
-    public static void ApplyCollapsedState(MeterPanel self, bool value)
+    public static void ApplyCollapsedState(MeterPanel self, bool value, bool preserveEdge = true)
     {
         self.CloseTooltips();
+        EdgePlacement.Begin(self, value, preserveEdge);
         if (value && !self.collapsed) self.expandedWidth = self.panel.Size.X;
         self.collapsed = value; self.body.Visible = !value; self.metric.Visible = !value; self.scopeToggle.Visible = !value; self.unattributedToggle.Visible = !value; self.resize.Visible = !value; self.grab.Visible = !value;
+        FloatingHeader.SetCollapsed(self, value);
         IconAssets.Apply(self.collapse, value ? "expand" : "collapse");
         self.collapse.TooltipText = value ? "Expand meter" : "Collapse meter";
         self.panel.CustomMinimumSize = new Vector2(value ? 0 : 280, 0);
@@ -150,7 +178,9 @@ internal static class MeterPanelLogic
         {
             self.heightRefreshPending = false;
             if (!GodotObject.IsInstanceValid(self.panel)) return;
+            FloatingHeader.MeasureRows(self);
             self.panel.Size = self.collapsed ? Vector2.Zero : new Vector2(self.panel.Size.X, 0);
+            EdgePlacement.Settle(self);
         });
     }
     public static void Save(MeterPanel self)
@@ -191,7 +221,9 @@ internal static class MeterPanelLogic
         var viewport = self.GetViewport().GetVisibleRect().Size;
         var width = Math.Clamp(self.panel.Size.X, self.collapsed ? 0 : Math.Min(280, viewport.X), viewport.X);
         if (!Mathf.IsEqualApprox(width, self.panel.Size.X)) self.panel.Size = new Vector2(width, 0);
-        self.panel.Position = new Vector2(Math.Clamp(self.panel.Position.X, 0, Math.Max(0, viewport.X - self.panel.Size.X)), Math.Clamp(self.panel.Position.Y, 0, Math.Max(0, viewport.Y - 40)));
+        EdgePlacement.Clamp(self);
+        EdgePlacement.Update(self);
+        FloatingHeader.Update(self, delta);
         var tooltipBounds = self.TooltipBounds(viewport);
         self.elapsed += delta; if (self.elapsed < .1) return; self.elapsed = 0;
         var sessionType = RunManager.Instance?.NetService?.Type.ToString();
@@ -222,7 +254,7 @@ internal static class MeterPanelLogic
         {
             if (!self.controls.TryGetValue(id, out var row))
             {
-                var button = new MeterHoverButton { TooltipText = "Player details", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 21) };
+                var button = new MeterHoverButton { TooltipText = "Player details", FocusMode = Control.FocusModeEnum.None, CustomMinimumSize = new Vector2(0, 24) };
                 button.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("focus", new StyleBoxEmpty());
                 button.AddThemeStyleboxOverride("pressed", new StyleBoxEmpty());
@@ -239,6 +271,8 @@ internal static class MeterPanelLogic
             row.Icon.Visible = row.Icon.Texture != null;
             (Color Hp, Color Amp) colors = Probe.CharacterColors.GetValueOrDefault(id, (Colors.Gray, Colors.Gray));
             row.Bar.HpColour = Saturate(colors.Hp, 1.2f); row.Bar.AmpColour = Saturate(colors.Amp, 1.2f);
+            row.Button.SetMeta("bar_hp", row.Bar.HpColour);
+            row.Button.SetMeta("bar_bonus", row.Bar.AmpColour);
             var value = Value(total);
             row.Bar.PlayerName = Probe.Names.GetValueOrDefault(id, id);
             row.Bar.ShowPlayerName = !self.solo || id == StatusOwnershipLedger.Unknown || row.Icon.Visible;
@@ -253,9 +287,6 @@ internal static class MeterPanelLogic
             row.Button.UpdateTooltip(new("", Array.Empty<string>(), "") { Card = card }, tooltipBounds);
 
         }
-        var overhead = self.panel.GetCombinedMinimumSize().Y - self.scroll.CustomMinimumSize.Y;
-        var desired = Math.Min(Math.Max(0, viewport.Y - self.panel.Position.Y - overhead - 8), Math.Max(0, self.controls.Count * 21));
-        self.scroll.CustomMinimumSize = new Vector2(0, desired);
         self.QueueHeightRefresh();
     }
     public static void CloseTooltips(MeterPanel self) { if (self.resize != null) self.resize.CloseTooltip(); foreach (var row in self.controls.Values) row.Button.CloseTooltip(); }

@@ -25,7 +25,7 @@ public sealed class RuntimeModule : IRuntimeModule
                 panel.showUnattributed = layout.ShowUnattributed; panel.unattributedToggle.ButtonPressed = layout.ShowUnattributed; panel.UpdateUnattributedToggle();
                 panel.expandedWidth = layout.Width;
                 panel.panel.Size = new Godot.Vector2(layout.Width, 0);
-                panel.ApplyCollapsedState(layout.Collapsed);
+                MeterPanelLogic.ApplyCollapsedState(panel, layout.Collapsed, false);
                 panel.panel.Position = layout.Position;
                 panel.panel.Visible = layout.Visible;
                 panel.solo = layout.Solo;

@@ -23,6 +23,132 @@ public partial class Gate : Node
     private readonly System.Diagnostics.Stopwatch watcherTime = new();
     private static bool actualRouting;
     private int actualCycles;
+    private Task? edgeChecks;
+
+    private async Task CheckEdges()
+    {
+        var meter = MeterPanel.instance!;
+        var root = GetTree().Root;
+        var originalSize = root.Size;
+        var layout = meter.CapturePresentation();
+        meter.SetProcess(false);
+        async Task Settle() { for (int i = 0; i < 4; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
+        void Frame() { meter.elapsed = -100; meter._Process(0); }
+        void Require(bool ok, string message) { if (!ok) throw new Exception(message); }
+        try
+        {
+            root.Size = new Vector2I(1200, 800);
+            meter.ApplyCollapsedState(false); await Settle();
+            meter.panel.Size = new Vector2(380, 0);
+            meter.panel.Position = new Vector2(40, 90); Frame();
+            Require(meter.collapse.GetIndex() == 0, "Left collapse placement");
+            meter.dragging = true;
+            meter.panel.Position = new Vector2(760, 90); Frame();
+            Require(meter.collapse.GetIndex() == meter.collapse.GetParent().GetChildCount() - 1 && meter.dragging, "Right placement while dragging");
+            meter.panel.Position = new Vector2(root.GetVisibleRect().Size.X / 2 - meter.panel.Size.X / 2, 90); Frame();
+            Require(meter.collapse.GetIndex() > 0, "Midpoint tie retains side");
+            meter.panel.Position = new Vector2(760, 90); Frame();
+            var right = meter.panel.Position.X + meter.panel.Size.X;
+            for (int i = 0; i < 3; i++)
+            {
+                meter.ApplyCollapsedState(true); await Settle();
+                Require(Math.Abs(meter.panel.Position.X + meter.panel.Size.X - right) < 1, "Right edge moved on collapse");
+                meter.ApplyCollapsedState(false); await Settle();
+                Require(Math.Abs(meter.panel.Position.X + meter.panel.Size.X - right) < 1, "Right edge moved on expansion");
+            }
+            meter.dragging = true;
+            meter.panel.Position = new Vector2(40, 90); Frame();
+            Require(meter.collapse.GetIndex() == 0 && meter.dragging, "Switch back while dragging");
+            meter.ApplyCollapsedState(true); await Settle();
+            Require(Math.Abs(meter.panel.Position.X - 40) < 1, "Left edge moved on collapse");
+            meter.ApplyCollapsedState(false); await Settle();
+            Require(Math.Abs(meter.panel.Position.X - 40) < 1, "Left edge moved on expansion");
+            root.Size = new Vector2I(600, 500); await Settle();
+            meter.panel.Position = new Vector2(800, 90); Frame(); await Settle();
+            Require(meter.panel.Position.X >= 0 && meter.panel.Position.X + meter.panel.Size.X <= root.GetVisibleRect().Size.X + 1, "Viewport resize left panel outside bounds");
+            evidence.Add("PASS collapse switches sides while dragging; midpoint tie, repeated left/right anchored cycles and viewport resize");
+            meter.ApplyCollapsedState(false); await Settle();
+            meter.panel.Position = new Vector2(40, 100);
+            var oldRows = Probe.Meter.Rows.ToArray();
+            var oldMetric = meter.Metric; var oldScope = meter.scopeIndex;
+            try
+            {
+                meter.metric.Select(meter.metric.GetItemIndex(7)); meter.scopeIndex = 0;
+                Probe.Meter.Rows.Clear();
+                for (int count = 1; count <= 4; count++)
+                {
+                    Probe.Meter.Rows["row-" + count] = new();
+                    meter.elapsed = 0; meter._Process(.11); await Settle();
+                    Require(!meter.scroll.GetVScrollBar().Visible, "Unnecessary player scrollbar for " + count);
+                    Require(meter.controls.Values.All(r => Math.Abs(r.Button.Size.Y - 24) < 1), "Player row height");
+                }
+                var generation = typeof(RuntimeHost).GetField("current", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null);
+                foreach (var row in meter.controls.Values)
+                    Require(row.Button.GetMeta("bar_hp").AsColor() == row.Bar.HpColour && row.Button.GetMeta("bar_bonus").AsColor() == row.Bar.AmpColour, "Tooltip did not receive its own bar colours");
+                var owner = meter.controls.Values.First();
+                var originalModel = owner.Button.model;
+                var numbers = new[] { new TooltipNumber(10, TooltipTone.Hp), new TooltipNumber(4, TooltipTone.Block), new TooltipNumber(2, TooltipTone.Bonus), new TooltipNumber(3, TooltipTone.MutedBlock) };
+                var colourModel = new MeterTooltipModel("", Array.Empty<string>(), "") { Card = new("Palette", "Fight", new(14, TooltipTone.Neutral), null,
+                    numbers.Select((n,i) => new TooltipStat("Stat " + i, n, "Breakdown")).ToArray(), new[] { "Source", "HP", "Block", "Bonus", "Pending" }, new[] { new TooltipSource("Strike", numbers) }, "", "") };
+                var colourWindow = new Window(); root.AddChild(colourWindow);
+                try
+                {
+                    owner.Button.SetMeta("bar_hp", new Color(.8f,.4f,.2f)); owner.Button.SetMeta("bar_bonus", new Color(.3f,.05f,.02f));
+                    owner.Button.UpdateTooltip(colourModel, new Vector2(500,500));
+                    var popup = (MeterTooltipContent)owner.Button._MakeCustomTooltip("palette"); colourWindow.AddChild(popup);
+                    foreach (var palette in new[] { (new Color(.8f,.4f,.2f),new Color(.3f,.05f,.02f)), (new Color(.2f,.7f,.9f),new Color(.05f,.3f,.4f)), (Colors.Gray,Colors.Gray) })
+                    {
+                        owner.Button.SetMeta("bar_hp", palette.Item1); owner.Button.SetMeta("bar_bonus", palette.Item2);
+                        owner.Button.UpdateTooltip(colourModel, new Vector2(500,500));
+                        var expected = new[] { palette.Item1, palette.Item1, palette.Item2, new Color(.6f,.6f,.6f) };
+                        for (int i = 0; i < expected.Length; i++)
+                            Require(popup.stats[i].Value.GetThemeColor("font_color") == expected[i] && popup.sources[0].Values[i].GetThemeColor("font_color") == expected[i], "Tooltip numeric colour differs from bar palette");
+                        Require(popup.total.GetThemeColor("font_color") == Colors.White, "Mixed total should remain neutral");
+                    }
+                    evidence.Add("PASS player tooltip stats/source cells match bar HP/block/bonus colours and update live; mixed totals and excluded pending stay neutral");
+                }
+                finally
+                {
+                    colourWindow.Free(); owner.Button.SetMeta("bar_hp", owner.Bar.HpColour); owner.Button.SetMeta("bar_bonus", owner.Bar.AmpColour);
+                    owner.Button.UpdateTooltip(originalModel, new Vector2(500,500));
+                }
+                var module = typeof(RuntimeGeneration).GetField("module", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(generation)!;
+                var update = module.GetType().Assembly.GetType("Based.Spires2DamageMeter.Runtime.FloatingHeader")!.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Static, new[] { typeof(MeterPanel), typeof(double), typeof(Vector2) })!;
+                void Hover(double delta, Vector2 point) => update.Invoke(null, new object[] { meter, delta, point });
+                var strip = meter.GetNode<PanelContainer>("HoverHeader");
+                var bodyRect = meter.panel.GetGlobalRect();
+                Hover(0, bodyRect.GetCenter());
+                Require(strip.Visible && strip.Position.Y < meter.panel.Position.Y, "Header did not reveal above rows");
+                Hover(.1, new Vector2(-100,-100)); Require(strip.Visible, "Header hide delay missing");
+                Hover(.11, new Vector2(-100,-100)); Require(!strip.Visible, "Header did not hide");
+                Require(bodyRect == meter.panel.GetGlobalRect(), "Header visibility moved player rows");
+                meter.dragging = true; Hover(1, new Vector2(-100,-100)); Require(strip.Visible, "Header hid during drag"); meter.dragging = false;
+                meter.resizing = true; Hover(1, new Vector2(-100,-100)); Require(strip.Visible, "Header hid during resize"); meter.resizing = false;
+                meter.metric.GetPopup().Show(); Hover(1, new Vector2(-100,-100)); Require(strip.Visible, "Header hid during dropdown"); meter.metric.GetPopup().Hide();
+                meter.panel.Position = new Vector2(40, 0); Hover(0, meter.panel.GetGlobalRect().GetCenter());
+                Require(strip.Position.Y >= meter.panel.Position.Y + meter.panel.Size.Y, "Header did not move below rows near top edge");
+                meter.panel.Position = new Vector2(40, root.GetVisibleRect().Size.Y - 70);
+                meter.elapsed = 0; meter._Process(.11); await Settle();
+                Require(meter.scroll.GetVScrollBar().Visible, "Constrained rows should scroll");
+                meter.scroll.ScrollVertical = 10000; await Settle(); Require(meter.scroll.ScrollVertical > 0, "Cannot scroll to final player");
+                meter.panel.Position = new Vector2(40, 100); meter.elapsed = 0; meter._Process(.11); await Settle();
+                Require(!meter.scroll.GetVScrollBar().Visible, "Scrollbar persisted after space restored");
+                evidence.Add("PASS 24px player rows, measured scrolling, hover header timing, fixed body, drag/dropdown hold and top-edge placement");
+            }
+            finally
+            {
+                Probe.Meter.Rows.Clear(); foreach (var row in oldRows) Probe.Meter.Rows[row.Key] = row.Value;
+                meter.metric.Select(meter.metric.GetItemIndex(oldMetric)); meter.scopeIndex = oldScope;
+            }
+        }
+        finally
+        {
+            root.Size = originalSize;
+            meter.ApplyCollapsedState(layout.Collapsed); await Settle();
+            meter.panel.Position = layout.Position; meter.expandedWidth = layout.Width;
+            meter.panel.Visible = layout.Visible; meter.SetProcess(true);
+        }
+    }
     private string install = "", baseline = "", alternate = "";
     private string gameData = "", godotPlugins = "";
     private readonly object identity = new();
@@ -158,6 +284,9 @@ public partial class Gate : Node
             return;
         }
         if (!MeterPanel.instance!.IsInsideTree()) return;
+        edgeChecks ??= CheckEdges();
+        if (!edgeChecks.IsCompleted) return;
+        edgeChecks.GetAwaiter().GetResult();
         if (actualCycles == 0)
         {
             var firstUi = MeterPanel.instance;
@@ -192,9 +321,9 @@ public partial class Gate : Node
         NoticeFrame(1);
         if (notice.Visible || notice.GetMeta("age").AsDouble() != 0 || !notice.GetMeta("pending").AsBool()) throw new Exception("Hidden meter consumed reload notice");
         meter.panel.Visible = true;
-        meter.panel.Position = beforeLayout.Position;
+        meter.panel.Position = new Vector2(80, 95);
         NoticeFrame(.125);
-        if (!notice.Visible || notice.Scale.X <= 1 || notice.Position.X >= beforeLayout.Position.X) throw new Exception("Reload notice is not pulsing left of meter");
+        if (!notice.Visible || notice.Scale.X <= 1 || notice.Position.X >= 80) throw new Exception($"Reload notice not pulsing: visible={notice.Visible}, scale={notice.Scale}, age={notice.GetMeta("age")}, pos={notice.Position}, layout={beforeLayout.Position}");
         NoticeFrame(60);
         if (!notice.Visible || notice.Modulate.A != 1 || notice.Scale != Vector2.One) throw new Exception("Reload notice did not remain visible after animation");
         notice.EmitSignal(BaseButton.SignalName.Pressed);

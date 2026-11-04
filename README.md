@@ -60,11 +60,21 @@ notices rather than invented credit.
 | F8 | Show or hide the panel. |
 
 Multiplayer rows show character icons and player names inside class-coloured bars.
+The collapse button switches to the end nearest the viewport edge as you drag.
+Collapsing and expanding keep that edge fixed, growing inward on the right.
+Player rows are 24 pixels tall. Hover anywhere over the meter to reveal its
+controls above the rows (below them near the top screen edge); they hide after
+200 ms outside the meter without moving the rows. Controls stay visible while
+dragging, resizing or using the dropdown. The collapsed expand button stays
+visible. Player rows scroll vertically only when available screen height is
+insufficient to show them all.
 HP and shield damage share the lighter shade; amplification uses the darker shade.
 Rows sort by total HP damage regardless of the selected metric. Damage labels are
 rounded to whole numbers, with precise values available on hover.
 
-Tooltips retain HP/block/bonus colours and separate **Already included** and
+Tooltip numbers match the player's bar: HP/block use its lighter shade and bonuses
+use its darker shade. Mixed totals stay neutral and excluded pending block is grey.
+Tooltips separate **Already included** and
 excluded pending amounts. Their content scrolls within bounds relative to the
 meter and viewport. Solo play hides player identity and party share. Multiplayer
 percentages use the currently visible rows, so toggling Unattributed can change

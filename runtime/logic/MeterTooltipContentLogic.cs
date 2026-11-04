@@ -6,7 +6,17 @@ namespace Based.Spires2DamageMeter.Runtime;
 internal static class MeterTooltipContentLogic
 {
     public static Label Label(MeterTooltipContent self, string text, int size) { var l = new Label { Text = text, MouseFilter = MouseFilterEnum.Ignore, AutowrapMode = TextServer.AutowrapMode.WordSmart }; if (size > 0) l.AddThemeFontSizeOverride("font_size", size); return l; }
-    public static void Set(MeterTooltipContent self, Label label, string text, TooltipTone tone) { if (label.Text != text) label.Text = text; label.AddThemeColorOverride("font_color", MeterPalette.Colour(tone)); }
+    public static void Set(MeterTooltipContent self, Label label, string text, TooltipTone tone)
+    {
+        if (label.Text != text) label.Text = text;
+        var key = tone is TooltipTone.Hp or TooltipTone.Block ? "bar_hp" : tone == TooltipTone.Bonus ? "bar_bonus" : "";
+        var matching = key.Length > 0 && self.HasMeta(key);
+        var colour = matching ? self.GetMeta(key).AsColor() : tone == TooltipTone.MutedBlock ? new Color(.6f, .6f, .6f) : MeterPalette.Colour(tone);
+        label.AddThemeColorOverride("font_color", colour);
+        // A subtle neutral outline keeps the dark bonus shades readable on the tooltip.
+        label.AddThemeColorOverride("font_outline_color", new Color(1, 1, 1, .35f));
+        label.AddThemeConstantOverride("outline_size", matching ? 1 : 0);
+    }
     public static HBoxContainer Row(MeterTooltipContent self) { var row = new HBoxContainer { MouseFilter = MouseFilterEnum.Ignore }; self.content.AddChild(row); return row; }
     public static void Heading(MeterTooltipContent self, string text) { var label = self.Label(text); self.content.AddChild(label); self.textLabels.Add(label); }
     public static void _Ready(MeterTooltipContent self)
